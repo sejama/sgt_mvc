@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SGT- Iniciar Sesión{% endblock %}
+
+{% block body %}
+    {% if error %}
+    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+    <div class="mb-3">
+        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+    </div>
+    {% endif %}
+
+    <h1>SGT - Iniciar Sesión</h1>
+    <form class="needs-validation" novalidate method="post">
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="username" value="{{ last_username }}" name="_username" autocomplete="username" required autofocus>
+            <div id="nombreFeedback" class="invalid-feedback">
+            Nombre de Usuario no puede estar vacío
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="_password" autocomplete="current-password" required>
+            <div id="nombreFeedback" class="invalid-feedback">
+                Contraseña no puede estar vacío
+            </div>
+        </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3">
+                <input type="checkbox" name="_remember_me" id="_remember_me">
+                <label for="_remember_me">Remember me</label>
+            </div>
+        #}
+
+        <button class="btn btn-success" type="submit">Ingresar</button>
+    </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock %}

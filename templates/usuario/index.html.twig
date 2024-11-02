@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SGT- Registrar{% endblock %}
+
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>SGT - Usuarios</h1>
+    <a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('app_registrar') }}" class="btn btn-success">Registrar</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Roles</th>
+                <th scope="col" style="width: 170px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in usuarios %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ user.nombre }}</td>
+                    <td>{{ user.apellido }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        {% for rol in user.roles %}
+                            {{ rol }}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_usuario_editar', {'id': user.id}) }}" class="btn btn-info">Editar</a>
+                        <a href="{{ path('app_usuario_eliminar', {'id': user.id}) }}" class="btn btn-danger">Eliminar</a>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+{% endblock %}

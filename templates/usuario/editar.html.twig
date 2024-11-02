@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SGT- Editar Usuario{% endblock %}
+
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>SGT - Editar Usuario</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_usuario_editar', {'id': usuario.id}) }}">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ usuario.nombre }}" required>
+            <div id="nombreFeedback" class="invalid-feedback">
+            Nombre no puede estar vacío
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="apellido" name="apellido" value="{{usuario.apellido }}" required>
+            <div id="nombreFeedback" class="invalid-feedback">
+            Apellido no puede estar vacío
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ usuario.email }}" required>
+            <div id="nombreFeedback" class="invalid-feedback">
+            Correo no válido
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{usuario.username}}" disabled>
+            <div id="nombreFeedback" class="invalid-feedback">
+            Nombre de Usuario no puede estar vacío
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="password" value="******" disabled>
+            <div id="nombreFeedback" class="invalid-feedback">
+                Contraseña no puede estar vacío
+            </div>
+        </div>
+        {% if roles != [] %}
+            <div class="col">
+                <label for="rol" class="form-label">Rol</label>
+                
+                {% for rol in roles %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="roles[{{rol}}]" value="{{rol}}" id="flexCheckDefault{{rol}}" {% for rolUser in usuario.roles %} {% if rol == rolUser %} checked {% endif %} {% endfor %}>
+                        <label class="form-check-label" for="flexCheckDefault">{{rol}}</label>
+                        </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <a href="{{ path('app_usuarios') }}" class="btn btn-secondary">Volver</a>
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock %}
