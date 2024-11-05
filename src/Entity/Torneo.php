@@ -23,6 +23,9 @@ class Torneo
     #[ORM\Column(length: 32)]
     private ?string $ruta = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $descripcion = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $fechaInicioInscripcion = null;
 
@@ -37,6 +40,16 @@ class Torneo
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reglamento = null;
+
+    #[ORM\ManyToOne(inversedBy: 'torneosCreados')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $creador = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'torneosColaborador')]
+    private Collection $colaborador;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -56,10 +69,13 @@ class Torneo
     #[ORM\OneToMany(targetEntity: Sede::class, mappedBy: 'torneo')]
     private Collection $sedes;
 
+    
+
     public function __construct()
     {
         $this->categorias = new ArrayCollection();
         $this->sedes = new ArrayCollection();
+        $this->colaborador = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -159,7 +175,7 @@ class Torneo
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new \DateTimeImmutable('now');
+        $this->createdAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
 
         return $this;
     }
@@ -173,7 +189,7 @@ class Torneo
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new \DateTimeImmutable('now');
+        $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
 
         return $this;
     }
@@ -234,6 +250,54 @@ class Torneo
                 $sede->setTorneo(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreador(): ?User
+    {
+        return $this->creador;
+    }
+
+    public function setCreador(?User $creador): static
+    {
+        $this->creador = $creador;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getColaborador(): Collection
+    {
+        return $this->colaborador;
+    }
+
+    public function addColaborador(User $colaborador): static
+    {
+        if (!$this->colaborador->contains($colaborador)) {
+            $this->colaborador->add($colaborador);
+        }
+
+        return $this;
+    }
+
+    public function removeColaborador(User $colaborador): static
+    {
+        $this->colaborador->removeElement($colaborador);
+
+        return $this;
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(?string $descripcion): static
+    {
+        $this->descripcion = $descripcion;
 
         return $this;
     }

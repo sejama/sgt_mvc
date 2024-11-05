@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -46,6 +48,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Torneo>
+     */
+    #[ORM\OneToMany(targetEntity: Torneo::class, mappedBy: 'creador')]
+    private Collection $torneosCreados;
+
+    /**
+     * @var Collection<int, Torneo>
+     */
+    #[ORM\ManyToMany(targetEntity: Torneo::class, mappedBy: 'colaborador')]
+    private Collection $torneosColaborador;
+
+    public function __construct()
+    {
+        $this->torneosCreados = new ArrayCollection();
+        $this->torneosColaborador = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -181,6 +201,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Torneo>
+     */
+    public function getTorneosCreados(): Collection
+    {
+        return $this->torneosCreados;
+    }
+
+    public function addTorneosCreado(Torneo $torneosCreado): static
+    {
+        if (!$this->torneosCreados->contains($torneosCreado)) {
+            $this->torneosCreados->add($torneosCreado);
+            $torneosCreado->setCreador($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTorneosCreado(Torneo $torneosCreado): static
+    {
+        if ($this->torneosCreados->removeElement($torneosCreado)) {
+            // set the owning side to null (unless already changed)
+            if ($torneosCreado->getCreador() === $this) {
+                $torneosCreado->setCreador(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Torneo>
+     */
+    public function getTorneosColaborador(): Collection
+    {
+        return $this->torneosColaborador;
+    }
+
+    public function addTorneosColaborador(Torneo $torneosColaborador): static
+    {
+        if (!$this->torneosColaborador->contains($torneosColaborador)) {
+            $this->torneosColaborador->add($torneosColaborador);
+            $torneosColaborador->addColaborador($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTorneosColaborador(Torneo $torneosColaborador): static
+    {
+        if ($this->torneosColaborador->removeElement($torneosColaborador)) {
+            $torneosColaborador->removeColaborador($this);
+        }
 
         return $this;
     }

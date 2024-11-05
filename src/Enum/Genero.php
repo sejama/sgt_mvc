@@ -8,5 +8,4 @@ enum Genero: string
 {
     case FEMENINO = "Femenino";
     case MASCULINO = "Masculino";
-    case MIXTO = "Mixto";
 }

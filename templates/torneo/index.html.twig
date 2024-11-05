@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SGT- Torneos{% endblock %}
+
+{% block body %}
+{% for flash_error in app.flashes('error') %}
+    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+{% endfor %}
+{% for flash_success in app.flashes('success') %}
+    <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+{% endfor %}
+
+<h1>SGT - Torneos</h1>
+<a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
+<a href="{{ path('app_torneo_nuevo') }}" class="btn btn-success">Crear</a>
+{% if torneos|length == 0 %}
+    <div class="alert alert-warning" role="alert">
+        No hay torneos registrados
+    </div>
+{% else %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Fecha Torneo</th>
+            <th scope="col">Fecha Inscripción</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for torneo in torneos %}
+            <tr>
+                <td>{{ torneo.nombre }}</td>
+                <td>{{ torneo.descripcion }}</td>
+                <td>{{ torneo.fechaInicioTorneo|format_datetime('short', 'short', locale: 'es') }} al {{ torneo.fechaFinTorneo|date('d/m/Y') }}</td>
+                <td>{{ torneo.fechaInicioInscripcion|date('d/m/Y') }} al {{ torneo.fechaFinInscripcion|date('d/m/Y') }}</td>
+                <td>
+                    <a href="#" class="btn btn-primary">Editar</a>
+                    <a href="#" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

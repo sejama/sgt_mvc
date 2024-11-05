@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Nuevo Torneo{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_nuevo') }}">
+        <div class="row g-2 mb-2 mt-2">
+            <div class="col-md">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre Torneo" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre de Torneo no puede estar vacío
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="basic-url" class="form-label">Ruta</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon3">https://example.com/</span>
+                    <input type="text" class="form-control" id="basic-url"  name="ruta" aria-describedby="basic-addon3 basic-addon4" maxlength="32" required>
+                    <div id="nombreFeedback" class="invalid-feedback">
+                        Ruta de Torneo no puede estar vacío
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-2 mt-2">
+            <div class="col-sm">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <input type="textarea" class="form-control" id="descripcion" name="descripcion" placeholder="Descripción Torneo">
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Descripción de Torneo no puede estar vacío
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-2 mt-2">
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Inicio Torneo</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaInicioTorneo" name="fechaInicioTorneo" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Inicio de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaInicioTorneo" name="horaInicioTorneo" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Inicio de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Fin Torneo</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaFinTorneo" name="fechaFinTorneo" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Fin de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaFinTorneo" name="horaFinTorneo" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Fin de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-2 mt-2">
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Inicio Inscripción</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaInicioInscripcion" name="fechaInicioInscripcion" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Inicio de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaInicioInscripcion" name="horaInicioInscripcion" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Inicio de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Fin Inscripción</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaFinInscripcion" name="fechaFinInscripcion" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Fin de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaFinInscripcion" name="horaFinInscripcion" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Fin de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Categorias</h5>
+                <div id="divCategorias">
+                    <div class="row g-1 mt-2 mb-2">
+                        <div class="col-md">
+                            <label for="genero" class="form-label">Genero</label>
+                            <select id="genero" class="form-select" name='categorias[0][generoId]' required>
+                                <option selected disabled value="">Seleccionar</option>
+                                {% for genero in generos %}
+                                <option value={{ genero }}>{{ genero }}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Debe seleccionar un Genero
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <label for="categoriaNombre" class="form-label">Categoría</label>
+                            <input type="text" class="form-control" id="categoriaNombre" name='categorias[0][categoriaNombre]' placeholder="Nombre de categoría" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Nombre de Categoría no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <label for="nombreCorto" class="form-label">Nombre Corto</label>
+                            <input type="text" class="form-control" id="nombreCorto" name='categorias[0][categoriaNombreCorto]' placeholder="Nombre de categoría" maxlength="8" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Nombre corto de Categoría no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <button id="btnAgregarGenCat" type="button" class="btn btn-primary">Agregar Categoría</button>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Sedes</h5>
+                <div id="divSedes">
+                    <div class="row g-1 mt-2 mb-2">
+                        <div class="col-md">
+                            <label for="sede" class="form-label">Sede</label>
+                            <input type="text" class="form-control" id="sede" name='sedes[0][sedeNombre]' placeholder="Nombre de sede" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Nombre de Sede no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccion" name='sedes[0][sedeDireccion]' placeholder="Dirección de sede" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Dirección de Sede no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <button id="btnAgregarGenCat" type="button" class="btn btn-primary">Agregar Sede</button>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

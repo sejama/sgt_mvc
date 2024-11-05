@@ -34,6 +34,9 @@ class Categoria
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(length: 8)]
+    private ?string $nombreCorto = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,6 +113,18 @@ class Categoria
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTimeImmutable('now');
+
+        return $this;
+    }
+
+    public function getNombreCorto(): ?string
+    {
+        return $this->nombreCorto;
+    }
+
+    public function setNombreCorto(string $nombreCorto): static
+    {
+        $this->nombreCorto = $nombreCorto;
 
         return $this;
     }
