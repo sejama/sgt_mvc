@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Nueva Sede{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_sede_nuevo', {'ruta': torneo.ruta}) }}">
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="sede" class="form-label">Sede</label>
+                <input type="text" class="form-control" id="sede" name='sedeNombre' placeholder="Nombre de sede" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre de Sede no puede estar vacío
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="direccion0" class="form-label">Dirección</label>
+                <input type="text" class="form-control" id="direccion0" name='sedeDireccion' placeholder="Dirección de sede" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Dirección de Sede no puede estar vacío
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

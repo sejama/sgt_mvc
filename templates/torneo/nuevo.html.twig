@@ -1,7 +1,4 @@
 {% extends 'base.html.twig' %}
-
-
-
 {% block body %}
 
     {% for flash_error in app.flashes('error') %}
@@ -122,14 +119,16 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
+        <div class="card mt-2">
+            <div class="card-header">
                 <h5 class="card-title">Categorias</h5>
+            </div>
+            <div class="card-body">
                 <div id="divCategorias">
-                    <div class="row g-1 mt-2 mb-2">
+                    <div class="row">
                         <div class="col-md">
-                            <label for="genero" class="form-label">Genero</label>
-                            <select id="genero" class="form-select" name='categorias[0][generoId]' required>
+                            <label for="genero0" class="form-label">Genero</label>
+                            <select id="genero0" class="form-select" name='categorias[0][generoId]' required>
                                 <option selected disabled value="">Seleccionar</option>
                                 {% for genero in generos %}
                                 <option value={{ genero }}>{{ genero }}</option>
@@ -156,25 +155,28 @@
                     </div>
                 </div>
             </div>
+            <div class="card-footer text-end">
+                <button id="btnAgregarGenCat" type="button" class="btn btn-primary">Agregar Categoría</button>
+            </div>
         </div>
-        <div class="row g-3 mt-2 mb-2">
-            <button id="btnAgregarGenCat" type="button" class="btn btn-primary">Agregar Categoría</button>
-        </div>
-        <div class="card">
-            <div class="card-body">
+        
+        <div class="card mt-2">
+            <div class="card-header">
                 <h5 class="card-title">Sedes</h5>
+            </div>
+            <div class="card-body">
                 <div id="divSedes">
-                    <div class="row g-1 mt-2 mb-2">
+                    <div class="row">
                         <div class="col-md">
-                            <label for="sede" class="form-label">Sede</label>
-                            <input type="text" class="form-control" id="sede" name='sedes[0][sedeNombre]' placeholder="Nombre de sede" required>
+                            <label for="sede0" class="form-label">Sede</label>
+                            <input type="text" class="form-control" id="sede0" name='sedes[0][sedeNombre]' placeholder="Nombre de sede" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Nombre de Sede no puede estar vacío
                             </div>
                         </div>
                         <div class="col-md">
-                            <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name='sedes[0][sedeDireccion]' placeholder="Dirección de sede" required>
+                            <label for="direccion0" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccion0" name='sedes[0][sedeDireccion]' placeholder="Dirección de sede" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Dirección de Sede no puede estar vacío
                             </div>
@@ -182,10 +184,11 @@
                     </div>
                 </div>
             </div>
+            <div class="card-footer text-end">
+                <button id="btnAgregarSede" type="button" class="btn btn-primary">Agregar Sede</button>
+            </div>
         </div>
-        <div class="row g-3 mt-2 mb-2">
-            <button id="btnAgregarGenCat" type="button" class="btn btn-primary">Agregar Sede</button>
-        </div>
+        
         <div class="row g-3 mt-2 mb-2">
             <div class="col">
                 <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
@@ -193,4 +196,154 @@
             </div>
         </div>
     </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+    
+                //const reglamento = document.getElementById('reglamento');
+                //const quill = document.getElementsByClassName('ql-editor')[0];
+                //console.log(quill.innerHTML);
+                //reglamento.value = quill.innerHTML;
+                
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    
+        const btnAbtnAgregarGenCat = document.getElementById('btnAgregarGenCat')
+        let cantidadCategoria = 1;
+        generos = {{ generos|json_encode|raw }}
+        btnAgregarGenCat.addEventListener('click', () => {
+            divRow = document.createElement('div')
+            divRow.classList.add('row', 'g-3', 'mt-2', 'mb-2')
+            divCol1 = document.createElement('div')
+            divCol1.classList.add('col')
+            label = document.createElement('label')
+            label.setAttribute('for', 'genero' + cantidadCategoria)
+            label.textContent = 'Genero'
+            selectGenero = document.createElement('select')
+            selectGenero.classList.add('form-select')
+            selectGenero.id = 'genero' + cantidadCategoria
+            selectGenero.name = 'categorias[' + cantidadCategoria + '][generoId]'
+            selectGenero.required = true
+            option = document.createElement('option')
+            option.value = ''
+            option.textContent = 'Seleccionar'
+            option.disabled = true
+            option.selected = true
+            selectGenero.appendChild(option)
+            generos.forEach(genero => {
+                option = document.createElement('option')
+                option.value = genero
+                option.textContent = genero
+                selectGenero.appendChild(option)
+            })
+            divValidationSelect = document.createElement('div')
+            divValidationSelect.id = 'nombreFeedback'
+            divValidationSelect.classList.add('invalid-feedback')
+            divValidationSelect.textContent = 'Debe seleccionar un Genero'
+            divCol1.appendChild(label)
+            divCol1.appendChild(selectGenero)
+            divCol1.appendChild(divValidationSelect)
+            divRow.appendChild(divCol1)
+            divCol2 = document.createElement('div')
+            divCol2.classList.add('col')
+            label = document.createElement('label')
+            label.setAttribute('for', 'categoria' + cantidadCategoria)
+            label.textContent = 'Categoria'
+            inputCategoria = document.createElement('input')
+            inputCategoria.classList.add('form-control')
+            inputCategoria.id = 'categoria' + cantidadCategoria
+            inputCategoria.name = 'categorias[' + cantidadCategoria + '][categoriaNombre]'
+            inputCategoria.placeholder = 'Nombre de categoría'
+            inputCategoria.required = true
+            divValidationInput = document.createElement('div')
+            divValidationInput.id = 'nombreFeedback'
+            divValidationInput.classList.add('invalid-feedback')
+            divValidationInput.textContent = 'Nombre de Categoría no puede estar vacío'
+            divCol2.appendChild(label)
+            divCol2.appendChild(inputCategoria)
+            divCol2.appendChild(divValidationInput)
+            divRow.appendChild(divCol2)
+            divCol3 = document.createElement('div')
+            divCol3.classList.add('col')
+            label = document.createElement('label')
+            label.setAttribute('for', 'nombreCorto' + cantidadCategoria)
+            label.textContent = 'Nombre Corto'
+            inputNombreCorto = document.createElement('input')
+            inputNombreCorto.classList.add('form-control')
+            inputNombreCorto.id = 'nombreCorto' + cantidadCategoria
+            inputNombreCorto.name = 'categorias[' + cantidadCategoria + '][categoriaNombreCorto]'
+            inputNombreCorto.placeholder = 'Nombre de categoría'
+            inputNombreCorto.maxLength = 8
+            inputNombreCorto.required = true
+            divValidationInput = document.createElement('div')
+            divValidationInput.id = 'nombreFeedback'
+            divValidationInput.classList.add('invalid-feedback')
+            divValidationInput.textContent = 'Nombre corto de Categoría no puede estar vacío'
+            divCol3.appendChild(label)
+            divCol3.appendChild(inputNombreCorto)
+            divCol3.appendChild(divValidationInput)
+            divRow.appendChild(divCol3)
+            document.getElementById('divCategorias').appendChild(divRow)
+            cantidadCategoria++
+        })
+
+        const btnAgregarSede = document.getElementById('btnAgregarSede')
+        let cantidadSede = 1;
+        btnAgregarSede.addEventListener('click', () => {
+            divRow = document.createElement('div')
+            divRow.classList.add('row', 'g-3', 'mt-2', 'mb-2')
+            divCol1 = document.createElement('div')
+            divCol1.classList.add('col')
+            label = document.createElement('label')
+            label.setAttribute('for', 'sede' + cantidadSede)
+            label.textContent = 'Sede'
+            inputSede = document.createElement('input')
+            inputSede.classList.add('form-control')
+            inputSede.id = 'sede' + cantidadSede
+            inputSede.name = 'sedes[' + cantidadSede + '][sedeNombre]'
+            inputSede.placeholder = 'Nombre de sede'
+            inputSede.required = true
+            divValidationInput = document.createElement('div')
+            divValidationInput.id = 'nombreFeedback'
+            divValidationInput.classList.add('invalid-feedback')
+            divValidationInput.textContent = 'Nombre de Sede no puede estar vacío'
+            divCol1.appendChild(label)
+            divCol1.appendChild(inputSede)
+            divCol1.appendChild(divValidationInput)
+            divRow.appendChild(divCol1)
+            divCol2 = document.createElement('div')
+            divCol2.classList.add('col')
+            label = document.createElement('label')
+            label.setAttribute('for', 'direccion' + cantidadSede)
+            label.textContent = 'Dirección'
+            inputDireccion = document.createElement('input')
+            inputDireccion.classList.add('form-control')
+            inputDireccion.id = 'direccion' + cantidadSede
+            inputDireccion.name = 'sedes[' + cantidadSede + '][sedeDireccion]'
+            inputDireccion.placeholder = 'Dirección de sede'
+            inputDireccion.required = true
+            divValidationInput = document.createElement('div')
+            divValidationInput.id = 'nombreFeedback'
+            divValidationInput.classList.add('invalid-feedback')
+            divValidationInput.textContent = 'Dirección de Sede no puede estar vacío'
+            divCol2.appendChild(label)
+            divCol2.appendChild(inputDireccion)
+            divCol2.appendChild(divValidationInput)
+            divRow.appendChild(divCol2)
+            document.getElementById('divSedes').appendChild(divRow)
+            cantidadSede++
+        })
+</script>
 {% endblock %}

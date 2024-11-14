@@ -13,7 +13,7 @@
     
     <h1>SGT - Usuarios</h1>
     <a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
-    <a href="{{ path('app_registrar') }}" class="btn btn-success">Registrar</a>
+    <a href="{{ path('app_usuario_nuevo') }}" class="btn btn-success">Registrar</a>
     <table class="table">
         <thead>
             <tr>
@@ -39,10 +39,27 @@
                     </td>
                     <td>
                         <a href="{{ path('app_usuario_editar', {'id': user.id}) }}" class="btn btn-info">Editar</a>
-                        <a href="{{ path('app_usuario_eliminar', {'id': user.id}) }}" class="btn btn-danger">Eliminar</a>
+                        <a class="btn btn-danger" id="btnEliminarUsuario{{ user.id }}">Eliminar</a>
                 </tr>
             {% endfor %}
         </tbody>
       </table>
+      
+    {% include "./componentes/modal.html" %}
+
+    <script>
+        btnEliminarUsuarios = document.querySelectorAll('[id^="btnEliminarUsuario"]');
+        btnEliminarUsuarios.forEach((btn) => {
+            console.log(btn);
+            let index = btn.id.replace('btnEliminarUsuario', '');
+            btn.addEventListener('click', () => {
+                crearModal('Eliminar Usuario', '¿Está seguro que desea eliminar al usuario?');
+                document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                    window.location.href = `{{ path('app_usuario_eliminar', {'id': 'ID'}) }}`.replace('ID', index);
+                });
+                
+            });
+        });
+    </script>
 
 {% endblock %}

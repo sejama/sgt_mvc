@@ -13,36 +13,36 @@
     
     <h1>SGT - Registrar Usuario</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_registrar') }}">
-        <div class="mb-3">
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_usuario_nuevo') }}">
+        <div class="mb-2">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" class="form-control" id="nombre" name="nombre" required>
             <div id="nombreFeedback" class="invalid-feedback">
             Nombre no puede estar vacío
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
             <label for="apellido" class="form-label">Apellido</label>
             <input type="text" class="form-control" id="apellido" name="apellido" required>
             <div id="nombreFeedback" class="invalid-feedback">
             Apellido no puede estar vacío
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
             <label for="email" class="form-label">Correo</label>
             <input type="email" class="form-control" id="email" name="email" required>
             <div id="nombreFeedback" class="invalid-feedback">
             Correo no válido
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
             <label for="username" class="form-label">Usuario</label>
             <input type="text" class="form-control" id="username" name="username" required>
             <div id="nombreFeedback" class="invalid-feedback">
             Nombre de Usuario no puede estar vacío
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
             <label for="password" class="form-label">Contraseña</label>
             <input type="password" class="form-control" id="password" name="password" required>
             <div id="nombreFeedback" class="invalid-feedback">
@@ -60,7 +60,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        <a href="{{ path('app_usuarios') }}" class="btn btn-secondary">Volver</a>
+        <a href="{{ path('app_usuario') }}" class="btn btn-secondary">Volver</a>
         <button type="submit" class="btn btn-success">Guardar</button>
     </form>
     <script>

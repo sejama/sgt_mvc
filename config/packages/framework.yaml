@@ -11,6 +11,8 @@ framework:
         handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
+        cookie_lifetime: 10800 # Tiempo en segundos, en este caso 3600 segundos = 1 hora
+        gc_maxlifetime: 1800 # Tiempo en segundos, en este caso 1800 segundos = 30 minutos
 
     #esi: true
     #fragments: true

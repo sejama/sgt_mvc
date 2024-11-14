@@ -18,30 +18,49 @@
         No hay torneos registrados
     </div>
 {% else %}
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Descripción</th>
-            <th scope="col">Fecha Torneo</th>
-            <th scope="col">Fecha Inscripción</th>
-            <th scope="col">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for torneo in torneos %}
-            <tr>
-                <td>{{ torneo.nombre }}</td>
-                <td>{{ torneo.descripcion }}</td>
-                <td>{{ torneo.fechaInicioTorneo|format_datetime('short', 'short', locale: 'es') }} al {{ torneo.fechaFinTorneo|date('d/m/Y') }}</td>
-                <td>{{ torneo.fechaInicioInscripcion|date('d/m/Y') }} al {{ torneo.fechaFinInscripcion|date('d/m/Y') }}</td>
-                <td>
-                    <a href="#" class="btn btn-primary">Editar</a>
-                    <a href="#" class="btn btn-danger">Eliminar</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for torneo in torneos %}
+{{ include ('./torneo/componentes/card_torneo.html.twig', {torneo}) }}
+{% endfor %}
 {% endif %}
+
+{% include "./componentes/modal.html" %}
+
+<script>
+    btnEliminarTorneos = document.querySelectorAll('[id^="btnEliminarTorneo"]');
+    btnEliminarTorneos.forEach((btn) => {
+        let ruta = btn.id.replace('btnEliminarTorneo', '');
+        btn.addEventListener('click', () => {
+            crearModal('Eliminar Torneo', '¿Está seguro que desea eliminar al torneo?');
+            document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                window.location.href = `{{ path('app_torneo_eliminar', {'ruta': 'RUTA' }) }}`.replace('RUTA', ruta);
+            });
+        });
+    });
+    btnEliminarCategorias = document.querySelectorAll('[id^="btnEliminarCategoria"]');
+    btnEliminarCategorias.forEach((btn) => {
+        let ruta_index = btn.id.replace('btnEliminarCategoria', '');
+        let index = ruta_index.split(' ')[1];
+        let ruta = ruta_index.split(' ')[0];
+        btn.addEventListener('click', () => {
+            crearModal('Eliminar Categoria', '¿Está seguro que desea eliminar la categoria?');
+            document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                window.location.href = `{{ path('app_torneo_categoria_eliminar', {'ruta': 'RUTA', 'id' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+            });
+        });
+    });
+
+    btnEliminarSedes = document.querySelectorAll('[id^="btnEliminarSede"]');
+    btnEliminarSedes.forEach((btn) => {
+        let ruta_index = btn.id.replace('btnEliminarSede', '');
+        let index = ruta_index.split(' ')[1];
+        let ruta = ruta_index.split(' ')[0];
+        btn.addEventListener('click', () => {
+            crearModal('Eliminar Sede', '¿Está seguro que desea eliminar la sede?');
+            document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                window.location.href = `{{ path('app_torneo_sede_eliminar', {'ruta': 'RUTA', 'id' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+            });
+        });
+    });
+</script>
+
 {% endblock %}

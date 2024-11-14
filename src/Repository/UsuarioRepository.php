@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
+use App\Entity\Usuario;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -10,22 +10,25 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
- * @extends ServiceEntityRepository<User>
+ * @extends ServiceEntityRepository<Usuario>
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, User::class);
+        parent::__construct($registry, Usuario::class);
     }
 
-    public function guardar(User $usuario): void
+    public function guardar(Usuario $usuario): void
     {
         $this->getEntityManager()->persist($usuario);
         $this->getEntityManager()->flush();
     }
 
-    public function eliminar(User $usuario): void
+    public function eliminar(Usuario $usuario): void
     {
         $this->getEntityManager()->remove($usuario);
         $this->getEntityManager()->flush();
@@ -36,7 +39,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof Usuario) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
         }
 
@@ -46,7 +49,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     //    /**
-    //     * @return User[] Returns an array of User objects
+    //     * @return Usuario[] Returns an array of Usuario objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -60,7 +63,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?User
+    //    public function findOneBySomeField($value): ?Usuario
     //    {
     //        return $this->createQueryBuilder('u')
     //            ->andWhere('u.exampleField = :val')

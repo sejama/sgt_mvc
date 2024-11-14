@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Editar Torneo{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_editar', {'ruta': torneo.ruta}) }}">
+        <div class="row g-2 mb-2 mt-2">
+            <div class="col-md">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre Torneo" value="{{torneo.nombre}}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre de Torneo no puede estar vacío
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="basic-url" class="form-label">Ruta</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon3">https://example.com/</span>
+                    <input type="text" class="form-control" id="basic-url"  name="ruta" aria-describedby="basic-addon3 basic-addon4" maxlength="32" value="{{ torneo.ruta }}">
+                    <div id="nombreFeedback" class="invalid-feedback">
+                        Ruta de Torneo no puede estar vacío
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-2 mt-2">
+            <div class="col-sm">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <input type="textarea" class="form-control" id="descripcion" name="descripcion" placeholder="Descripción Torneo" value="{{ torneo.descripcion }}">
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Descripción de Torneo no puede estar vacío
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-2 mt-2">
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Inicio Torneo</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaInicioTorneo" name="fechaInicioTorneo" value="{{ torneo.fechaInicioTorneo|date("Y-m-d") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Inicio de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaInicioTorneo" name="horaInicioTorneo" value="{{ torneo.fechaInicioTorneo|date("H:i") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Inicio de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Fin Torneo</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaFinTorneo" name="fechaFinTorneo" value="{{ torneo.fechaFinTorneo|date("Y-m-d") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Fin de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaFinTorneo" name="horaFinTorneo" value="{{ torneo.fechaFinTorneo|date("H:i") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Fin de Torneo no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-2 mt-2">
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Inicio Inscripción</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaInicioInscripcion" name="fechaInicioInscripcion" value="{{ torneo.fechaInicioInscripcion|date("Y-m-d") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Inicio de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaInicioInscripcion" name="horaInicioInscripcion" value="{{ torneo.fechaInicioInscripcion|date("H:i") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Inicio de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-sm">
+                <div class="card-body">
+                    <label class="card-title">Fecha y Hora de Fin Inscripción</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="date" class="form-control" id="fechaFinInscripcion" name="fechaFinInscripcion" value="{{ torneo.fechaFinInscripcion|date("Y-m-d") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                Fecha de Fin de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="time" class="form-control" id="horaFinInscripcion" name="horaFinInscripcion" value="{{ torneo.fechaFinInscripcion|date("H:i") }}" required>
+                            <div id="nombreFeedback" class="invalid-feedback">
+                                hora de Fin de Inscripción no puede estar vacío
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+    
+                //const reglamento = document.getElementById('reglamento');
+                //const quill = document.getElementsByClassName('ql-editor')[0];
+                //console.log(quill.innerHTML);
+                //reglamento.value = quill.innerHTML;
+                
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+</script>
+{% endblock %}

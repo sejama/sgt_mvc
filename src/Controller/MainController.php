@@ -11,15 +11,16 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(): Response
     {
-        if ($this->getUser() === NULL) {
-            return $this->redirectToRoute('app_login');
-        }else{
-            if($this->getUser()->getCreatedAt() == $this->getUser()->getUpdatedAt()){
+        if ($this->getUser() != null) {
+            if ($this->getUser()->getCreatedAt() == $this->getUser()->getUpdatedAt()) {
                 return $this->render('usuario/cambiar_password.html.twig', ['idUser' => $this->getUser()->getId()]);
             }
         }
-        return $this->render('main/index.html.twig', [
+        return $this->render(
+            'main/index.html.twig',
+            [
             'controller_name' => 'MainController',
-        ]);
+            ]
+        );
     }
 }

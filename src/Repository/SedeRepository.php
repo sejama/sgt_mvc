@@ -16,6 +16,24 @@ class SedeRepository extends ServiceEntityRepository
         parent::__construct($registry, Sede::class);
     }
 
+    public function guardar(Sede $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function eliminar(Sede $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Sede[] Returns an array of Sede objects
     //     */

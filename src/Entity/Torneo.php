@@ -43,12 +43,12 @@ class Torneo
 
     #[ORM\ManyToOne(inversedBy: 'torneosCreados')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $creador = null;
+    private ?Usuario $creador = null;
 
     /**
-     * @var Collection<int, User>
+     * @var Collection<int, Usuario>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'torneosColaborador')]
+    #[ORM\ManyToMany(targetEntity: Usuario::class, inversedBy: 'torneosColaborador')]
     private Collection $colaborador;
 
     #[ORM\Column]
@@ -68,8 +68,6 @@ class Torneo
      */
     #[ORM\OneToMany(targetEntity: Sede::class, mappedBy: 'torneo')]
     private Collection $sedes;
-
-    
 
     public function __construct()
     {
@@ -254,12 +252,12 @@ class Torneo
         return $this;
     }
 
-    public function getCreador(): ?User
+    public function getCreador(): ?Usuario
     {
         return $this->creador;
     }
 
-    public function setCreador(?User $creador): static
+    public function setCreador(?Usuario $creador): static
     {
         $this->creador = $creador;
 
@@ -267,14 +265,14 @@ class Torneo
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection<int, Usuario>
      */
     public function getColaborador(): Collection
     {
         return $this->colaborador;
     }
 
-    public function addColaborador(User $colaborador): static
+    public function addColaborador(Usuario $colaborador): static
     {
         if (!$this->colaborador->contains($colaborador)) {
             $this->colaborador->add($colaborador);
@@ -283,7 +281,7 @@ class Torneo
         return $this;
     }
 
-    public function removeColaborador(User $colaborador): static
+    public function removeColaborador(Usuario $colaborador): static
     {
         $this->colaborador->removeElement($colaborador);
 

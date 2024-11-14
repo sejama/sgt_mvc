@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Nueva Categoria{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_categoria_nuevo', {'ruta': torneo.ruta}) }}">
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="genero" class="form-label">Genero</label>
+                <select id="genero" class="form-select" name='genero' required>
+                    <option selected disabled value="">Seleccionar</option>
+                    {% for genero in generos %}
+                    <option value={{ genero }}>{{ genero }}</option>
+                    {% endfor %}
+                </select>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Debe seleccionar un Genero
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="nombre" class="form-label">Categoría</label>
+                <input type="text" class="form-control" id="nombre" name='nombre' placeholder="Nombre de categoría" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre de Categoría no puede estar vacío
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="nombreCorto" class="form-label">Nombre Corto</label>
+                <input type="text" class="form-control" id="nombreCorto" name='nombreCorto' placeholder="Nombre de categoría" maxlength="8" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre corto de Categoría no puede estar vacío
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
