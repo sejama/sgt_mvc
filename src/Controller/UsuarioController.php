@@ -143,7 +143,7 @@ class UsuarioController extends AbstractController
                 $nombre = $request->request->get('nombre');
                 $apellido = $request->request->get('apellido');
                 $email = $request->request->get('email');
-                //$username = $request->request->get('username');
+                $username = $request->request->get('username');
                 //$password = $request->request->get('password');
 
                 foreach ($request->request->all('roles') as $rol) {
@@ -154,7 +154,7 @@ class UsuarioController extends AbstractController
                     $nombre,
                     $apellido,
                     $email,
-                    //$username,
+                    $username,
                     //$password,
                     $roles
                 );

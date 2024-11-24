@@ -6,6 +6,7 @@ namespace App\Manager;
 
 use App\Entity\Sede;
 use App\Entity\Torneo;
+use App\Exception\AppException;
 use App\Repository\SedeRepository;
 
 class SedeManager
@@ -31,13 +32,15 @@ class SedeManager
         string $nombre,
         string $direccion,
     ): void {
-        /*
+
+        if ($this->sedeRepository->findOneBy(['torneo' => $torneo, 'nombre' => $nombre])) {
+            throw new AppException('Ya existe una sede con ese nombre');
+        }
+
         $this->validadorManager->validarSede(
             $nombre,
             $direccion,
-            $telefono,
-            $email
-        );*/
+        );
 
         $sede = new Sede();
         $sede->setTorneo($torneo);

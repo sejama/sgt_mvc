@@ -6,9 +6,11 @@ use App\Repository\SedeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: SedeRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['nombre', 'torneo'], message: 'Ya existe una sede con ese nombre para este torneo.')]
 class Sede
 {
     #[ORM\Id]
@@ -91,7 +93,7 @@ class Sede
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new \DateTimeImmutable('now');
+        $this->createdAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
 
         return $this;
     }
@@ -105,7 +107,7 @@ class Sede
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new \DateTimeImmutable('now');
+        $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
 
         return $this;
     }

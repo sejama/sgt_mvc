@@ -7,9 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TorneoRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['nombre'], message: 'Ya existe un torneo con ese nombre.')]
+#[UniqueEntity(fields: ['ruta'], message: 'Ya existe un torneo con esa ruta.')]
 class Torneo
 {
     #[ORM\Id]
@@ -17,10 +20,10 @@ class Torneo
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $nombre = null;
 
-    #[ORM\Column(length: 32)]
+    #[ORM\Column(length: 32, unique: true)]
     private ?string $ruta = null;
 
     #[ORM\Column(length: 255, nullable: true)]

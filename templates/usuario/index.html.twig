@@ -45,12 +45,11 @@
         </tbody>
       </table>
       
-    {% include "./componentes/modal.html" %}
+    {% include "./componentes/modal.html.twig" %}
 
     <script>
         btnEliminarUsuarios = document.querySelectorAll('[id^="btnEliminarUsuario"]');
         btnEliminarUsuarios.forEach((btn) => {
-            console.log(btn);
             let index = btn.id.replace('btnEliminarUsuario', '');
             btn.addEventListener('click', () => {
                 crearModal('Eliminar Usuario', '¿Está seguro que desea eliminar al usuario?');

@@ -1,0 +1,65 @@
+<!-- Initialize Quill editor -->
+<div>
+  <div id="editorQuill">
+    {% if texto is defined and (texto is not null or texto != '') %}
+      {{ texto|raw }}
+    {% else %}
+    <h1>Ejemplos: Título 1</h1>
+    <h2>Título 2</h2>
+    <p>
+      Normal <strong>B (Negrita)</strong><em> I (Cursiva)</em>
+      <u>U (Subrayado)</u>
+    </p>
+    <ol>
+      <li data-list="ordered">
+        <span class="ql-ui" contenteditable="false"></span>Ítem numérico
+      </li>
+      <li data-list="bullet">
+        <span class="ql-ui" contenteditable="false"></span>Ítem
+      </li>
+      <li data-list="unchecked">
+        <span class="ql-ui" contenteditable="false"></span>Check
+      </li>
+    </ol>
+    <p class="ql-indent-3">Sangría Izquierda y Derecha</p>
+    <p class="ql-indent-3">
+      <span style="color: rgb(230, 0, 0)">Color Rojo</span>
+    </p>
+    <p><span style="background-color: rgb(255, 194, 102)">Resaltado</span></p>
+    <p class="ql-align-center">Alineado</p>
+    <p>Limpiar Formato Seleccionado</p>
+    {% endif %}
+  </div>
+</div>
+
+
+<script>
+  const toolbarOptions = [
+    [{ header: [1, 2, false] }],
+    //[{ header: 1 }, { header: 2 }], // custom button values
+    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+    ["bold", "italic", "underline"], //'strike'],        // toggled buttons
+    //['blockquote', 'code-block'],
+    //['link', 'image', 'video', 'formula'],
+
+    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+    //[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+    //[{ 'direction': 'rtl' }],                         // text direction
+
+
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    //[{ 'font': [] }],
+    [{ align: [] }],
+
+    ["clean"], // remove formatting button
+  ];
+  const quill = new Quill("#editorQuill", {
+    modules: {
+      toolbar: toolbarOptions,
+    },
+    theme: "snow",
+  });
+
+</script>
+

@@ -42,6 +42,9 @@ class UsuarioManager
             if ($this->usuarioRepository->findOneBy(['username' => $username])) {
                 throw new AppException('El nombre de usuario ya se encuentra registrado');
             }
+            if ($this->usuarioRepository->findOneBy(['email' => $email])) {
+                throw new AppException('El email ya se encuentra registrado');
+            }
             $this->validadorManager->validarUsuario($username, $password);
             $usuario = new Usuario();
             $usuario->setNombre($nombre);
@@ -62,15 +65,21 @@ class UsuarioManager
         string $nombre,
         string $apellido,
         string $email,
-        //string $username,
+        string $username,
         //string $password,
         $roles
     ): void {
         try {
+            if ($usuario !== $this->usuarioRepository->findOneBy(['username' => $username])) {
+                throw new AppException('El nombre de usuario ya se encuentra registrado');
+            }
+            if ($usuario !== $this->usuarioRepository->findOneBy(['email' => $email])) {
+                throw new AppException('El email ya se encuentra registrado');
+            }
             $usuario->setNombre($nombre);
             $usuario->setApellido($apellido);
             $usuario->setEmail($email);
-            //$usuario->setUsername($username);
+            $usuario->setUsername($username);
             //$usuario->setPassword($this->userPasswordHasher->hashPassword($usuario, $password));
             $usuario->setRoles($roles);
             $this->usuarioRepository->guardar($usuario);

@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
+use App\Entity\Torneo;
 use App\Entity\Usuario;
+use App\Enum\Genero;
 use App\Exception\AppException;
 
 class ValidadorManager
 {
     public function validarUsuario($username, $password): void
     {
-        if (strlen($username) < 4 || strlen($username) > 128) {
-            throw new AppException('El nombre de usuario debe tener entre 4 y 128 caracteres');
-        }
-
+        $this->validarLongitud('nombre de usuario', $username, 4, 128);
+        $this->validarLongitud('contraseña', $password, 5, 255);
         if (false !== strpos($username, ' ')) {
             throw new AppException('El Usuario ingresado no puede contener espacios');
         }
 
         if ($username === $password) {
             throw new AppException('El nombre de usuario y la contraseña no pueden ser iguales');
-        }
-
-        if (strlen($password) < 5 || strlen($password) > 255) {
-            throw new AppException('La contraseña debe tener entre 5 y 255 caracteres');
         }
 
         if (false === preg_match('/[A-Z]/', $password)) {
@@ -58,18 +54,53 @@ class ValidadorManager
         $this->validarFecha('Fin del torneo', $fin_torneo);
         $this->validarFecha('Inicio de inscripción', $inicio_inscripcion);
         $this->validarFecha('Fin de inscripción', $fin_inscripcion);
-        $this->validarFechaInicioFin('torneo', new \DateTime($inicio_torneo), new \DateTime($fin_torneo));
         $this->validarFechaInicioFin(
-            'inscripción',
+            'Torneo',
+            new \DateTime($inicio_torneo),
+            new \DateTime($fin_torneo)
+        );
+        $this->validarFechaInicioFin(
+            'Inscripción',
             new \DateTime($inicio_inscripcion),
             new \DateTime($fin_inscripcion)
         );
+        $this->validarFechaInicioFin(
+            'Inscripción y Torneo',
+            new \DateTime($fin_inscripcion),
+            new \DateTime($inicio_torneo)
+        );
+    }
+
+    public function validarCategoria(
+        Torneo $torneo,
+        string $genero,
+        string $nombre,
+        string $nombreCorto
+    ): void {
+        $this->validarLongitud('Nombre', $nombre, 3, 128);
+        $this->validarLongitud('Nombre Corto', $nombreCorto, 3, 32);
+        $this->validarGenero($genero);
+    }
+
+    public function validarSede(
+        string $nombre,
+        string $direccion
+    ): void {
+        $this->validarLongitud('Nombre', $nombre, 3, 128);
+        $this->validarLongitud('Dirección', $direccion, 10, 128);
+    }
+
+    private function validarGenero(string $genero): void
+    {
+        if (!in_array($genero, Genero::getValues())) {
+                throw new AppException('El género no es válido');
+        }
     }
 
     private function validarLongitud(string $nombre, string $campo, int $min, int $max): void
     {
         if (strlen($campo) < $min || strlen($campo) > $max) {
-            throw new AppException(sprintf('El %d debe tener entre %d y %d caracteres', $nombre, $min, $max));
+            throw new AppException(sprintf('El %s debe tener entre %d y %d caracteres', $nombre, $min, $max));
         }
     }
 

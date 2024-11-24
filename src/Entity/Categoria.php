@@ -6,9 +6,18 @@ use App\Enum\Genero;
 use App\Repository\CategoriaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoriaRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(
+    fields: ['nombre', 'genero', 'torneo', 'nombreCorto'],
+    message: 'Ya existe esa categoría para este torneo.'
+)]
+#[UniqueEntity(
+    fields: ['nombreCorto', 'torneo'],
+    message: 'Ya existe una categoría con ese nombre corto.'
+)]
 class Categoria
 {
     #[ORM\Id]

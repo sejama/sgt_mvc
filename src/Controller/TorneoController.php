@@ -92,11 +92,9 @@ class TorneoController extends AbstractController
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
-                    return $this->redirectToRoute('app_torneo');
                 } catch (Throwable $e) {
                     $logger->error($e->getMessage());
                     $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                    return $this->redirectToRoute('app_torneo');
                 }
             }
             foreach (Genero::cases() as $genero) {
@@ -106,6 +104,7 @@ class TorneoController extends AbstractController
                 'torneo/nuevo.html.twig',
                 [
                 'generos' => $generos,
+                'hoy' => new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires')),
                 ]
             );
         }
@@ -137,11 +136,9 @@ class TorneoController extends AbstractController
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
-                return $this->redirectToRoute('app_torneo');
             } catch (Throwable $e) {
                 $logger->error($e->getMessage());
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                return $this->redirectToRoute('app_torneo');
             }
         }
         return $this->redirectToRoute('app_login');
@@ -191,11 +188,9 @@ class TorneoController extends AbstractController
                     } catch (AppException $ae) {
                         $logger->error($ae->getMessage());
                         $this->addFlash('error', $ae->getMessage());
-                        return $this->redirectToRoute('app_torneo');
                     } catch (Throwable $e) {
                         $logger->error($e->getMessage());
                         $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                        return $this->redirectToRoute('app_torneo');
                     }
                 }
                 foreach (Genero::cases() as $genero) {
@@ -211,6 +206,41 @@ class TorneoController extends AbstractController
             }
             return $this->redirectToRoute('app_login');
         }
+    }
+
+    #[Route('/{ruta}/reglamento/editar', name: 'app_torneo_reglamento_editar', methods: ['GET', 'POST'])]
+    public function editarReglamento(
+        string $ruta,
+        TorneoManager $torneoManager,
+        Request $request,
+        LoggerInterface $logger
+    ): Response {
+        if ($this->getUser() !== null) {
+            $torneo = $torneoManager->obtenerTorneo($ruta);
+            if ($torneo->getCreador()->getId() === $this->getUser()->getId()) {
+                if ($request->isMethod('POST')) {
+                    try {
+                        $reglamento = $request->request->get('reglamento');
+                        $torneoManager->editarReglamento($torneo, $reglamento);
+                        $this->addFlash('success', "Reglamento editado con éxito.");
+                        return $this->redirectToRoute('app_torneo');
+                    } catch (AppException $ae) {
+                        $logger->error($ae->getMessage());
+                        $this->addFlash('error', $ae->getMessage());
+                    } catch (Throwable $e) {
+                        $logger->error($e->getMessage());
+                        $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+                    }
+                }
+                return $this->render(
+                    'torneo/reglamento/editar.html.twig',
+                    [
+                        'torneo' => $torneo,
+                    ]
+                );
+            }
+        }
+        return $this->redirectToRoute('app_login');
     }
 
     #[Route('/{ruta}/categoria/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
@@ -241,11 +271,9 @@ class TorneoController extends AbstractController
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
-                    return $this->redirectToRoute('app_torneo');
                 } catch (Throwable $e) {
                     $logger->error($e->getMessage());
                     $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                    return $this->redirectToRoute('app_torneo');
                 }
             }
             foreach (Genero::cases() as $genero) {
@@ -256,6 +284,49 @@ class TorneoController extends AbstractController
                 [
                     'generos' => $generos,
                     'torneo' => $torneo,
+                ]
+            );
+        }
+        return $this->redirectToRoute('app_login');
+    }
+
+    #[Route(
+        '/{ruta}/categoria/{id}/editar/disputa',
+        name: 'app_torneo_categoria_editar_disputa',
+        methods: ['GET', 'POST']
+    )]
+    public function editarDisputa(
+        string $ruta,
+        int $id,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        LoggerInterface $logger
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        if ($this->getUser() !== null) {
+            $categoria = $categoriaManager->obtenerCategoria($id);
+            if ($request->isMethod('POST')) {
+                try {
+                    $disputa = $request->request->get('disputa');
+                    $categoriaManager->editarDisputa($categoria, $disputa);
+                    $entityManager->flush();
+                    $this->addFlash('success', "Disputa editada con éxito.");
+                    return $this->redirectToRoute('app_torneo');
+                } catch (AppException $ae) {
+                    $logger->error($ae->getMessage());
+                    $this->addFlash('error', $ae->getMessage());
+                } catch (Throwable $e) {
+                    $logger->error($e->getMessage());
+                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+                }
+            }
+            return $this->render(
+                'torneo/categoria/editar_disputa.html.twig',
+                [
+                    'torneo' => $torneo,
+                    'categoria' => $categoria,
                 ]
             );
         }
@@ -282,11 +353,9 @@ class TorneoController extends AbstractController
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
-                return $this->redirectToRoute('app_torneo');
             } catch (Throwable $e) {
                 $logger->error($e->getMessage());
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                return $this->redirectToRoute('app_torneo');
             }
         }
         return $this->redirectToRoute('app_login');
@@ -318,11 +387,9 @@ class TorneoController extends AbstractController
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
-                    return $this->redirectToRoute('app_torneo');
                 } catch (Throwable $e) {
                     $logger->error($e->getMessage());
                     $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                    return $this->redirectToRoute('app_torneo');
                 }
             }
             return $this->render(
@@ -355,14 +422,11 @@ class TorneoController extends AbstractController
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
-                return $this->redirectToRoute('app_torneo');
             } catch (Throwable $e) {
                 $logger->error($e->getMessage());
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                return $this->redirectToRoute('app_torneo');
             }
         }
         return $this->redirectToRoute('app_login');
     }
-
 }

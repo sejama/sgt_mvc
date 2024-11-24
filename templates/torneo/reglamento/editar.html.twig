@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Editar Reglamento{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_reglamento_editar', {'ruta': torneo.ruta}) }}">
+        <input type="textarea" name="reglamento" id="reglamento" hidden>
+            {% set texto = torneo.reglamento %}
+            {{ include ('./componentes/textrich.html.twig', { texto }) }}
+            
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success" id="btnGuardar">Guardar</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        var form = document.querySelector('form');
+        form.onsubmit = function() {
+            var reglamento = document.querySelector('input[name=reglamento]');
+            reglamento.value = quill.root.innerHTML;
+        }
+    </script>
+{% endblock %}

@@ -8,4 +8,9 @@ enum Genero: string
 {
     case FEMENINO = "Femenino";
     case MASCULINO = "Masculino";
+
+    public static function getValues(): array
+    {
+        return array_map(fn ($case) => $case->value, self::cases());
+    }
 }

@@ -9,8 +9,7 @@
     {% for flash_success in app.flashes('success') %}
     <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
-
-    <div>
-        <h1>Bienvenido al Sistema de Gestión de Torneo!!</h1>
-    </div>
+    <h1>Bienvenido al Sistema de Gestión de Torneo!!</h1>
+    {% include "./componentes/fixture.html.twig" %}
+    {% include "./componentes/tabla.html.twig" %}
 {% endblock %}
