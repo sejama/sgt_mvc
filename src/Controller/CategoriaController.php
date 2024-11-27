@@ -1,0 +1,185 @@
+<?php
+
+namespace App\Controller;
+
+use App\Exception\AppException;
+use App\Manager\CategoriaManager;
+use App\Manager\TorneoManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
+
+class CategoriaController extends AbstractController
+{
+    #[Route('/{ruta}/categoria/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
+    public function agregarCategoria(
+        string $ruta,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        LoggerInterface $logger
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        if ($this->getUser() !== null) {
+            if ($request->isMethod('POST')) {
+                try {
+                    $genero = $request->request->get('genero');
+                    $nombre = $request->request->get('nombre');
+                    $nombreCorto = $request->request->get('nombreCorto');
+                    $categoriaManager->crearCategoria(
+                        $torneo,
+                        $genero,
+                        $nombre,
+                        $nombreCorto
+                    );
+                    $entityManager->flush();
+                    $this->addFlash('success', "Categoría creada con éxito.");
+                    return $this->redirectToRoute('app_torneo');
+                } catch (AppException $ae) {
+                    $logger->error($ae->getMessage());
+                    $this->addFlash('error', $ae->getMessage());
+                } catch (Throwable $e) {
+                    $logger->error($e->getMessage());
+                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+                }
+            }
+            foreach (Genero::cases() as $genero) {
+                $generos[] = $genero->value;
+            }
+            return $this->render(
+                'torneo/categoria/nuevo.html.twig',
+                [
+                    'generos' => $generos,
+                    'torneo' => $torneo,
+                ]
+            );
+        }
+        return $this->redirectToRoute('app_login');
+    }
+
+    #[Route('/{ruta}/categoria/{id}/editar', name: 'app_torneo_categoria_editar', methods: ['GET', 'POST'])]
+    public function editarCategoria(
+        string $ruta,
+        int $id,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        LoggerInterface $logger
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        if ($this->getUser() !== null) {
+            $categoria = $categoriaManager->obtenerCategoria($id);
+            if ($request->isMethod('POST')) {
+                try {
+                    $genero = $request->request->get('genero');
+                    $nombre = $request->request->get('nombre');
+                    $nombreCorto = $request->request->get('nombreCorto');
+                    $categoriaManager->editarCategoria(
+                        $categoria,
+                        $genero,
+                        $nombre,
+                        $nombreCorto
+                    );
+                    $entityManager->flush();
+                    $this->addFlash('success', "Categoría editada con éxito.");
+                    return $this->redirectToRoute('app_torneo');
+                } catch (AppException $ae) {
+                    $logger->error($ae->getMessage());
+                    $this->addFlash('error', $ae->getMessage());
+                } catch (Throwable $e) {
+                    $logger->error($e->getMessage());
+                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+                }
+            }
+            foreach (Genero::cases() as $genero) {
+                $generos[] = $genero->value;
+            }
+            return $this->render(
+                'torneo/categoria/editar.html.twig',
+                [
+                    'generos' => $generos,
+                    'torneo' => $torneo,
+                    'categoria' => $categoria,
+                ]
+            );
+        }
+        return $this->redirectToRoute('app_login');
+    }
+
+    #[Route(
+        '/{ruta}/categoria/{id}/editar/disputa',
+        name: 'app_torneo_categoria_editar_disputa',
+        methods: ['GET', 'POST']
+    )]
+    public function editarDisputa(
+        string $ruta,
+        int $id,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        LoggerInterface $logger
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        if ($this->getUser() !== null) {
+            $categoria = $categoriaManager->obtenerCategoria($id);
+            if ($request->isMethod('POST')) {
+                try {
+                    $disputa = $request->request->get('disputa');
+                    $categoriaManager->editarDisputa($categoria, $disputa);
+                    $entityManager->flush();
+                    $this->addFlash('success', "Disputa editada con éxito.");
+                    return $this->redirectToRoute('app_torneo');
+                } catch (AppException $ae) {
+                    $logger->error($ae->getMessage());
+                    $this->addFlash('error', $ae->getMessage());
+                } catch (Throwable $e) {
+                    $logger->error($e->getMessage());
+                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+                }
+            }
+            return $this->render(
+                'torneo/categoria/editar_disputa.html.twig',
+                [
+                    'torneo' => $torneo,
+                    'categoria' => $categoria,
+                ]
+            );
+        }
+        return $this->redirectToRoute('app_login');
+    }
+
+    #[Route('/{ruta}/categoria/eliminar/{id}', name: 'app_torneo_categoria_eliminar', methods: ['GET'])]
+    public function eliminarCategoria(
+        string $ruta,
+        int $id,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        if ($this->getUser() !== null) {
+            try {
+                $categoria = $categoriaManager->obtenerCategoria($id);
+                $categoriaManager->eliminarCategoria($categoria);
+                $entityManager->flush();
+                $this->addFlash('success', "Categoría eliminada con éxito.");
+                return $this->redirectToRoute('app_torneo');
+            } catch (AppException $ae) {
+                $logger->error($ae->getMessage());
+                $this->addFlash('error', $ae->getMessage());
+            } catch (Throwable $e) {
+                $logger->error($e->getMessage());
+                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+            }
+        }
+        return $this->redirectToRoute('app_login');
+    }
+}

@@ -8,16 +8,19 @@
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
     
-    <h1>{% block title %}SGT- Nueva Categoria{% endblock %}</h1>
-
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_categoria_nuevo', {'ruta': torneo.ruta}) }}">
+    <h1>{% block title %}SGT- Editar Categoria{% endblock %}</h1>
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'id' : categoria.id} ) }}">
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="genero" class="form-label">Genero</label>
                 <select id="genero" class="form-select" name='genero' required>
-                    <option selected disabled value="">Seleccionar</option>
+                    <option disabled value="">Seleccionar</option>
                     {% for genero in generos %}
-                    <option value={{ genero }}>{{ genero }}</option>
+                        {% if categoria.genero.value == genero %}
+                            <option value={{ genero }} selected>{{ genero }}</option>
+                        {% else %}
+                            <option value={{ genero }}>{{ genero }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
                 <div id="nombreFeedback" class="invalid-feedback">
@@ -26,14 +29,14 @@
             </div>
             <div class="col-md">
                 <label for="nombre" class="form-label">Categoría</label>
-                <input type="text" class="form-control" id="nombre" name='nombre' minlength="3" maxlength="32" placeholder="Nombre de categoría" required>
+                <input type="text" class="form-control" id="nombre" name='nombre' placeholder="Nombre de categoría" minlength="3" maxlength="32" value="{{ categoria.nombre }}" required>
                 <div id="nombreFeedback" class="invalid-feedback">
                     Nombre de Categoría no puede estar vacío
                 </div>
             </div>
             <div class="col-md">
                 <label for="nombreCorto" class="form-label">Nombre Corto</label>
-                <input type="text" class="form-control" id="nombreCorto" name='nombreCorto' minlength="3" maxlength="8" placeholder="Nombre de categoría" required>
+                <input type="text" class="form-control" id="nombreCorto" name='nombreCorto' placeholder="Nombre de categoría" minlength="3" maxlength="8" value="{{ categoria.nombreCorto }}" required>
                 <div id="nombreFeedback" class="invalid-feedback">
                     Nombre corto de Categoría no puede estar vacío
                 </div>

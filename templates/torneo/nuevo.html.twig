@@ -11,111 +11,61 @@
     <h1>{% block title %}SGT- Nuevo Torneo{% endblock %}</h1>
 
     <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_nuevo') }}">
-        <div class="row g-2 mb-2 mt-2">
+        <div class="row g-1 mb-2 mt-2">
             <div class="col-md">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre Torneo" required>
+                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre Torneo" minlength="3" maxlength="128" required>
                 <div id="nombreFeedback" class="invalid-feedback">
-                    Nombre de Torneo no puede estar vacío
+                    Nombre de Torneo no valida
                 </div>
             </div>
             <div class="col-md">
                 <label for="basic-url" class="form-label">Ruta</label>
                 <div class="input-group">
                     <span class="input-group-text" id="basic-addon3">https://example.com/</span>
-                    <input type="text" class="form-control" id="basic-url"  name="ruta" aria-describedby="basic-addon3 basic-addon4" maxlength="32" required>
+                    <input type="text" class="form-control" id="basic-url"  name="ruta" aria-describedby="basic-addon3 basic-addon4" minlength="3" maxlength="32" required>
                     <div id="nombreFeedback" class="invalid-feedback">
-                        Ruta de Torneo no puede estar vacío
+                        Ruta de Torneo no valida
                     </div>
                 </div>
             </div>
         </div>
         <div class="row g-1 mb-2 mt-2">
-            <div class="col-sm">
+            <div class="col-md">
                 <label for="descripcion" class="form-label">Descripción</label>
                 <input type="textarea" class="form-control" id="descripcion" name="descripcion" placeholder="Descripción Torneo">
                 <div id="nombreFeedback" class="invalid-feedback">
-                    Descripción de Torneo no puede estar vacío
+                    Descripción de Torneo no valida
                 </div>
             </div>
         </div>
-        <div class="row g-1 mb-2 mt-2">
-            <div class="card col-sm">
-                <div class="card-body">
-                    <label class="card-title">Fecha y Hora de Inicio Inscripción</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type="date" class="form-control" id="fechaInicioInscripcion" name="fechaInicioInscripcion" min="{{ hoy|date('Y-m-d') }}" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                Fecha de Inicio de Inscripción no puede estar vacío
-                            </div>
-                        </div>
-                        <div class="col">
-                            <input type="time" class="form-control" id="horaInicioInscripcion" name="horaInicioInscripcion" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                hora de Inicio de Inscripción no puede estar vacío
-                            </div>
-                        </div>
-                    </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-1 mb-2 mt-2">
+            <div class="col-md-3">
+                <label for="fechaInicioInscripcion" class="form-label">Inicio Inscripción</label>
+                <input type="datetime-local" id="fechaInicioInscripcion" name="fechaInicioInscripcion" class="form-control" min="{{ hoy|date('Y-m-d') }}T00:00" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Fecha de Inicio de Inscripción no valida
                 </div>
             </div>
-            <div class="card col-sm">
-                <div class="card-body">
-                    <label class="card-title">Fecha y Hora de Fin Inscripción</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type="date" class="form-control" id="fechaFinInscripcion" name="fechaFinInscripcion" min="{{ hoy|date('Y-m-d') }}" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                Fecha de Fin de Inscripción no puede estar vacío
-                            </div>
-                        </div>
-                        <div class="col">
-                            <input type="time" class="form-control" id="horaFinInscripcion" name="horaFinInscripcion" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                hora de Fin de Inscripción no puede estar vacío
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-3">
+                <label for="fechaFinInscripcion" class="form-label">Fin Inscripción</label>
+                <input type="datetime-local" id="fechaFinInscripcion" name="fechaFinInscripcion" class="form-control" min="{{ hoy|date('Y-m-d') }}T00:00" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Fecha de Fin de Inscripción no valida
                 </div>
             </div>
-        </div>
-        <div class="row g-1 mb-2 mt-2">
-            <div class="card col-sm">
-                <div class="card-body">
-                    <label class="card-title">Fecha y Hora de Inicio Torneo</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type="date" class="form-control" id="fechaInicioTorneo" name="fechaInicioTorneo" min="{{ hoy|date('Y-m-d') }}" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                Fecha de Inicio de Torneo no puede estar vacío
-                            </div>
-                        </div>
-                        <div class="col">
-                            <input type="time" class="form-control" id="horaInicioTorneo" name="horaInicioTorneo" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                hora de Inicio de Torneo no puede estar vacío
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-3">
+                <label for="fechaInicioTorneo" class="form-label">Inicio Torneo</label>
+                <input type="datetime-local" id="fechaInicioTorneo" name="fechaInicioTorneo" class="form-control" min="{{ hoy|date('Y-m-d') }}T00:00" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Fecha de Inicio de Inscripción no valida
                 </div>
             </div>
-            <div class="card col-sm">
-                <div class="card-body">
-                    <label class="card-title">Fecha y Hora de Fin Torneo</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type="date" class="form-control" id="fechaFinTorneo" name="fechaFinTorneo" min="{{ hoy|date('Y-m-d') }}" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                Fecha de Fin de Torneo no puede estar vacío
-                            </div>
-                        </div>
-                        <div class="col">
-                            <input type="time" class="form-control" id="horaFinTorneo" name="horaFinTorneo" required>
-                            <div id="nombreFeedback" class="invalid-feedback">
-                                hora de Fin de Torneo no puede estar vacío
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-3">
+                <label for="fechaFinTorneo" class="form-label">Fin Torneo</label>
+                <input type="datetime-local" id="fechaFinTorneo" name="fechaFinTorneo" class="form-control" min="{{ hoy|date('Y-m-d') }}T00:00" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Fecha de Fin de Inscripción no valida
                 </div>
             </div>
         </div>
@@ -140,16 +90,16 @@
                         </div>
                         <div class="col-md">
                             <label for="categoriaNombre" class="form-label">Categoría</label>
-                            <input type="text" class="form-control" id="categoriaNombre" name='categorias[0][categoriaNombre]' placeholder="Nombre de categoría" required>
+                            <input type="text" class="form-control" id="categoriaNombre" name='categorias[0][categoriaNombre]' placeholder="Nombre de categoría" minlength="3" maxlength="128" required>
                             <div id="nombreFeedback" class="invalid-feedback">
-                                Nombre de Categoría no puede estar vacío
+                                Nombre de Categoría no valida
                             </div>
                         </div>
                         <div class="col-md">
                             <label for="nombreCorto" class="form-label">Nombre Corto</label>
-                            <input type="text" class="form-control" id="nombreCorto" name='categorias[0][categoriaNombreCorto]' placeholder="Nombre de categoría" maxlength="8" required>
+                            <input type="text" class="form-control" id="nombreCorto" name='categorias[0][categoriaNombreCorto]' placeholder="Nombre de categoría" minlength="3" maxlength="32" required>
                             <div id="nombreFeedback" class="invalid-feedback">
-                                Nombre corto de Categoría no puede estar vacío
+                                Nombre corto de Categoría no valida
                             </div>
                         </div>
                     </div>
@@ -169,16 +119,16 @@
                     <div class="row">
                         <div class="col-md">
                             <label for="sede0" class="form-label">Sede</label>
-                            <input type="text" class="form-control" id="sede0" name='sedes[0][sedeNombre]' placeholder="Nombre de sede" required>
+                            <input type="text" class="form-control" id="sede0" name='sedes[0][sedeNombre]' placeholder="Nombre de sede" minlength="3" maxlength="128" required>
                             <div id="nombreFeedback" class="invalid-feedback">
-                                Nombre de Sede no puede estar vacío
+                                Nombre de Sede no valida
                             </div>
                         </div>
                         <div class="col-md">
                             <label for="direccion0" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion0" name='sedes[0][sedeDireccion]' placeholder="Dirección de sede" required>
+                            <input type="text" class="form-control" id="direccion0" name='sedes[0][sedeDireccion]' placeholder="Dirección de sede" minlength="8" maxlength="128" required>
                             <div id="nombreFeedback" class="invalid-feedback">
-                                Dirección de Sede no puede estar vacío
+                                Dirección de Sede no valida
                             </div>
                         </div>
                     </div>
@@ -270,7 +220,7 @@
             divValidationInput = document.createElement('div')
             divValidationInput.id = 'nombreFeedback'
             divValidationInput.classList.add('invalid-feedback')
-            divValidationInput.textContent = 'Nombre de Categoría no puede estar vacío'
+            divValidationInput.textContent = 'Nombre de Categoría no valida'
             divCol2.appendChild(label)
             divCol2.appendChild(inputCategoria)
             divCol2.appendChild(divValidationInput)
@@ -290,7 +240,7 @@
             divValidationInput = document.createElement('div')
             divValidationInput.id = 'nombreFeedback'
             divValidationInput.classList.add('invalid-feedback')
-            divValidationInput.textContent = 'Nombre corto de Categoría no puede estar vacío'
+            divValidationInput.textContent = 'Nombre corto de Categoría no valida'
             divCol3.appendChild(label)
             divCol3.appendChild(inputNombreCorto)
             divCol3.appendChild(divValidationInput)
@@ -318,7 +268,7 @@
             divValidationInput = document.createElement('div')
             divValidationInput.id = 'nombreFeedback'
             divValidationInput.classList.add('invalid-feedback')
-            divValidationInput.textContent = 'Nombre de Sede no puede estar vacío'
+            divValidationInput.textContent = 'Nombre de Sede no valida'
             divCol1.appendChild(label)
             divCol1.appendChild(inputSede)
             divCol1.appendChild(divValidationInput)
@@ -337,7 +287,7 @@
             divValidationInput = document.createElement('div')
             divValidationInput.id = 'nombreFeedback'
             divValidationInput.classList.add('invalid-feedback')
-            divValidationInput.textContent = 'Dirección de Sede no puede estar vacío'
+            divValidationInput.textContent = 'Dirección de Sede no valida'
             divCol2.appendChild(label)
             divCol2.appendChild(inputDireccion)
             divCol2.appendChild(divValidationInput)
@@ -345,5 +295,26 @@
             document.getElementById('divSedes').appendChild(divRow)
             cantidadSede++
         })
+
+    const fechaInicioInscripcion = document.getElementById('fechaInicioInscripcion')
+    const fechaFinInscripcion = document.getElementById('fechaFinInscripcion')
+    const fechaInicioTorneo = document.getElementById('fechaInicioTorneo')
+    const fechaFinTorneo = document.getElementById('fechaFinTorneo')
+
+    fechaInicioInscripcion.addEventListener('change', () => {
+        fechaFinInscripcion.min = fechaInicioInscripcion.value
+        fechaInicioTorneo.min = fechaInicioInscripcion.value
+        fechaFinTorneo.min = fechaInicioInscripcion.value
+    })
+
+    fechaFinInscripcion.addEventListener('change', () => {
+        fechaInicioTorneo.min = fechaFinInscripcion.value
+        fechaFinTorneo.min = fechaFinInscripcion.value
+    })
+
+    fechaInicioTorneo.addEventListener('change', () => {
+        fechaFinTorneo.min = fechaInicioTorneo.value
+    })
+
 </script>
 {% endblock %}

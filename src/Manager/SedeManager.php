@@ -49,6 +49,27 @@ class SedeManager
         $this->sedeRepository->guardar($sede, false);
     }
 
+    public function editarSede(
+        Torneo $torneo,
+        Sede $sede,
+        string $nombre,
+        string $direccion,
+    ): void {
+
+        if ($sede->getNombre() !== $nombre && $this->sedeRepository->findOneBy(['torneo' => $torneo, 'nombre' => $nombre])) {
+            throw new AppException('Ya existe una sede con ese nombre');
+        }
+
+        $this->validadorManager->validarSede(
+            $nombre,
+            $direccion,
+        );
+
+        $sede->setNombre($nombre);
+        $sede->setDomicilio($direccion);
+        $this->sedeRepository->guardar($sede, false);
+    }
+
     public function eliminarSede(Sede $sede): void
     {
         $this->sedeRepository->eliminar($sede, true);

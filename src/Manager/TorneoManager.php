@@ -6,6 +6,7 @@ namespace App\Manager;
 
 use App\Entity\Torneo;
 use App\Entity\Usuario;
+use App\Enum\EstadoTorneo;
 use App\Exception\AppException;
 use App\Repository\TorneoRepository;
 
@@ -68,6 +69,7 @@ class TorneoManager
         $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion), $timezone);
         $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion), $timezone);
         $torneo->setCreador($user);
+        $torneo->setEstado(EstadoTorneo::BORRADOR);
         $this->torneoRepository->guardar($torneo, false);
 
         return $torneo;
@@ -108,6 +110,7 @@ class TorneoManager
             $torneo->setFechaFinTorneo(new \DateTimeImmutable($fecha_fin_torneo), $timezone);
             $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion), $timezone);
             $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion), $timezone);
+            $torneo->setEstado(EstadoTorneo::BORRADOR);
 
             $this->torneoRepository->guardar($torneo, true);
 

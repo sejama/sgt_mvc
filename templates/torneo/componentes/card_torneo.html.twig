@@ -33,7 +33,7 @@
                                                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                 <ul class="dropdown-menu">
                                                     <li><a class="dropdown-item" href="#">Ver Equipos</a></li>
-                                                    <li><a class="dropdown-item" href="#">Editar</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'id' : categoria.id} ) }}">Editar</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar_disputa', {'ruta': torneo.ruta,'id' : categoria.id})}}">Disputa</a></li>
                                                     <li><a class="dropdown-item" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
                                                 </ul>
@@ -68,7 +68,7 @@
                                                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                 <ul class="dropdown-menu">
                                                     <li><a class="dropdown-item" href="#">Ver Equipos</a></li>
-                                                    <li><a class="dropdown-item" href="#">Editar</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'id' : categoria.id} ) }}">Editar</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar_disputa', {'ruta': torneo.ruta,'id' : categoria.id})}}">Disputa</a></li>
                                                     <li><a class="dropdown-item" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
                                                 </ul>
@@ -94,14 +94,14 @@
                             <td>
                                 <div class="row justify-content-between w-100">
                                     <div class="col">
-                                        {{ sede.nombre }} 
+                                        {{ sede.nombre }} - {{ sede.canchas|length }} Canchas
                                     </div>
                                     <div class="col-1 text-end">
                                         <div class="dropdown">
                                             <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="#">Ver Canchas</a></li>
-                                                <li><a class="dropdown-item" href="#">Editar</a></li>
+                                                <li><a class="dropdown-item" href="{{ path('app_torneo_sede_editar', {'ruta': torneo.ruta,'id' : sede.id})}}">Editar</a></li>
                                                 <li><a class="dropdown-item" id="btnEliminarSede{{torneo.ruta}} {{sede.id}}">Eliminar</a></li>
                                             </ul>
                                         </div>

@@ -51,14 +51,10 @@ class TorneoController extends AbstractController
                     $nombre = $request->request->get('nombre');
                     $ruta = $request->request->get('ruta');
                     $descripcion = $request->request->get('descripcion');
-                    $fecha_inicio_torneo = $request->request->get('fechaInicioTorneo') . ' ' .
-                        $request->request->get('horaInicioTorneo');
-                    $fecha_fin_torneo = $request->request->get('fechaFinTorneo') . ' ' .
-                        $request->request->get('horaFinTorneo');
-                    $fecha_inicio_inscripcion = $request->request->get('fechaInicioInscripcion') . ' ' .
-                        $request->request->get('horaInicioInscripcion');
-                    $fecha_fin_inscripcion = $request->request->get('fechaFinInscripcion') . ' ' .
-                        $request->request->get('horaFinInscripcion');
+                    $fecha_inicio_torneo = str_replace("T", " ", $request->request->get('fechaInicioTorneo'));
+                    $fecha_fin_torneo = str_replace("T", " ", $request->request->get('fechaFinTorneo'));
+                    $fecha_inicio_inscripcion = str_replace("T", " ", $request->request->get('fechaInicioInscripcion'));
+                    $fecha_fin_inscripcion = str_replace("T", " ", $request->request->get('fechaFinInscripcion'));
                     $categorias = $request->request->all('categorias');
                     $sedes = $request->request->all('sedes');
                     $torneo = $torneoManager->crearTorneo(
@@ -104,7 +100,9 @@ class TorneoController extends AbstractController
                 'torneo/nuevo.html.twig',
                 [
                 'generos' => $generos,
-                'hoy' => new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires')),
+                'hoy' => (
+                    new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'))
+                    )->modify('-1 day'),
                 ]
             );
         }
@@ -238,193 +236,6 @@ class TorneoController extends AbstractController
                         'torneo' => $torneo,
                     ]
                 );
-            }
-        }
-        return $this->redirectToRoute('app_login');
-    }
-
-    #[Route('/{ruta}/categoria/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
-    public function agregarCategoria(
-        string $ruta,
-        TorneoManager $torneoManager,
-        CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
-        Request $request,
-        LoggerInterface $logger
-    ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        if ($this->getUser() !== null) {
-            if ($request->isMethod('POST')) {
-                try {
-                    $genero = $request->request->get('genero');
-                    $nombre = $request->request->get('nombre');
-                    $nombreCorto = $request->request->get('nombreCorto');
-                    $categoriaManager->crearCategoria(
-                        $torneo,
-                        $genero,
-                        $nombre,
-                        $nombreCorto
-                    );
-                    $entityManager->flush();
-                    $this->addFlash('success', "Categoría creada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
-                } catch (AppException $ae) {
-                    $logger->error($ae->getMessage());
-                    $this->addFlash('error', $ae->getMessage());
-                } catch (Throwable $e) {
-                    $logger->error($e->getMessage());
-                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                }
-            }
-            foreach (Genero::cases() as $genero) {
-                $generos[] = $genero->value;
-            }
-            return $this->render(
-                'torneo/categoria/nuevo.html.twig',
-                [
-                    'generos' => $generos,
-                    'torneo' => $torneo,
-                ]
-            );
-        }
-        return $this->redirectToRoute('app_login');
-    }
-
-    #[Route(
-        '/{ruta}/categoria/{id}/editar/disputa',
-        name: 'app_torneo_categoria_editar_disputa',
-        methods: ['GET', 'POST']
-    )]
-    public function editarDisputa(
-        string $ruta,
-        int $id,
-        TorneoManager $torneoManager,
-        CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
-        Request $request,
-        LoggerInterface $logger
-    ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        if ($this->getUser() !== null) {
-            $categoria = $categoriaManager->obtenerCategoria($id);
-            if ($request->isMethod('POST')) {
-                try {
-                    $disputa = $request->request->get('disputa');
-                    $categoriaManager->editarDisputa($categoria, $disputa);
-                    $entityManager->flush();
-                    $this->addFlash('success', "Disputa editada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
-                } catch (AppException $ae) {
-                    $logger->error($ae->getMessage());
-                    $this->addFlash('error', $ae->getMessage());
-                } catch (Throwable $e) {
-                    $logger->error($e->getMessage());
-                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                }
-            }
-            return $this->render(
-                'torneo/categoria/editar_disputa.html.twig',
-                [
-                    'torneo' => $torneo,
-                    'categoria' => $categoria,
-                ]
-            );
-        }
-        return $this->redirectToRoute('app_login');
-    }
-
-    #[Route('/{ruta}/categoria/eliminar/{id}', name: 'app_torneo_categoria_eliminar', methods: ['GET'])]
-    public function eliminarCategoria(
-        string $ruta,
-        int $id,
-        TorneoManager $torneoManager,
-        CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
-        LoggerInterface $logger
-    ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        if ($this->getUser() !== null) {
-            try {
-                $categoria = $categoriaManager->obtenerCategoria($id);
-                $categoriaManager->eliminarCategoria($categoria);
-                $entityManager->flush();
-                $this->addFlash('success', "Categoría eliminada con éxito.");
-                return $this->redirectToRoute('app_torneo');
-            } catch (AppException $ae) {
-                $logger->error($ae->getMessage());
-                $this->addFlash('error', $ae->getMessage());
-            } catch (Throwable $e) {
-                $logger->error($e->getMessage());
-                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-            }
-        }
-        return $this->redirectToRoute('app_login');
-    }
-
-    #[Route('/{ruta}/sede/nuevo', name: 'app_torneo_sede_nuevo', methods: ['GET', 'POST'])]
-    public function agregarSede(
-        string $ruta,
-        TorneoManager $torneoManager,
-        SedeManager $sedeManager,
-        EntityManagerInterface $entityManager,
-        Request $request,
-        LoggerInterface $logger
-    ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        if ($this->getUser() !== null) {
-            if ($request->isMethod('POST')) {
-                try {
-                    $nombre = $request->request->get('sedeNombre');
-                    $direccion = $request->request->get('sedeDireccion');
-                    $sedeManager->crearSede(
-                        $torneo,
-                        $nombre,
-                        $direccion
-                    );
-                    $entityManager->flush();
-                    $this->addFlash('success', "Sede creada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
-                } catch (AppException $ae) {
-                    $logger->error($ae->getMessage());
-                    $this->addFlash('error', $ae->getMessage());
-                } catch (Throwable $e) {
-                    $logger->error($e->getMessage());
-                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-                }
-            }
-            return $this->render(
-                'torneo/sede/nuevo.html.twig',
-                [
-                    'torneo' => $torneo,
-                ]
-            );
-        }
-        return $this->redirectToRoute('app_login');
-    }
-
-    #[Route('/{ruta}/sede/eliminar/{id}', name: 'app_torneo_sede_eliminar', methods: ['GET'])]
-    public function eliminarSede(
-        string $ruta,
-        int $id,
-        TorneoManager $torneoManager,
-        SedeManager $sedeManager,
-        EntityManagerInterface $entityManager,
-        LoggerInterface $logger
-    ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        if ($this->getUser() !== null) {
-            try {
-                $sede = $sedeManager->obtenerSede($id);
-                $sedeManager->eliminarSede($sede);
-                $entityManager->flush();
-                $this->addFlash('success', "Sede eliminada con éxito.");
-                return $this->redirectToRoute('app_torneo');
-            } catch (AppException $ae) {
-                $logger->error($ae->getMessage());
-                $this->addFlash('error', $ae->getMessage());
-            } catch (Throwable $e) {
-                $logger->error($e->getMessage());
-                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
             }
         }
         return $this->redirectToRoute('app_login');

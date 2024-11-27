@@ -8,7 +8,6 @@ use App\Exception\AppException;
 use App\Manager\TorneoManager;
 use App\Manager\ValidadorManager;
 use App\Repository\TorneoRepository;
-use App\Repository\UsuarioRepository;
 use PHPUnit\Framework\TestCase;
 
 class TorneoManagerTest extends TestCase

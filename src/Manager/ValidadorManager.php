@@ -87,7 +87,7 @@ class ValidadorManager
         string $direccion
     ): void {
         $this->validarLongitud('Nombre', $nombre, 3, 128);
-        $this->validarLongitud('Dirección', $direccion, 10, 128);
+        $this->validarLongitud('Dirección', $direccion, 8, 128);
     }
 
     private function validarGenero(string $genero): void
@@ -126,7 +126,7 @@ class ValidadorManager
 
     private function validarFechaInicioFin(string $nombre, \DateTime $inicio, \DateTime $fin): void
     {
-        if ($inicio > $fin) {
+        if ($inicio >= $fin) {
             throw new AppException(sprintf('La fecha de %s no puede ser mayor a la fecha de fin', $nombre));
         }
     }
