@@ -69,11 +69,19 @@ class CategoriaManager
         string $nombre,
         string $nombreCorto
     ): void {
-        if ($categoria->getGenero()->value !== $genero ||  $categoria->getNombre() !== $nombre && $this->categoriaRepository->findOneBy(['torneo' => $categoria->getTorneo(), 'genero' => $genero, 'nombre' => $nombre])) {
+        if (
+            $categoria->getGenero()->value !== $genero ||  $categoria->getNombre() !== $nombre 
+            &&
+            $this->categoriaRepository->findOneBy(['torneo' => $categoria->getTorneo(), 'genero' => $genero, 'nombre' => $nombre])
+            ) {
             throw new AppException('Ya existe una categoría con ese nombre y genero');
         }
 
-        if ($categoria->getNombreCorto() !== $nombreCorto && $this->categoriaRepository->findOneBy(['torneo' => $categoria->getTorneo(), 'nombreCorto' => $nombreCorto])) {
+        if (
+            $categoria->getNombreCorto() !== $nombreCorto
+            &&
+            $this->categoriaRepository->findOneBy(['torneo' => $categoria->getTorneo(), 'nombreCorto' => $nombreCorto])
+            ) {
             throw new AppException('Ya existe una categoría con ese nombre corto');
         }
         $categoria->setGenero(Genero::from($genero));

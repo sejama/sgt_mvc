@@ -56,7 +56,11 @@ class SedeManager
         string $direccion,
     ): void {
 
-        if ($sede->getNombre() !== $nombre && $this->sedeRepository->findOneBy(['torneo' => $torneo, 'nombre' => $nombre])) {
+        if (
+            $sede->getNombre() !== $nombre
+            &&
+            $this->sedeRepository->findOneBy(['torneo' => $torneo, 'nombre' => $nombre])
+            ) {
             throw new AppException('Ya existe una sede con ese nombre');
         }
 
