@@ -77,7 +77,7 @@ class CategoriaManager
                 'genero' => $genero,
                 'nombre' => $nombre
                 ])
-            ) {
+        ) {
             throw new AppException('Ya existe una categoría con ese nombre y genero');
         }
 
@@ -85,7 +85,7 @@ class CategoriaManager
             $categoria->getNombreCorto() !== $nombreCorto
             &&
             $this->categoriaRepository->findOneBy(['torneo' => $categoria->getTorneo(), 'nombreCorto' => $nombreCorto])
-            ) {
+        ) {
             throw new AppException('Ya existe una categoría con ese nombre corto');
         }
         $categoria->setGenero(Genero::from($genero));
