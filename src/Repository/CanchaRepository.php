@@ -16,6 +16,24 @@ class CanchaRepository extends ServiceEntityRepository
         parent::__construct($registry, Cancha::class);
     }
 
+    public function guardar(Cancha $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function eliminar(Cancha $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Cancha[] Returns an array of Cancha objects
     //     */

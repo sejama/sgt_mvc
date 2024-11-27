@@ -379,12 +379,12 @@ class ValidadorManagerTest extends TestCase
         );
     }
 
-    public function testValidarSedeDireccionMenor10(): void
+    public function testValidarSedeDireccionMenor8(): void
     {
         $validadorManager = new ValidadorManager();
 
         $this->expectException(AppException::class);
-        $this->expectExceptionMessage('El Dirección debe tener entre 10 y 128 caracteres');
+        $this->expectExceptionMessage('El Dirección debe tener entre 8 y 128 caracteres');
         $validadorManager->validarSede(
             'Sede de prueba',
             ''
@@ -396,10 +396,45 @@ class ValidadorManagerTest extends TestCase
         $validadorManager = new ValidadorManager();
 
         $this->expectException(AppException::class);
-        $this->expectExceptionMessage('El Dirección debe tener entre 10 y 128 caracteres');
+        $this->expectExceptionMessage('El Dirección debe tener entre 8 y 128 caracteres');
         $validadorManager->validarSede(
             'Sede de prueba',
             str_repeat('a', 129)
+        );
+    }
+
+    public function testValidarCanchaOK(): void
+    {
+        $validadorManager = new ValidadorManager();
+        $validadorManager->validarCancha(
+            'Cancha de prueba',
+            'Descripción de la cancha de prueba'
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testValidarCanchaNombreMenor1(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre debe tener entre 1 y 128 caracteres');
+        $validadorManager->validarCancha(
+            '',
+            'Descripción de la cancha de prueba'
+        );
+    }
+
+    public function testValidarCanchaNombreMayor128(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre debe tener entre 1 y 128 caracteres');
+        $validadorManager->validarCancha(
+            str_repeat('a', 129),
+            'Descripción de la cancha de prueba'
         );
     }
 }

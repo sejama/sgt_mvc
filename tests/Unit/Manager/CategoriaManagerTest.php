@@ -9,8 +9,6 @@ use App\Manager\ValidadorManager;
 use App\Repository\CategoriaRepository;
 use PHPUnit\Framework\TestCase;
 
-use function PHPUnit\Framework\any;
-use function PHPUnit\Framework\once;
 use function PHPUnit\Framework\exactly;
 
 class CategoriaManagerTest extends TestCase

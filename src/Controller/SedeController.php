@@ -47,7 +47,7 @@ class SedeController extends AbstractController
                 }
             }
             return $this->render(
-                'torneo/sede/nuevo.html.twig',
+                'sede/nuevo.html.twig',
                 [
                     'torneo' => $torneo,
                 ]
@@ -91,7 +91,7 @@ class SedeController extends AbstractController
                 }
             }
             return $this->render(
-                'torneo/sede/editar.html.twig',
+                'sede/editar.html.twig',
                 [
                     'torneo' => $torneo,
                     'sede' => $sede,

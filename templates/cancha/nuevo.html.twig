@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Nueva Cancha{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_sede_cancha_nueva', {'ruta': torneo.ruta, 'id': sede.id }) }}">
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="nombreCancha" class="form-label">Nombre Cancha</label>
+                <input type="text" class="form-control" id="nombreCancha" name='nombreCancha' placeholder="Nombre de cancha" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre de cancha no valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="descripcionCancha" class="form-label">Descripción</label>
+                <input type="text" class="form-control" id="descripcionCancha" name='descripcionCancha' placeholder="Descripción de cancha">
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Dirección de Sede no valido
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_torneo_sede_cancha', {'ruta': torneo.ruta, 'id': sede.id }) }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock %}

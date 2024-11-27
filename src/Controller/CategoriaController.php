@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\TorneoManager;
@@ -52,7 +53,7 @@ class CategoriaController extends AbstractController
                 $generos[] = $genero->value;
             }
             return $this->render(
-                'torneo/categoria/nuevo.html.twig',
+                'categoria/nuevo.html.twig',
                 [
                     'generos' => $generos,
                     'torneo' => $torneo,
@@ -101,7 +102,7 @@ class CategoriaController extends AbstractController
                 $generos[] = $genero->value;
             }
             return $this->render(
-                'torneo/categoria/editar.html.twig',
+                'categoria/editar.html.twig',
                 [
                     'generos' => $generos,
                     'torneo' => $torneo,
@@ -145,7 +146,7 @@ class CategoriaController extends AbstractController
                 }
             }
             return $this->render(
-                'torneo/categoria/editar_disputa.html.twig',
+                'categoria/editar_disputa.html.twig',
                 [
                     'torneo' => $torneo,
                     'categoria' => $categoria,

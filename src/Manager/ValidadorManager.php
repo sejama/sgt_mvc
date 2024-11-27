@@ -90,6 +90,14 @@ class ValidadorManager
         $this->validarLongitud('Dirección', $direccion, 8, 128);
     }
 
+    public function validarCancha(
+        string $nombre,
+        string $descripcion
+    ): void {
+        $this->validarLongitud('Nombre', $nombre, 1, 128);
+        $this->validarLongitud('Descripción', $descripcion, 0, 255);
+    }
+
     private function validarGenero(string $genero): void
     {
         if (!in_array($genero, Genero::getValues())) {
