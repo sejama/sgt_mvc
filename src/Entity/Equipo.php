@@ -1,0 +1,189 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\EquipoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: EquipoRepository::class)]
+class Equipo
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 128)]
+    private ?string $nombre = null;
+
+    #[ORM\Column(length: 16)]
+    private ?string $nombreCorto = null;
+
+    #[ORM\Column(length: 128, nullable: true)]
+    private ?string $pais = null;
+
+    #[ORM\Column(length: 128, nullable: true)]
+    private ?string $provincia = null;
+
+    #[ORM\Column(length: 128, nullable: true)]
+    private ?string $localidad = null;
+
+    /**
+     * @var Collection<int, Jugador>
+     */
+    #[ORM\OneToMany(targetEntity: Jugador::class, mappedBy: 'equipo')]
+    private Collection $jugadores;
+
+    #[ORM\ManyToOne(inversedBy: 'equipos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categoria $categoria = null;
+
+    public function __construct()
+    {
+        $this->jugadores = new ArrayCollection();
+    }
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNombre(): ?string
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre(string $nombre): static
+    {
+        $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    public function getNombreCorto(): ?string
+    {
+        return $this->nombreCorto;
+    }
+
+    public function setNombreCorto(string $nombreCorto): static
+    {
+        $this->nombreCorto = $nombreCorto;
+
+        return $this;
+    }
+
+    public function getPais(): ?string
+    {
+        return $this->pais;
+    }
+
+    public function setPais(?string $pais): static
+    {
+        $this->pais = $pais;
+
+        return $this;
+    }
+
+    public function getProvincia(): ?string
+    {
+        return $this->provincia;
+    }
+
+    public function setProvincia(?string $provincia): static
+    {
+        $this->provincia = $provincia;
+
+        return $this;
+    }
+
+    public function getLocalidad(): ?string
+    {
+        return $this->localidad;
+    }
+
+    public function setLocalidad(?string $localidad): static
+    {
+        $this->localidad = $localidad;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAt(): static
+    {
+        $this->createdAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): static
+    {
+        $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Jugador>
+     */
+    public function getJugadores(): Collection
+    {
+        return $this->jugadores;
+    }
+
+    public function addJugadore(Jugador $jugadore): static
+    {
+        if (!$this->jugadores->contains($jugadore)) {
+            $this->jugadores->add($jugadore);
+            $jugadore->setEquipo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJugadore(Jugador $jugadore): static
+    {
+        if ($this->jugadores->removeElement($jugadore)) {
+            // set the owning side to null (unless already changed)
+            if ($jugadore->getEquipo() === $this) {
+                $jugadore->setEquipo(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): static
+    {
+        $this->categoria = $categoria;
+
+        return $this;
+    }
+}

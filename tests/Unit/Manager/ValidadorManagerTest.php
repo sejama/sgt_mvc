@@ -437,4 +437,239 @@ class ValidadorManagerTest extends TestCase
             'Descripción de la cancha de prueba'
         );
     }
+
+    public function testValidarCanchaDescripcionMayor255(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Descripción debe tener entre 0 y 255 caracteres');
+        $validadorManager->validarCancha(
+            'Cancha de prueba',
+            str_repeat('a', 256)
+        );
+    }
+
+    public function testValidarEquipoOK(): void
+    {
+        $validadorManager = new ValidadorManager();
+        $validadorManager->validarEquipo(
+            'Equipo de prueba',
+            'Eq. prueba',
+            'Argentina',
+            'Buenos Aires',
+            'La Plata'
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testValidarEquipoNombreMenor3(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre debe tener entre 3 y 128 caracteres');
+        $validadorManager->validarEquipo(
+            '',
+            'Eq. prueba',
+            'Argentina',
+            'Buenos Aires',
+            'La Plata'
+        );
+    }
+
+    public function testValidarEquipoNombreMayor128(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre debe tener entre 3 y 128 caracteres');
+        $validadorManager->validarEquipo(
+            str_repeat('a', 129),
+            'Eq. prueba',
+            'Argentina',
+            'Buenos Aires',
+            'La Plata'
+        );
+    }
+
+    public function testValidarEquipoNombreCortoMenor3(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre Corto debe tener entre 3 y 16 caracteres');
+        $validadorManager->validarEquipo(
+            'Equipo de prueba',
+            '',
+            'Argentina',
+            'Buenos Aires',
+            'La Plata'
+        );
+    }
+
+    public function testValidarEquipoNombreCortoMayor16(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre Corto debe tener entre 3 y 16 caracteres');
+        $validadorManager->validarEquipo(
+            'Equipo de prueba',
+            str_repeat('a', 17),
+            'Argentina',
+            'Buenos Aires',
+            'La Plata'
+        );
+    }
+
+    public function testValidarJugadorOK(): void
+    {
+        $validadorManager = new ValidadorManager();
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            'Apellido de prueba',
+            'DNI',
+            '12345678',
+            '2000-01-01'
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testValidarJugadorNombreMenor3(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre debe tener entre 3 y 128 caracteres');
+        $validadorManager->validarJugador(
+            '',
+            'Apellido de prueba',
+            'DNI',
+            '12345678',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorNombreMayor128(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Nombre debe tener entre 3 y 128 caracteres');
+        $validadorManager->validarJugador(
+            str_repeat('a', 129),
+            'Apellido de prueba',
+            'DNI',
+            '12345678',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorApellidoMenor3(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Apellido debe tener entre 3 y 128 caracteres');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            '',
+            'DNI',
+            '12345678',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorApellidoMayor128(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Apellido debe tener entre 3 y 128 caracteres');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            str_repeat('a', 129),
+            'DNI',
+            '12345678',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorTipoDocumentoMenor1(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Tipo Documento debe tener entre 1 y 8 caracteres');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            'Apellido de prueba',
+            '',
+            '12345678',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorTipoDocumentoMayor8(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Tipo Documento debe tener entre 1 y 8 caracteres');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            'Apellido de prueba',
+            str_repeat('a', 9),
+            '12345678',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorNumeroDocumentoMenor5(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Número Documento debe tener entre 5 y 8 caracteres');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            'Apellido de prueba',
+            'DNI',
+            '',
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorNumeroDocumentoMayor8(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El Número Documento debe tener entre 5 y 8 caracteres');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            'Apellido de prueba',
+            'DNI',
+            str_repeat('1', 9),
+            '2000-01-01'
+        );
+    }
+
+    public function testValidarJugadorFechaNacimientoInvalida(): void
+    {
+        $validadorManager = new ValidadorManager();
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('La fecha de Fecha de Nacimiento no es válida');
+        $validadorManager->validarJugador(
+            'Nombre de prueba',
+            'Apellido de prueba',
+            'DNI',
+            '12345678',
+            '2000-01-32a'
+        );
+    }
 }

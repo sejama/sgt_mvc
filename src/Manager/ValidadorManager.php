@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
+use App\Entity\Categoria;
 use App\Entity\Torneo;
 use App\Entity\Usuario;
 use App\Enum\Genero;
@@ -50,10 +51,10 @@ class ValidadorManager
         $this->validarLongitud('Nombre Corto', $ruta, 3, 32);
         $this->validarRuta($ruta);
         $this->validarLongitud('Descripción', $descripcion, 0, 255);
-        $this->validarFecha('Inicio del torneo', $inicio_torneo);
-        $this->validarFecha('Fin del torneo', $fin_torneo);
-        $this->validarFecha('Inicio de inscripción', $inicio_inscripcion);
-        $this->validarFecha('Fin de inscripción', $fin_inscripcion);
+        $this->validarFechayHora('Inicio del torneo', $inicio_torneo);
+        $this->validarFechayHora('Fin del torneo', $fin_torneo);
+        $this->validarFechayHora('Inicio de inscripción', $inicio_inscripcion);
+        $this->validarFechayHora('Fin de inscripción', $fin_inscripcion);
         $this->validarFechaInicioFin(
             'Torneo',
             new \DateTime($inicio_torneo),
@@ -98,6 +99,34 @@ class ValidadorManager
         $this->validarLongitud('Descripción', $descripcion, 0, 255);
     }
 
+    public function validarEquipo(
+        string $nombre,
+        string $nombreCorto,
+        string $pais,
+        string $provincia,
+        string $localidad
+    ): void {
+        $this->validarLongitud('Nombre', $nombre, 3, 128);
+        $this->validarLongitud('Nombre Corto', $nombreCorto, 3, 16);
+        //$this->validarLongitud('País', $pais, 3, 128);
+        //$this->validarLongitud('Provincia', $provincia, 3, 128);
+        //$this->validarLongitud('Localidad', $localidad, 3, 128);
+    }
+
+    public function validarJugador(
+        string $nombre,
+        string $apellido,
+        string $tipoDocumento,
+        string $numeroDocumento,
+        string $fechaNacimiento,
+    ): void {
+        $this->validarLongitud('Nombre', $nombre, 3, 128);
+        $this->validarLongitud('Apellido', $apellido, 3, 128);
+        $this->validarLongitud('Tipo Documento', $tipoDocumento, 1, 8);
+        $this->validarLongitud('Número Documento', $numeroDocumento, 5, 8);
+        $this->validarFecha('Fecha de Nacimiento', $fechaNacimiento);
+    }
+
     private function validarGenero(string $genero): void
     {
         if (!in_array($genero, Genero::getValues())) {
@@ -112,9 +141,18 @@ class ValidadorManager
         }
     }
 
-    private function validarFecha(string $nombre, string $fecha): void
+    private function validarFechayHora(string $nombre, string $fecha): void
     {
         $fecha = \DateTime::createFromFormat('Y-m-d H:i', $fecha);
+
+        if ($fecha === false) {
+            throw new AppException(sprintf('La fecha de %s no es válida', $nombre));
+        }
+    }
+
+    private function validarFecha(string $nombre, string $fecha): void
+    {
+        $fecha = \DateTime::createFromFormat('Y-m-d', $fecha);
 
         if ($fecha === false) {
             throw new AppException(sprintf('La fecha de %s no es válida', $nombre));

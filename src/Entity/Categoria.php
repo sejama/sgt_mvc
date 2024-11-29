@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Genero;
 use App\Repository\CategoriaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -45,6 +47,17 @@ class Categoria
 
     #[ORM\Column(length: 8)]
     private ?string $nombreCorto = null;
+
+    /**
+     * @var Collection<int, Equipo>
+     */
+    #[ORM\OneToMany(targetEntity: Equipo::class, mappedBy: 'categoria')]
+    private Collection $equipos;
+
+    public function __construct()
+    {
+        $this->equipos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -134,6 +147,36 @@ class Categoria
     public function setNombreCorto(string $nombreCorto): static
     {
         $this->nombreCorto = $nombreCorto;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Equipo>
+     */
+    public function getEquipos(): Collection
+    {
+        return $this->equipos;
+    }
+
+    public function addEquipo(Equipo $equipo): static
+    {
+        if (!$this->equipos->contains($equipo)) {
+            $this->equipos->add($equipo);
+            $equipo->setCategoria($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipo(Equipo $equipo): static
+    {
+        if ($this->equipos->removeElement($equipo)) {
+            // set the owning side to null (unless already changed)
+            if ($equipo->getCategoria() === $this) {
+                $equipo->setCategoria(null);
+            }
+        }
 
         return $this;
     }
