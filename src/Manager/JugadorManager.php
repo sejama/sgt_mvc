@@ -41,7 +41,8 @@ class JugadorManager
         string $apellido,
         string $tipoDocumento,
         string $numeroDocumento,
-        string $fechaNacimiento,
+        ?string $fechaNacimiento,
+        string $tipo,
         bool $responsable,
         string $email,
         string $celular
@@ -71,7 +72,10 @@ class JugadorManager
         $jugador->setApellido($apellido);
         $jugador->setTipoDocumento($tipoDocumento);
         $jugador->setNumeroDocumento($numeroDocumento);
-        $jugador->setNacimiento(new \DateTimeImmutable($fechaNacimiento));
+        if ($fechaNacimiento !== null) {
+            $jugador->setNacimiento(new \DateTimeImmutable($fechaNacimiento));
+        }
+        $jugador->setTipo($tipo);
         $jugador->setResponsable($responsable);
         $jugador->setEmail($email);
         $jugador->setCelular($celular);
@@ -85,7 +89,8 @@ class JugadorManager
         string $apellido,
         string $tipoDocumento,
         string $numeroDocumento,
-        string $fechaNacimiento,
+        ?string $fechaNacimiento,
+        string $tipo,
         bool $responsable,
         string $email,
         string $celular
@@ -108,7 +113,8 @@ class JugadorManager
             $jugador->setNombre($nombre);
             $jugador->setTipoDocumento($tipoDocumento);
             $jugador->setNumeroDocumento($numeroDocumento);
-            $jugador->setNacimiento(new \DateTimeImmutable($fechaNacimiento));
+            $jugador->setNacimiento(new \DateTimeImmutable($fechaNacimiento) ?? null);
+            $jugador->setTipo($tipo);
             $jugador->setResponsable($responsable);
             $jugador->setEmail($email);
             $jugador->setCelular($celular);

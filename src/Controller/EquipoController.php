@@ -2,17 +2,149 @@
 
 namespace App\Controller;
 
+use App\Enum\TipoDocumento;
+use App\Exception\AppException;
+use App\Manager\CategoriaManager;
+use App\Manager\EquipoManager;
+use App\Manager\JugadorManager;
+use App\Manager\TorneoManager;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('torneo/{ruta}/categoria/{categoriaId}/equipo')]
 class EquipoController extends AbstractController
 {
-    #[Route('/equipo', name: 'app_equipo')]
-    public function index(): Response
-    {
+    #[Route('/', name: 'app_equipo')]
+    public function index(
+        string $ruta,
+        int $categoriaId,
+        TorneoManager $torneoManager,
+        EquipoManager $equipoManager,
+        CategoriaManager $categoriaManager
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
         return $this->render('equipo/index.html.twig', [
-            'controller_name' => 'EquipoController',
+            'torneo' => $torneo,
+            'categoria' => $categoria,
+            'equipos' => $equipos,
         ]);
+    }
+
+    #[Route('/nuevo', name: 'app_equipo_nuevo', methods: ['GET', 'POST'])]
+    public function agregarEquipo(
+        string $ruta,
+        int $categoriaId,
+        Request $request,
+        EquipoManager $equipoManager,
+        JugadorManager $jugadorManager,
+        CategoriaManager $categoriaManager,
+        LoggerInterface $logger
+    ): Response {
+        if ($request->isMethod('POST')) {
+            try {
+                $nombre = $request->request->get('nombre');
+                $nombreCorto = $request->request->get('nombreCorto');
+                $pais = $request->request->get('pais') ?? null;
+                $provincia = $request->request->get('provincia') ?? null;
+                $localidad = $request->request->get('localidad') ?? null;
+                $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+                $delegado = $request->request->all('delegado');
+                $equipo = $equipoManager->crearEquipo($categoria, $nombre, $nombreCorto, $pais, $provincia, $localidad);
+                $jugadorManager->crearJugador(
+                    $equipo,
+                    $delegado[0]['nombre'],
+                    $delegado[0]['apellido'],
+                    $delegado[0]['tipoDocumento'],
+                    $delegado[0]['numeroDocumento'],
+                    null,
+                    'Entrenador',
+                    true,
+                    $delegado[0]['email'],
+                    $delegado[0]['celular'],
+                );
+                $this->addFlash('success', "Equipo creado con éxito.");
+                return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+            } catch (AppException $ae) {
+                $logger->error($ae->getMessage());
+                $this->addFlash('error', $ae->getMessage());
+            } catch (\Throwable $e) {
+                $logger->error($e->getMessage());
+                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+            }
+        }
+
+        foreach (TipoDocumento::cases() as $tipoDocumento) {
+            $tipoDocumentos[] = $tipoDocumento->value;
+        }
+        return $this->render('equipo/nuevo.html.twig', [
+            'ruta' => $ruta,
+            'categoriaId' => $categoriaId,
+            'tipoDocumentos' => $tipoDocumentos,
+        ]);
+    }
+
+    #[Route('/{equipoId}/editar', name: 'app_equipo_editar', methods: ['GET', 'POST'])]
+    public function editarEquipo(
+        string $ruta,
+        int $categoriaId,
+        int $equipoId,
+        Request $request,
+        EquipoManager $equipoManager,
+        CategoriaManager $categoriaManager,
+        LoggerInterface $logger
+    ): Response {
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        $equipo = $equipoManager->obtenerEquipo($equipoId);
+        if ($request->isMethod('POST')) {
+            try {
+                $nombre = $request->request->get('nombre');
+                $nombreCorto = $request->request->get('nombreCorto');
+                $pais = $request->request->get('pais') ?? null;
+                $provincia = $request->request->get('provincia') ?? null;
+                $localidad = $request->request->get('localidad') ?? null;
+                $equipoManager->editarEquipo($equipo, $nombre, $nombreCorto, $pais, $provincia, $localidad);
+                $this->addFlash('success', "Equipo editado con éxito.");
+                return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+            } catch (AppException $ae) {
+                $logger->error($ae->getMessage());
+                $this->addFlash('error', $ae->getMessage());
+            } catch (\Throwable $e) {
+                $logger->error($e->getMessage());
+                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+            }
+        }
+        return $this->render('equipo/editar.html.twig', [
+            'ruta' => $ruta,
+            'categoriaId' => $categoriaId,
+            'equipo' => $equipo,
+        ]);
+    }
+
+    #[Route('/{equipoId}/eliminar', name: 'app_equipo_eliminar', methods: ['GET'])]
+    public function eliminarEquipo(
+        string $ruta,
+        int $categoriaId,
+        int $equipoId,
+        EquipoManager $equipoManager,
+        LoggerInterface $logger
+    ): Response {
+        try {
+            $equipo = $equipoManager->obtenerEquipo($equipoId);
+            $equipoManager->eliminarEquipo($equipo);
+            $this->addFlash('success', "Equipo eliminado con éxito.");
+        } catch (AppException $ae) {
+            $logger->error($ae->getMessage());
+            $this->addFlash('error', $ae->getMessage());
+        } catch (\Throwable $e) {
+            $logger->error($e->getMessage());
+            $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+        }
+        return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
 }

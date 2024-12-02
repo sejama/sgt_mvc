@@ -109,7 +109,7 @@ class TorneoController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/eliminar/{ruta}', name: 'app_torneo_eliminar', methods: ['GET'])]
+    #[Route('/{ruta}/eliminar', name: 'app_torneo_eliminar', methods: ['GET'])]
     public function eliminarTorneo(
         string $ruta,
         TorneoManager $torneoManager,
@@ -142,7 +142,7 @@ class TorneoController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/editar/{ruta}', name: 'app_torneo_editar', methods: ['GET', 'POST'])]
+    #[Route('/{ruta}/editar', name: 'app_torneo_editar', methods: ['GET', 'POST'])]
     public function editarTorneo(
         string $ruta,
         Request $request,
@@ -206,7 +206,7 @@ class TorneoController extends AbstractController
         }
     }
 
-    #[Route('/{ruta}/reglamento/editar', name: 'app_torneo_reglamento_editar', methods: ['GET', 'POST'])]
+    #[Route('/{ruta}/editar/reglamento', name: 'app_torneo_reglamento_editar', methods: ['GET', 'POST'])]
     public function editarReglamento(
         string $ruta,
         TorneoManager $torneoManager,

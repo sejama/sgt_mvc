@@ -107,7 +107,7 @@ class ValidadorManager
         string $localidad
     ): void {
         $this->validarLongitud('Nombre', $nombre, 3, 128);
-        $this->validarLongitud('Nombre Corto', $nombreCorto, 3, 16);
+        $this->validarLongitud('Nombre Corto', $nombreCorto, 2, 16);
         //$this->validarLongitud('País', $pais, 3, 128);
         //$this->validarLongitud('Provincia', $provincia, 3, 128);
         //$this->validarLongitud('Localidad', $localidad, 3, 128);
@@ -118,13 +118,15 @@ class ValidadorManager
         string $apellido,
         string $tipoDocumento,
         string $numeroDocumento,
-        string $fechaNacimiento,
+        ?string $fechaNacimiento
     ): void {
         $this->validarLongitud('Nombre', $nombre, 3, 128);
         $this->validarLongitud('Apellido', $apellido, 3, 128);
         $this->validarLongitud('Tipo Documento', $tipoDocumento, 1, 8);
         $this->validarLongitud('Número Documento', $numeroDocumento, 5, 8);
-        $this->validarFecha('Fecha de Nacimiento', $fechaNacimiento);
+        if ($fechaNacimiento !== null) {
+            $this->validarFecha('Fecha de Nacimiento', $fechaNacimiento);
+        }
     }
 
     private function validarGenero(string $genero): void

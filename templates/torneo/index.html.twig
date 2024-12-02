@@ -44,7 +44,7 @@
         btn.addEventListener('click', () => {
             crearModal('Eliminar Categoria', '¿Está seguro que desea eliminar la categoria?');
             document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('app_torneo_categoria_eliminar', {'ruta': 'RUTA', 'id' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+                window.location.href = `{{ path('app_torneo_categoria_eliminar', {'ruta': 'RUTA', 'categoriaId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
             });
         });
     });
@@ -57,7 +57,7 @@
         btn.addEventListener('click', () => {
             crearModal('Eliminar Sede', '¿Está seguro que desea eliminar la sede?');
             document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('app_torneo_sede_eliminar', {'ruta': 'RUTA', 'id' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+                window.location.href = `{{ path('app_torneo_sede_eliminar', {'ruta': 'RUTA', 'sedeId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
             });
         });
     });

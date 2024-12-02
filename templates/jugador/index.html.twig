@@ -1,20 +1,61 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello JugadorController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/Proyectos/sgt_mvc/src/Controller/JugadorController.php</code></li>
-        <li>Your template at <code>D:/Proyectos/sgt_mvc/templates/jugador/index.html.twig</code></li>
-    </ul>
-</div>
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <h1>{% block title %}SGT- Gestion Jugadores{% endblock %}</h1>
+    <h3>Gestión de delegación del equipo {{ equipo.nombre }}</h3>
+    <a href="{{ path('app_equipo', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('app_jugador_nuevo', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id }) }}" class="btn btn-success">Crear</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Número</th>
+                <th scope="col">Nacimiento</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Delegado</th>
+                <th scope="col" style="width: 170px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jugador in jugadores %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ jugador.nombre }}</td>
+                    <td>{{ jugador.apellido }}</td>
+                    <td>{{ jugador.tipoDocumento }}</td>
+                    <td>{{ jugador.numeroDocumento }}</td>
+                    <td>{{ jugador.nacimiento ? jugador.nacimiento|date('d/m/Y') }}</td>
+                    <td>{{ jugador.tipo }}</td>
+                    <td>{{ jugador.responsable ? 'Si' : 'No' }}</td>
+                    <td>
+                        <a href="{{ path('app_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id }) }}" class="btn btn-info">Editar</a>
+                        <a class="btn btn-danger" id="btnEliminarJugador{{ jugador.id }}">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "./componentes/modal.html.twig" %}
+    <script>
+        btnEliminarJugadores = document.querySelectorAll('[id^="btnEliminarJugador"]');
+        btnEliminarJugadores.forEach((btn) => {
+            let index = btn.id.replace('btnEliminarJugador', '');
+            btn.addEventListener('click', () => {
+                crearModal('Eliminar Jugador', '¿Está seguro que desea eliminar el jugador?');
+                document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                    window.location.href = `{{ path('app_jugador_eliminar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': 'ID'}) }}`.replace('ID', index);
+                });
+            });
+        });
+    </script>
 {% endblock %}
+

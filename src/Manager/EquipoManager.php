@@ -42,7 +42,7 @@ class EquipoManager
         string $pais,
         string $provincia,
         string $localidad
-    ): void {
+    ): Equipo {
 
         if ($this->equipoRepository->findOneBy(['categoria' => $categoria, 'nombre' => $nombre])) {
             throw new AppException('Ya existe un equipo con ese nombre');
@@ -68,7 +68,9 @@ class EquipoManager
         $equipo->setProvincia($provincia);
         $equipo->setLocalidad($localidad);
 
-        $this->equipoRepository->guardar($equipo, true);
+        $this->equipoRepository->guardar($equipo, false);
+
+        return $equipo;
     }
 
     public function editarEquipo(

@@ -88,6 +88,7 @@ class JugadorManagerTest extends TestCase
             'tipoDocumento',
             'numeroDocumento',
             '2000-01-01',
+            'tipo',
             true,
             'email',
             'celular'
@@ -115,6 +116,7 @@ class JugadorManagerTest extends TestCase
             'tipoDocumento',
             'numeroDocumento',
             '2000-01-01',
+            'tipo',
             true,
             'email',
             'celular'
@@ -144,6 +146,7 @@ class JugadorManagerTest extends TestCase
             'tipoDocumento',
             'numeroDocumento',
             '2000-01-01',
+            'tipo',
             true,
             'email',
             'celular'
@@ -171,6 +174,7 @@ class JugadorManagerTest extends TestCase
             'tipoDocumento',
             'numeroDocumento',
             '2000-01-01',
+            'tipo',
             true,
             'email',
             'celular'

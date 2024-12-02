@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>{% block title %}SGT- Nuevo Jugador{% endblock %}</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id  }) }}">
+        <div class="row mb-2">
+            <div class="col-md">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name='nombre' value="{{ jugador.nombre }}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre no es valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" name='apellido' value="{{ jugador.apellido }}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Apellido no es valido
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md">
+                <label for="nacimiento" class="form-label">Fecha Nacimiento</label>
+                <input type="date" id="nacimiento" class="form-control" name='nacimiento' value="{{ jugador.nacimiento ? jugador.nacimiento|date('Y-m-d') : null }}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Fecha no es valida
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="tipoPersona" class="form-label">Tipo</label>
+                <select id="tipoPersona" class="form-select" name='tipoPersona' required>
+                    <option disabled value="">Seleccionar</option>
+                    {% for tipoPersona in tipoPersonas %}
+                        <option value={{ tipoPersona }} {{ tipoPersona == jugador.tipo ? 'selected' }}>{{ tipoPersona }}</option>
+                    {% endfor %}
+                </select>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Debe seleccionar un tipo
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md">
+                <label for="tipoDocumento" class="form-label">Tipo Documento</label>
+                <select id="tipoDocumento" class="form-select" name='tipoDocumento' required>
+                    <option selected disabled value="">Seleccionar</option>
+                    {% for tipoDocumento in tipoDocumentos %}
+                    <option value={{ tipoDocumento }} {{ tipoDocumento == jugador.tipoDocumento ? 'selected' }} >{{ tipoDocumento }}</option>
+                    {% endfor %}
+                </select>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Debe seleccionar un tipo de documento
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="numDoc0" class="form-label">Número Documento</label>
+                <input type="number" id="numDoc0" class="form-control" name='numeroDocumento' value="{{ jugador.numeroDocumento }}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Número de documento no es valido
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md">
+                <label for="email" class="form-label">Correo</label>
+                <input type="email" id="email" class="form-control" name='email' value="{{ jugador.email }}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Correo no es valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="celular" class="form-label">Celular</label>
+                <input type="number" id="celular" class="form-control" name='celular' value="{{ jugador.celular }}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Celular no es valido
+                </div>
+            </div>
+        </div>
+        <div class="row g-2 mt-2 mb-2">
+            <div class="col">
+                <a href="{{ path('app_equipo', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock %}

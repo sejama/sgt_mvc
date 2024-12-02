@@ -499,7 +499,7 @@ class ValidadorManagerTest extends TestCase
         $validadorManager = new ValidadorManager();
 
         $this->expectException(AppException::class);
-        $this->expectExceptionMessage('El Nombre Corto debe tener entre 3 y 16 caracteres');
+        $this->expectExceptionMessage('El Nombre Corto debe tener entre 2 y 16 caracteres');
         $validadorManager->validarEquipo(
             'Equipo de prueba',
             '',
@@ -514,7 +514,7 @@ class ValidadorManagerTest extends TestCase
         $validadorManager = new ValidadorManager();
 
         $this->expectException(AppException::class);
-        $this->expectExceptionMessage('El Nombre Corto debe tener entre 3 y 16 caracteres');
+        $this->expectExceptionMessage('El Nombre Corto debe tener entre 2 y 16 caracteres');
         $validadorManager->validarEquipo(
             'Equipo de prueba',
             str_repeat('a', 17),

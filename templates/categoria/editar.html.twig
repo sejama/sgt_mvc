@@ -9,7 +9,7 @@
     {% endfor %}
     
     <h1>{% block title %}SGT- Editar Categoria{% endblock %}</h1>
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'id' : categoria.id} ) }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="genero" class="form-label">Genero</label>

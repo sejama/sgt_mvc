@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SGT- Editar Equipo{% endblock %}
+
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    
+    <h1>SGT - Editar Equipo</h1>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_equipo_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id }) }}">
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Club Equipo Nuevo" value="{{equipo.nombre}}" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre no es valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="nombreCorto" class="form-label">Nombre Corto</label>
+                <input type="text" class="form-control" id="nombreCorto" name="nombreCorto" placeholder="CEN" value="{{equipo.nombreCorto}}" required>
+                <div id="nombreCortoFeedback" class="invalid-feedback">
+                    Nombre corto no es valido
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="pais" class="form-label">Pais</label>
+                <input type="text" class="form-control" id="pais" name="pais" placeholder="Argentina" value="{{equipo.pais}}">
+                <div id="paisFeedback" class="invalid-feedback">
+                    Nombre no es valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="provincia" class="form-label">Provincia</label>
+                <input type="text" class="form-control" id="provincia" name="provincia" placeholder="Santa Fe" value="{{equipo.provincia}}">
+                <div id="provinciaFeedback" class="invalid-feedback">
+                    Provincia no es valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="localidad" class="form-label">Localidad</label>
+                <input type="text" class="form-control" id="localidad" name="localidad" placeholder="Santa Fe" value="{{equipo.localidad}}">
+                <div id="localidadFeedback" class="invalid-feedback">
+                    Localidad no es valido
+                </div>
+            </div>
+        </div>
+        
+        <a href="{{ path('app_equipo', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock %}

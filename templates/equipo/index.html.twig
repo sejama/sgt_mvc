@@ -1,20 +1,57 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello EquipoController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
+    <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }}</h3>
+    <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre Corto</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Ubicación</th>
+                <th scope="col" style="width: 280px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipo in equipos %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ equipo.nombreCorto }}</td>
+                    <td>{{ equipo.nombre }}</td>
+                    <td>{{ equipo.pais }} - {{ equipo.provincia }} - {{ equipo.localidad }}</td>
+                    <td>
+                        <a href="{{ path('app_equipo_editar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info">Editar</a>
+                        <a href="{{ path('app_jugador', {'ruta': torneo.ruta,'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info">Jugadores</a>
+                        <a class="btn btn-danger" id="btnEliminarEquipo{{ equipo.id }}">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      
+    {% include "./componentes/modal.html.twig" %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/Proyectos/sgt_mvc/src/Controller/EquipoController.php</code></li>
-        <li>Your template at <code>D:/Proyectos/sgt_mvc/templates/equipo/index.html.twig</code></li>
-    </ul>
-</div>
+    <script>
+        btnEliminarEquipos = document.querySelectorAll('[id^="btnEliminarEquipo"]');
+        btnEliminarEquipos.forEach((btn) => {
+            let index = btn.id.replace('btnEliminarEquipo', '');
+            btn.addEventListener('click', () => {
+                crearModal('Eliminar Equipo', '¿Está seguro que desea eliminar el equipo?');
+                document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                    window.location.href = `{{ path('app_equipo_eliminar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': 'ID'}) }}`.replace('ID', index);
+                });
+                
+            });
+        });
+    </script>
+
 {% endblock %}

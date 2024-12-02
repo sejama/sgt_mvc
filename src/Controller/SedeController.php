@@ -13,9 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
+#[Route('/torneo/{ruta}/sede')]
 class SedeController extends AbstractController
 {
-    #[Route('/{ruta}/sede/nuevo', name: 'app_torneo_sede_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'app_torneo_sede_nuevo', methods: ['GET', 'POST'])]
     public function agregarSede(
         string $ruta,
         TorneoManager $torneoManager,
@@ -56,10 +57,10 @@ class SedeController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/{ruta}/sede/{id}/editar', name: 'app_torneo_sede_editar', methods: ['GET', 'POST'])]
+    #[Route('/{sedeId}/editar', name: 'app_torneo_sede_editar', methods: ['GET', 'POST'])]
     public function editarSede(
         string $ruta,
-        int $id,
+        int $sedeId,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
         EntityManagerInterface $entityManager,
@@ -68,7 +69,7 @@ class SedeController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
-            $sede = $sedeManager->obtenerSede($id);
+            $sede = $sedeManager->obtenerSede($sedeId);
             if ($request->isMethod('POST')) {
                 try {
                     $nombre = $request->request->get('sedeNombre');
@@ -101,10 +102,10 @@ class SedeController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/{ruta}/sede/eliminar/{id}', name: 'app_torneo_sede_eliminar', methods: ['GET'])]
+    #[Route('/{sedeId}/eliminar', name: 'app_torneo_sede_eliminar', methods: ['GET'])]
     public function eliminarSede(
         string $ruta,
-        int $id,
+        int $sedeId,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
         EntityManagerInterface $entityManager,
@@ -113,7 +114,7 @@ class SedeController extends AbstractController
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
             try {
-                $sede = $sedeManager->obtenerSede($id);
+                $sede = $sedeManager->obtenerSede($sedeId);
                 $sedeManager->eliminarSede($sede);
                 $entityManager->flush();
                 $this->addFlash('success', "Sede eliminada con éxito.");

@@ -12,27 +12,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/torneo/{ruta}/sede/{sedeId}/cancha')]
 class CanchaController extends AbstractController
 {
-    #[Route('/{ruta}/sede/{id}/', name: 'app_torneo_sede_cancha', methods: ['GET'])]
+    #[Route('/', name: 'app_torneo_sede_cancha', methods: ['GET'])]
     public function index(
         string $ruta,
-        int $id,
+        int $sedeId,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
-        $sede = $sedeManager->obtenerSede($id);
+        $sede = $sedeManager->obtenerSede($sedeId);
         return $this->render('cancha/index.html.twig', [
             'torneo' => $torneo,
             'sede' => $sede,
         ]);
     }
 
-    #[Route('/{ruta}/sede/{id}/cancha/nuevo', name: 'app_torneo_sede_cancha_nueva', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'app_torneo_sede_cancha_nueva', methods: ['GET', 'POST'])]
     public function agregarCancha(
         string $ruta,
-        int $id,
+        int $sedeId,
         Request $request,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
@@ -40,7 +41,7 @@ class CanchaController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
-        $sede = $sedeManager->obtenerSede($id);
+        $sede = $sedeManager->obtenerSede($sedeId);
 
         if ($request->isMethod('POST')) {
             // Procesar el formulario
@@ -49,7 +50,7 @@ class CanchaController extends AbstractController
                 $descripcion = $request->request->get('descripcionCancha') ?? '';
                 $canchaManager->crearCancha($sede, $nombre, $descripcion);
                 $this->addFlash('success', 'Cancha creada con éxito.');
-                return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'id' => $sede->getId()]);
+                return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -65,14 +66,14 @@ class CanchaController extends AbstractController
     }
 
     #[Route(
-        '/{ruta}/sede/{id}/cancha/{cancha}/editar',
+        '/{canchaId}/editar',
         name: 'app_torneo_sede_cancha_editar',
         methods: ['GET', 'POST']
     )]
     public function editarCancha(
         string $ruta,
-        int $id,
-        int $cancha,
+        int $sedeId,
+        int $canchaId,
         Request $request,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
@@ -80,8 +81,8 @@ class CanchaController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
-        $sede = $sedeManager->obtenerSede($id);
-        $cancha = $canchaManager->obtenerCancha($cancha);
+        $sede = $sedeManager->obtenerSede($sedeId);
+        $cancha = $canchaManager->obtenerCancha($canchaId);
 
         if ($request->isMethod('POST')) {
             // Procesar el formulario
@@ -90,7 +91,7 @@ class CanchaController extends AbstractController
                 $descripcion = $request->request->get('descripcionCancha') ?? '';
                 $canchaManager->editarCancha($cancha, $nombre, $descripcion);
                 $this->addFlash('success', 'Cancha editada con éxito.');
-                return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'id' => $sede->getId()]);
+                return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -106,11 +107,11 @@ class CanchaController extends AbstractController
         ]);
     }
 
-    #[Route('/{ruta}/sede/{id}/cancha/{cancha}/eliminar', name: 'app_torneo_sede_cancha_eliminar', methods: ['GET'])]
+    #[Route('/{canchaId}/eliminar', name: 'app_torneo_sede_cancha_eliminar', methods: ['GET'])]
     public function eliminarCancha(
         string $ruta,
-        int $id,
-        int $cancha,
+        int $sedeId,
+        int $canchaId,
         Request $request,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
@@ -118,15 +119,15 @@ class CanchaController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
-        $sede = $sedeManager->obtenerSede($id);
-        $cancha = $canchaManager->obtenerCancha($cancha);
+        $sede = $sedeManager->obtenerSede($sedeId);
+        $cancha = $canchaManager->obtenerCancha($canchaId);
 
         if ($request->isMethod('GET')) {
             // Procesar el formulario
             try {
                 $canchaManager->eliminarCancha($cancha);
                 $this->addFlash('success', 'Cancha eliminada con éxito.');
-                return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'id' => $sede->getId()]);
+                return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -135,6 +136,6 @@ class CanchaController extends AbstractController
                 $this->addFlash('error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.');
             }
         }
-        return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'id' => $sede->getId()]);
+        return $this->redirectToRoute('app_torneo_sede_cancha', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
     }
 }

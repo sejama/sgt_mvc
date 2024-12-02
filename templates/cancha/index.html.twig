@@ -10,7 +10,7 @@
     <h1>{% block title %}SGT- Gestión Cancha - {{ sede.nombre }}{% endblock %}</h1>
     <h2>{{ sede.domicilio }}</h2>
     <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
-    <a href="{{ path('app_torneo_sede_cancha_nueva', {'ruta': torneo.ruta, 'id': sede.id }) }}" class="btn btn-success">Crear</a>
+    <a href="{{ path('app_torneo_sede_cancha_nueva', {'ruta': torneo.ruta, 'sedeId': sede.id }) }}" class="btn btn-success">Crear</a>
     <table class="table">
         <thead>
             <tr>
@@ -27,7 +27,7 @@
                     <td>{{ cancha.nombre }}</td>
                     <td>{{ cancha.descripcion }}</td>
                     <td>
-                        <a href="{{ path('app_torneo_sede_cancha_editar',{'ruta': torneo.ruta, 'id': sede.id, 'cancha': cancha.id }) }}" class="btn btn-info">Editar</a>
+                        <a href="{{ path('app_torneo_sede_cancha_editar',{'ruta': torneo.ruta, 'sedeId': sede.id, 'canchaId': cancha.id }) }}" class="btn btn-info">Editar</a>
                         <a class="btn btn-danger" id="btnEliminarCancha{{ cancha.id }}">Eliminar</a>
                 </tr>
             {% endfor %}
@@ -42,7 +42,7 @@
             btn.addEventListener('click', () => {
                 crearModal('Eliminar Cancha', '¿Está seguro que desea eliminar la cancha?');
                 document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('app_torneo_sede_cancha_eliminar', {'ruta': torneo.ruta, 'id': sede.id, 'cancha': 'ID' }) }}`.replace('ID', index);
+                    window.location.href = `{{ path('app_torneo_sede_cancha_eliminar', {'ruta': torneo.ruta, 'sedeId': sede.id, 'canchaId': 'ID' }) }}`.replace('ID', index);
                 });
                 
             });

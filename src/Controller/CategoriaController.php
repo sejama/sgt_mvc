@@ -14,9 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
+ #[Route('/torneo/{ruta}/categoria')]
 class CategoriaController extends AbstractController
 {
-    #[Route('/{ruta}/categoria/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
     public function agregarCategoria(
         string $ruta,
         TorneoManager $torneoManager,
@@ -63,10 +64,10 @@ class CategoriaController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/{ruta}/categoria/{id}/editar', name: 'app_torneo_categoria_editar', methods: ['GET', 'POST'])]
+    #[Route('/{categoriaId}/editar', name: 'app_torneo_categoria_editar', methods: ['GET', 'POST'])]
     public function editarCategoria(
         string $ruta,
-        int $id,
+        int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         EntityManagerInterface $entityManager,
@@ -75,7 +76,7 @@ class CategoriaController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
-            $categoria = $categoriaManager->obtenerCategoria($id);
+            $categoria = $categoriaManager->obtenerCategoria($categoriaId);
             if ($request->isMethod('POST')) {
                 try {
                     $genero = $request->request->get('genero');
@@ -114,13 +115,13 @@ class CategoriaController extends AbstractController
     }
 
     #[Route(
-        '/{ruta}/categoria/{id}/editar/disputa',
+        '/{categoriaId}/editar/disputa',
         name: 'app_torneo_categoria_editar_disputa',
         methods: ['GET', 'POST']
     )]
     public function editarDisputa(
         string $ruta,
-        int $id,
+        int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         EntityManagerInterface $entityManager,
@@ -129,7 +130,7 @@ class CategoriaController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
-            $categoria = $categoriaManager->obtenerCategoria($id);
+            $categoria = $categoriaManager->obtenerCategoria($categoriaId);
             if ($request->isMethod('POST')) {
                 try {
                     $disputa = $request->request->get('disputa');
@@ -156,10 +157,10 @@ class CategoriaController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/{ruta}/categoria/eliminar/{id}', name: 'app_torneo_categoria_eliminar', methods: ['GET'])]
+    #[Route('/{categoriaId}/eliminar', name: 'app_torneo_categoria_eliminar', methods: ['GET'])]
     public function eliminarCategoria(
         string $ruta,
-        int $id,
+        int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         EntityManagerInterface $entityManager,
@@ -168,7 +169,7 @@ class CategoriaController extends AbstractController
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
             try {
-                $categoria = $categoriaManager->obtenerCategoria($id);
+                $categoria = $categoriaManager->obtenerCategoria($categoriaId);
                 $categoriaManager->eliminarCategoria($categoria);
                 $entityManager->flush();
                 $this->addFlash('success', "Categoría eliminada con éxito.");

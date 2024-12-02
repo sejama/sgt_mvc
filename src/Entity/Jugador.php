@@ -6,6 +6,7 @@ use App\Repository\JugadorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: JugadorRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Jugador
 {
     #[ORM\Id]
@@ -25,7 +26,7 @@ class Jugador
     #[ORM\Column(length: 15)]
     private ?string $numeroDocumento = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $nacimiento = null;
 
     #[ORM\ManyToOne(inversedBy: 'jugadores')]
@@ -45,6 +46,9 @@ class Jugador
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(length: 64)]
+    private ?string $tipo = null;
 
     public function getId(): ?int
     {
@@ -182,6 +186,18 @@ class Jugador
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+
+        return $this;
+    }
+
+    public function getTipo(): ?string
+    {
+        return $this->tipo;
+    }
+
+    public function setTipo(string $tipo): static
+    {
+        $this->tipo = $tipo;
 
         return $this;
     }
