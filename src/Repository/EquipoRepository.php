@@ -16,7 +16,7 @@ class EquipoRepository extends ServiceEntityRepository
         parent::__construct($registry, Equipo::class);
     }
 
-    public function guardar(Equipo $entity, bool $flush = false): void
+    public function guardar(Equipo $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -25,7 +25,7 @@ class EquipoRepository extends ServiceEntityRepository
         }
     }
 
-    public function eliminar(Equipo $entity, bool $flush = false): void
+    public function eliminar(Equipo $entity, bool $flush = true): void
     {
         $this->getEntityManager()->remove($entity);
 

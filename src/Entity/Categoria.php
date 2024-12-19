@@ -54,9 +54,16 @@ class Categoria
     #[ORM\OneToMany(targetEntity: Equipo::class, mappedBy: 'categoria')]
     private Collection $equipos;
 
+    /**
+     * @var Collection<int, Grupo>
+     */
+    #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'categoria')]
+    private Collection $grupos;
+
     public function __construct()
     {
         $this->equipos = new ArrayCollection();
+        $this->grupos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +182,36 @@ class Categoria
             // set the owning side to null (unless already changed)
             if ($equipo->getCategoria() === $this) {
                 $equipo->setCategoria(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Grupo>
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(Grupo $grupo): static
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos->add($grupo);
+            $grupo->setCategoria($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(Grupo $grupo): static
+    {
+        if ($this->grupos->removeElement($grupo)) {
+            // set the owning side to null (unless already changed)
+            if ($grupo->getCategoria() === $this) {
+                $grupo->setCategoria(null);
             }
         }
 

@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
+    <h3>{{ torneo.nombre }}</h3>
+    <h3>{{ categoria.nombre }}</h3>
+    <a href="{{ path('app_equipo', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}" class="btn btn-secondary">Volver</a>
+
+    <form class="needs-validation" novalidate method="post" action="{{ path('app_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}">
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="cantidadGrupos" class="form-label">Cantidad de Grupos</label>
+                <input type="number" class="form-control" id="cantidadGrupos" name='cantidadGrupos' min="1" max="{{ categoria.equipos | length/2 }}" value="1" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Cantidad de Grupos no valido
+                </div>
+            </div>
+        </div>
+        <div id="grupos">
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="nombre0" class="form-label">Nombre Grupo</label>
+                <input type="text" class="form-control" id="nombre0" name='grupos[0][nombre]' placeholder="Nombre de grupo" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Nombre de grupo no valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="cantidadEquipo0" class="form-label">Cantidad de Equipos</label>
+                <input type="number" class="form-control" id="cantidadEquipo0" name='grupos[0][cantidadEquipo]' min="1" max="{{ categoria.equipos | length }}" value="1" required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Cantidad de Equipos no valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="clasificaOro0" class="form-label">Clasifica Oro</label>
+                <input type="number" class="form-control" id="clasificaOro0" name='grupos[0][clasificaOro]' min="1"  required>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Cantidad de equipos que clasifican a Oro no valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="clasificaPlata0" class="form-label">Clasifica Plata</label>
+                <input type="number" class="form-control" id="clasificaPlata0" name='grupos[0][clasificaPlata]'>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Cantidad de equipos que clasifican a Plata no valido
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="clasificaBronce0" class="form-label">Clasifica Bronce</label>
+                <input type="number" class="form-control" id="clasificaBronce0" name='grupos[0][clasificaBronce]'>
+                <div id="nombreFeedback" class="invalid-feedback">
+                    Cantidad de equipos que clasifican a Bronce no valido
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        const cantidadGrupos = document.getElementById('cantidadGrupos');
+        cantidadGrupos.addEventListener('change', (event) => {
+            const cantidad = event.target.value;
+            const grupos = document.getElementById('grupos');
+            grupos.innerHTML = '';
+            for (let i = 0; i < cantidad; i++) {
+                const divRow = document.createElement('div');
+                divRow.className = 'row g-1 mt-2 mb-2';
+                divRow.innerHTML = `
+                    <div class="col-md">
+                        <label for="nombre${i}" class="form-label">Nombre Grupo</label>
+                        <input type="text" class="form-control" id="nombre${i}" name='grupos[${i}][nombre]' placeholder="Nombre de grupo" required>
+                        <div id="nombreFeedback" class="invalid-feedback">
+                            Nombre de grupo no valido
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <label for="cantidadEquipo${i}" class="form-label">Cantidad de Equipos</label>
+                        <input type="number" class="form-control" id="cantidadEquipo${i}" name='grupos[${i}][cantidadEquipo]' min="1" max="{{ categoria.equipos | length/2 }}" value="1" required>
+                        <div id="nombreFeedback" class="invalid-feedback">
+                            Cantidad de Equipos no valido
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <label for="clasificaOro${i}" class="form-label">Clasifica Oro</label>
+                        <input type="number" class="form-control" id="clasificaOro${i}" name='grupos[${i}][clasificaOro]' min="1"  required>
+                        <div id="nombreFeedback" class="invalid-feedback">
+                            Cantidad de equipos que clasifican a Oro no valido
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <label for="clasificaPlata${i}" class="form-label">Clasifica Plata</label>
+                        <input type="number" class="form-control" id="clasificaPlata${i}" name='grupos[${i}][clasificaPlata]'>
+                        <div id="nombreFeedback" class="invalid-feedback">
+                            Cantidad de equipos que clasifican a Plata no valido
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <label for="clasificaBronce${i}" class="form-label">Clasifica Bronce</label>
+                        <input type="number" class="form-control" id="clasificaBronce${i}" name='grupos[${i}][clasificaBronce]'>
+                        <div id="nombreFeedback" class="invalid-feedback">
+                            Cantidad de equipos que clasifican a Bronce no valido
+                        </div>
+                    </div>`
+                grupos.appendChild(divRow);
+            }
+        });
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+    
+{% endblock %}

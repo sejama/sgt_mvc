@@ -8,7 +8,6 @@ use App\Manager\CategoriaManager;
 use App\Manager\EquipoManager;
 use App\Manager\JugadorManager;
 use App\Manager\TorneoManager;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

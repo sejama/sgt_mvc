@@ -52,7 +52,8 @@ class Equipo
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-
+    #[ORM\ManyToOne(inversedBy: 'equipo')]
+    private ?Grupo $grupo = null;
 
     public function getId(): ?int
     {
@@ -184,6 +185,18 @@ class Equipo
     public function setCategoria(?Categoria $categoria): static
     {
         $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    public function getGrupo(): ?Grupo
+    {
+        return $this->grupo;
+    }
+
+    public function setGrupo(?Grupo $grupo): static
+    {
+        $this->grupo = $grupo;
 
         return $this;
     }

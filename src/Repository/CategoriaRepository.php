@@ -16,7 +16,7 @@ class CategoriaRepository extends ServiceEntityRepository
         parent::__construct($registry, Categoria::class);
     }
 
-    public function guardar(Categoria $entity, bool $flush = false): void
+    public function guardar(Categoria $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -25,7 +25,7 @@ class CategoriaRepository extends ServiceEntityRepository
         }
     }
 
-    public function eliminar(Categoria $entity, bool $flush = false): void
+    public function eliminar(Categoria $entity, bool $flush = true): void
     {
         $this->getEntityManager()->remove($entity);
 

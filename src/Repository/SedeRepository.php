@@ -16,7 +16,7 @@ class SedeRepository extends ServiceEntityRepository
         parent::__construct($registry, Sede::class);
     }
 
-    public function guardar(Sede $entity, bool $flush = false): void
+    public function guardar(Sede $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -25,7 +25,7 @@ class SedeRepository extends ServiceEntityRepository
         }
     }
 
-    public function eliminar(Sede $entity, bool $flush = false): void
+    public function eliminar(Sede $entity, bool $flush = true): void
     {
         $this->getEntityManager()->remove($entity);
 

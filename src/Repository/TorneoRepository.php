@@ -16,7 +16,7 @@ class TorneoRepository extends ServiceEntityRepository
         parent::__construct($registry, Torneo::class);
     }
 
-    public function guardar(Torneo $entity, bool $flush = false): void
+    public function guardar(Torneo $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -25,7 +25,7 @@ class TorneoRepository extends ServiceEntityRepository
         }
     }
 
-    public function eliminar(Torneo $entity, bool $flush = false): void
+    public function eliminar(Torneo $entity, bool $flush = true): void
     {
         $this->getEntityManager()->remove($entity);
 

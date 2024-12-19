@@ -10,28 +10,33 @@
     <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
     <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }}</h3>
     <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
-    <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
+    {% if equipos[0].grupo == null %}
+        <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
+        <a href="{{ path('app_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
+    {% endif %}
     <table class="table">
         <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Nombre Corto</th>
                 <th scope="col">Nombre</th>
+                <th scope="col">Grupo</th>
                 <th scope="col">Ubicación</th>
-                <th scope="col" style="width: 280px;">Acciones</th>
+                <th scope="col" style="width: 216px;">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for equipo in equipos %}
                 <tr>
-                    <th scope="row">{{ loop.index }}</th>
-                    <td>{{ equipo.nombreCorto }}</td>
-                    <td>{{ equipo.nombre }}</td>
-                    <td>{{ equipo.pais }} - {{ equipo.provincia }} - {{ equipo.localidad }}</td>
-                    <td>
-                        <a href="{{ path('app_equipo_editar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info">Editar</a>
-                        <a href="{{ path('app_jugador', {'ruta': torneo.ruta,'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info">Jugadores</a>
-                        <a class="btn btn-danger" id="btnEliminarEquipo{{ equipo.id }}">Eliminar</a>
+                    <th class="p-1" scope="row">{{ loop.index }}</th>
+                    <td class="p-1">{{ equipo.nombreCorto }}</td>
+                    <td class="p-1">{{ equipo.nombre }}</td>
+                    <td class="p-1">{{ equipo.grupo.nombre ?? '' }}</td>
+                    <td class="p-1">{{ equipo.pais }} - {{ equipo.provincia }} - {{ equipo.localidad }}</td>
+                    <td class="p-1">
+                        <a href="{{ path('app_equipo_editar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info p-1">Editar</a>
+                        <a href="{{ path('app_jugador', {'ruta': torneo.ruta,'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info p-1">Jugadores</a>
+                        <a class="btn btn-danger p-1" id="btnEliminarEquipo{{ equipo.id }}">Eliminar</a>
                     </td>
                 </tr>
             {% endfor %}

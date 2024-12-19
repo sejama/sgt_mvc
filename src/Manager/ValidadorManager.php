@@ -129,6 +129,11 @@ class ValidadorManager
         }
     }
 
+    public function validarGrupo(string $nombre): void
+    {
+        $this->validarLongitud('Nombre', $nombre, 1, 16);
+    }
+
     private function validarGenero(string $genero): void
     {
         if (!in_array($genero, Genero::getValues())) {

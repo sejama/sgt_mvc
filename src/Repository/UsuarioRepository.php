@@ -22,16 +22,20 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         parent::__construct($registry, Usuario::class);
     }
 
-    public function guardar(Usuario $usuario): void
+    public function guardar(Usuario $usuario, bool $flush = true): void
     {
         $this->getEntityManager()->persist($usuario);
-        $this->getEntityManager()->flush();
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
-    public function eliminar(Usuario $usuario): void
+    public function eliminar(Usuario $usuario, bool $flush = true): void
     {
         $this->getEntityManager()->remove($usuario);
-        $this->getEntityManager()->flush();
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     /**
