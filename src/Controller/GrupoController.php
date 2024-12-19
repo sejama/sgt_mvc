@@ -21,8 +21,7 @@ class GrupoController extends AbstractController
         CategoriaManager $categoriaManager,
         string $ruta,
         int $categoriaId
-    ): Response
-    {
+    ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         if ($request->isMethod('POST')) {
@@ -30,6 +29,11 @@ class GrupoController extends AbstractController
             $grupos = [];
             $cantidadGrupos = $request->request->get('cantidadGrupos');
             $gruposReq =  $request->request->all('grupos');
+
+            if (count($gruposReq) !== $cantidadGrupos) {
+                $this->addFlash('danger', "La cantidad de grupos no coincide con la cantidad ingresada.");
+                return $this->redirectToRoute('app_grupo_crear', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+            }
 
             foreach ($gruposReq as $grupoReq) {
                 $grupos[] = [
