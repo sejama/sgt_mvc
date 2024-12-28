@@ -18,7 +18,12 @@ class TorneoManager
     ) {
     }
 
-    public function obtenerTorneos(int $userId): array
+    public function obtenerTorneos(): array
+    {
+        return $this->torneoRepository->findAll();
+    }
+
+    public function obtenerTorneosXCreador(int $userId): array
     {
         return $this->torneoRepository->findBy(['creador' => $userId]);
     }

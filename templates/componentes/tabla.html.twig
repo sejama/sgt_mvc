@@ -1,6 +1,8 @@
+<h1> {{ categoria.nombre }}</h1>
+{% for grupo in categoria.grupos %}
 <div class="card">
     <div class="card-header">
-        <p>Categoría</p>
+        <h4>{{ grupo.nombre }}</h4>
     </div>
     <div class="card-body p-0 table-responsive">
         <table class="table align-middle text-center" style="border-collapse: collapse;">
@@ -29,20 +31,22 @@
                 </tr>   
             </thead>
             <tbody>
+                {% for key, equipo in grupo.equipo %}
                 <tr>
-                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">1</th>
-                    <td style="position: -webkit-sticky; position: sticky; left: 0px; background: white;">Equipo 1</td>
-                    <td class="table-active">1</td>
-                    <td class="table-active">1</td>
-                    <td class="table-active">0</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>2</td>
-                    <td class="table-active">50</td>
-                    <td class="table-active">30</td>
-                    <td class="table-active">20</td>
-                    <td>2</td>
+                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">{{ key + 1 }}</th>
+                    <td style="position: -webkit-sticky; position: sticky; left: 0px; background: white;">{{ equipo.nombre }}</td>
+                    <td class="table-active">-</td>
+                    <td class="table-active">-</td>
+                    <td class="table-active">-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td class="table-active">-</td>
+                    <td class="table-active">-</td>
+                    <td class="table-active">-</td>
+                    <td></td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -50,3 +54,4 @@
         Card footer
     </div>
 </div>
+{% endfor %}

@@ -44,6 +44,8 @@ class Equipo
     public function __construct()
     {
         $this->jugadores = new ArrayCollection();
+        $this->partidosLocal = new ArrayCollection();
+        $this->partidosVisitante = new ArrayCollection();
     }
 
     #[ORM\Column]
@@ -54,6 +56,21 @@ class Equipo
 
     #[ORM\ManyToOne(inversedBy: 'equipo')]
     private ?Grupo $grupo = null;
+
+    /**
+     * @var Collection<int, Partido>
+     */
+    #[ORM\OneToMany(targetEntity: Partido::class, mappedBy: 'equipoLocal')]
+    private Collection $partidosLocal;
+
+    /**
+     * @var Collection<int, Partido>
+     */
+    #[ORM\OneToMany(targetEntity: Partido::class, mappedBy: 'equipoVisitante')]
+    private Collection $partidosVisitante;
+
+    #[ORM\Column(length: 32)]
+    private ?string $estado = null;
 
     public function getId(): ?int
     {
@@ -197,6 +214,78 @@ class Equipo
     public function setGrupo(?Grupo $grupo): static
     {
         $this->grupo = $grupo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Partido>
+     */
+    public function getPartidosLocal(): Collection
+    {
+        return $this->partidosLocal;
+    }
+
+    public function addPartidosLocal(Partido $partidosLocal): static
+    {
+        if (!$this->partidosLocal->contains($partidosLocal)) {
+            $this->partidosLocal->add($partidosLocal);
+            $partidosLocal->setEquipoLocal($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartidosLocal(Partido $partidosLocal): static
+    {
+        if ($this->partidosLocal->removeElement($partidosLocal)) {
+            // set the owning side to null (unless already changed)
+            if ($partidosLocal->getEquipoLocal() === $this) {
+                $partidosLocal->setEquipoLocal(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Partido>
+     */
+    public function getPartidosVisitante(): Collection
+    {
+        return $this->partidosVisitante;
+    }
+
+    public function addPartidosVisitante(Partido $partidosVisitante): static
+    {
+        if (!$this->partidosVisitante->contains($partidosVisitante)) {
+            $this->partidosVisitante->add($partidosVisitante);
+            $partidosVisitante->setEquipoVisitante($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartidosVisitante(Partido $partidosVisitante): static
+    {
+        if ($this->partidosVisitante->removeElement($partidosVisitante)) {
+            // set the owning side to null (unless already changed)
+            if ($partidosVisitante->getEquipoVisitante() === $this) {
+                $partidosVisitante->setEquipoVisitante(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
 
         return $this;
     }

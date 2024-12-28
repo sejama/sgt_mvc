@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SGT - Inicio{% endblock %}
+
+{% block body %}
+<h1>{{ torneo.nombre }}</h1>
+<select class="form-select" aria-label="Default select example">
+    <option selected>Seleccione una categoría</option>
+    {% for categoria in categorias %}
+        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+    {% endfor %}
+</select>
+{% for grupo in grupos %}
+    {{ dump(grupo) }}
+{% endfor %}
+<script>
+    
+</script>
+{% endblock %}

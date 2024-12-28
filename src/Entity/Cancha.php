@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CanchaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CanchaRepository::class)]
@@ -28,6 +30,17 @@ class Cancha
 
     #[ORM\ManyToOne(inversedBy: 'canchas')]
     private ?Sede $sede = null;
+
+    /**
+     * @var Collection<int, Partido>
+     */
+    #[ORM\OneToMany(targetEntity: Partido::class, mappedBy: 'cancha')]
+    private Collection $partidos;
+
+    public function __construct()
+    {
+        $this->partidos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,6 +106,36 @@ class Cancha
     public function setSede(?Sede $sede): static
     {
         $this->sede = $sede;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Partido>
+     */
+    public function getPartidos(): Collection
+    {
+        return $this->partidos;
+    }
+
+    public function addPartido(Partido $partido): static
+    {
+        if (!$this->partidos->contains($partido)) {
+            $this->partidos->add($partido);
+            $partido->setCancha($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartido(Partido $partido): static
+    {
+        if ($this->partidos->removeElement($partido)) {
+            // set the owning side to null (unless already changed)
+            if ($partido->getCancha() === $this) {
+                $partido->setCancha(null);
+            }
+        }
 
         return $this;
     }

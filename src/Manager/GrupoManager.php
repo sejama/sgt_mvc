@@ -16,6 +16,14 @@ class GrupoManager
     ) {
     }
 
+    public function obtenerGrupo(int $id): Grupo
+    {
+        if (!$grupo = $this->grupoRepository->find($id)) {
+            throw new AppException('No se encontró el grupo');
+        }
+        return $grupo;
+    }
+
     public function obtenerGrupos(Categoria $categoria): array
     {
         return $this->grupoRepository->findBy(['categoria' => $categoria], ['nombre' => 'ASC']);

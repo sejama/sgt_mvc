@@ -10,6 +10,12 @@
     <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
     <h1>Bienvenido al Sistema de Gestión de Torneo!!</h1>
+    <h3>En esta página podrás ver los torneos que se están jugando y los que se jugarán próximamente.</h3>
+    {% for torneo in torneos %}
+        <div><a href={{ path('_torneo', {'ruta': torneo.ruta}) }}>{{ torneo.nombre }}</a></div>
+    {% endfor %}
+    {#}
     {% include "./componentes/fixture.html.twig" %}
-    {% include "./componentes/tabla.html.twig" %}
+    {{ include ("./componentes/tabla.html.twig", {'categoria': categoria}) }}
+    #}
 {% endblock %}

@@ -23,7 +23,7 @@ class TorneoController extends AbstractController
         TorneoManager $torneoManager
     ): Response {
         if ($this->getUser() !== null) {
-            $torneos = $torneoManager->obtenerTorneos((int)$this->getUser()->getId());
+            $torneos = $torneoManager->obtenerTorneosXCreador((int)$this->getUser()->getId());
             return $this->render(
                 'torneo/index.html.twig',
                 [
@@ -46,8 +46,6 @@ class TorneoController extends AbstractController
         if ($this->getUser() !== null) {
             if ($request->isMethod('POST')) {
                 try {
-                    //var_dump($request->request); die();
-                    // Handle the submission of the form
                     $nombre = $request->request->get('nombre');
                     $ruta = $request->request->get('ruta');
                     $descripcion = $request->request->get('descripcion');

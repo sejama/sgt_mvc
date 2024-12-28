@@ -73,7 +73,7 @@ class Torneo
     #[ORM\OneToMany(targetEntity: Sede::class, mappedBy: 'torneo')]
     private Collection $sedes;
 
-    #[ORM\Column(length: 255, type: "string", enumType: EstadoTorneo::class)]
+    #[ORM\Column(length: 32, type: "string", enumType: EstadoTorneo::class)]
     private ?EstadoTorneo $estado = null;
 
     public function __construct()

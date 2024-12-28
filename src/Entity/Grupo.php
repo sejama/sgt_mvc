@@ -44,9 +44,19 @@ class Grupo
     #[ORM\JoinColumn(nullable: false)]
     private ?Categoria $categoria = null;
 
+    /**
+     * @var Collection<int, Partido>
+     */
+    #[ORM\OneToMany(targetEntity: Partido::class, mappedBy: 'grupo')]
+    private Collection $partidos;
+
+    #[ORM\Column(length: 32)]
+    private ?string $estado = null;
+
     public function __construct()
     {
         $this->equipo = new ArrayCollection();
+        $this->partidos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,6 +177,48 @@ class Grupo
     public function setCategoria(?Categoria $categoria): static
     {
         $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Partido>
+     */
+    public function getPartidos(): Collection
+    {
+        return $this->partidos;
+    }
+
+    public function addPartido(Partido $partido): static
+    {
+        if (!$this->partidos->contains($partido)) {
+            $this->partidos->add($partido);
+            $partido->setGrupo($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartido(Partido $partido): static
+    {
+        if ($this->partidos->removeElement($partido)) {
+            // set the owning side to null (unless already changed)
+            if ($partido->getGrupo() === $this) {
+                $partido->setGrupo(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
 
         return $this;
     }

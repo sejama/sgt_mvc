@@ -13,6 +13,8 @@
     {% if equipos[0].grupo == null %}
         <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
         <a href="{{ path('app_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
+    {% else %}
+        <a href="{{ path('app_partido', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
     {% endif %}
     <table class="table">
         <thead>
