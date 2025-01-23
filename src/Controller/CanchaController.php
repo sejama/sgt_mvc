@@ -11,8 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/torneo/{ruta}/sede/{sedeId}/cancha')]
+#[Route('/admin/torneo/{ruta}/sede/{sedeId}/cancha')]
+#[IsGranted('ROLE_ADMIN')]
 class CanchaController extends AbstractController
 {
     #[Route('/', name: 'app_torneo_sede_cancha', methods: ['GET'])]

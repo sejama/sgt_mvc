@@ -39,6 +39,9 @@ class Categoria
     #[ORM\ManyToOne(inversedBy: 'categorias')]
     private ?Torneo $torneo = null;
 
+    #[ORM\Column(length: 32)]
+    private ?string $estado = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -60,10 +63,17 @@ class Categoria
     #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'categoria')]
     private Collection $grupos;
 
+    /**
+     * @var Collection<int, Partido>
+     */
+    #[ORM\OneToMany(targetEntity: Partido::class, mappedBy: 'categoria')]
+    private Collection $partidos;
+
     public function __construct()
     {
         $this->equipos = new ArrayCollection();
         $this->grupos = new ArrayCollection();
+        $this->partidos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -212,6 +222,48 @@ class Categoria
             // set the owning side to null (unless already changed)
             if ($grupo->getCategoria() === $this) {
                 $grupo->setCategoria(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Partido>
+     */
+    public function getPartidos(): Collection
+    {
+        return $this->partidos;
+    }
+
+    public function addPartido(Partido $partido): static
+    {
+        if (!$this->partidos->contains($partido)) {
+            $this->partidos->add($partido);
+            $partido->setCategoria($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartido(Partido $partido): static
+    {
+        if ($this->partidos->removeElement($partido)) {
+            // set the owning side to null (unless already changed)
+            if ($partido->getCategoria() === $this) {
+                $partido->setCategoria(null);
             }
         }
 

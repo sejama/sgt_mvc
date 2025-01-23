@@ -13,9 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
-#[Route('/torneo')]
+#[Route('/admin/torneo')]
+#[IsGranted('ROLE_ADMIN', statusCode: 401, message: 'No autorizado.')]
 class TorneoController extends AbstractController
 {
     #[Route('/', name: 'app_torneo', methods: ['GET'])]
@@ -100,7 +102,7 @@ class TorneoController extends AbstractController
                 'generos' => $generos,
                 'hoy' => (
                     new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'))
-                    )->modify('-1 day'),
+                    ),
                 ]
             );
         }

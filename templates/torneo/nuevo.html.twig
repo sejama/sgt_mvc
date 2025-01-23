@@ -42,7 +42,7 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-1 mb-2 mt-2">
             <div class="col-md-3">
                 <label for="fechaInicioInscripcion" class="form-label">Inicio Inscripción</label>
-                <input type="datetime-local" id="fechaInicioInscripcion" name="fechaInicioInscripcion" class="form-control" min="{{ hoy|date('Y-m-d') }}T00:00" required>
+                <input type="datetime-local" id="fechaInicioInscripcion" name="fechaInicioInscripcion" class="form-control" min="{{ hoy|date('Y-m-d H:i', 'America/Argentina/Buenos_Aires') }}" required>
                 <div id="nombreFeedback" class="invalid-feedback">
                     Fecha de Inicio de Inscripción no valida
                 </div>

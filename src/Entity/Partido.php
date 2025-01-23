@@ -23,6 +23,10 @@ class Partido
 
     #[ORM\ManyToOne(inversedBy: 'partidos')]
     #[ORM\JoinColumn(nullable: false)]
+    private ?Categoria $categoria = null;
+
+    #[ORM\ManyToOne(inversedBy: 'partidos')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Grupo $grupo = null;
 
     #[ORM\ManyToOne(inversedBy: 'partidosLocal')]
@@ -63,14 +67,20 @@ class Partido
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $visitanteSet5 = null;
 
+    #[ORM\Column(length: 32)]
+    private ?string $estado = null;
+
+    #[ORM\Column(length: 32)]
+    private ?string $tipo = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 32)]
-    private ?string $estado = null;
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $numero = null;
 
     public function getId(): ?int
     {
@@ -292,6 +302,42 @@ class Partido
     public function setEstado(string $estado): static
     {
         $this->estado = $estado;
+
+        return $this;
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): static
+    {
+        $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    public function getTipo(): ?string
+    {
+        return $this->tipo;
+    }
+
+    public function setTipo(string $tipo): static
+    {
+        $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    public function getNumero(): ?int
+    {
+        return $this->numero;
+    }
+
+    public function setNumero(int $numero): static
+    {
+        $this->numero = $numero;
 
         return $this;
     }

@@ -34,6 +34,17 @@ class EquipoRepository extends ServiceEntityRepository
         }
     }
 
+    public function buscarEquiposXTorneo(string $ruta): array
+    {
+        return $this->createQueryBuilder('e')
+            ->join('e.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->andWhere('t.ruta = :ruta')
+            ->setParameter('ruta', $ruta)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Equipo[] Returns an array of Equipo objects
     //     */

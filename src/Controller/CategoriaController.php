@@ -12,9 +12,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
- #[Route('/torneo/{ruta}/categoria')]
+#[Route('/admin/torneo/{ruta}/categoria')]
+#[IsGranted('ROLE_ADMIN')]
 class CategoriaController extends AbstractController
 {
     #[Route('/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]

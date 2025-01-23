@@ -4,6 +4,7 @@ namespace App\Manager;
 
 use App\Entity\Categoria;
 use App\Entity\Grupo;
+use App\Enum\EstadoGrupo;
 use App\Exception\AppException;
 use App\Repository\GrupoRepository;
 
@@ -85,12 +86,13 @@ class GrupoManager
                 $entidad->setClasificaOro($grupo['clasificaOro']);
                 $entidad->setClasificaPlata($grupo['clasificaPlata']);
                 $entidad->setClasificaBronce($grupo['clasificaBronce']);
+                $entidad->setEstado(EstadoGrupo::BORRADOR->value);
 
                 $equiposGrupo = array_slice($equipos, $inicio, $inicio += $grupo['cantidad']);
                 foreach ($equiposGrupo as $equipo) {
                     $entidad->addEquipo($equipo);
                 }
-                $this->grupoRepository->guardar($entidad, true);
+                $this->grupoRepository->guardar($entidad);
             } catch (AppException $e) {
                 throw new AppException($e->getMessage());
             } catch (\Exception $e) {

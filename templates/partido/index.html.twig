@@ -1,20 +1,124 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PartidoController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cancha</th>
+            <th scope="col">Horario</th>
+            <th scope="col">Categoría</th>
+            <th scope="col">Grupo</th>
+            <th scope="col">Local</th>
+            <th scope="col">vs</th>
+            <th scope="col">Visitante</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for partido in partidosSinAsignar %}
+            <tr>
+                <th scope="row">{{ partido.numero }}</th>
+                <td>
+                    <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
+                      <option selected>Seleccionar Cancha</option>
+                      {% for cancha in canchas %}
+                          <option value="{{ cancha.id }}">{{ cancha.sede.nombre }} - {{ cancha.nombre }}</option>
+                      {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+                      min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
+                      max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+                      disabled
+                    >
+                </td>
+                <td>{{ partido.categoria }}</td>
+                <td>{{ partido.grupo }}</td>
+                <td>{{ partido.equipoLocal }}</td>
+                <td>-</td>
+                <td>{{ partido.equipoVisitante }}</td>
+                <td>
+                  <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
+                    <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
+                    <input type="hidden" id="var_cancha{{ partido.id }}" name="var_cancha" value="">
+                    <input type="hidden" id="var_horario{{ partido.id }}" name="var_horario" value="">
+                    <button id="app_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
+                  </form>
+              </td>
+            </tr>  
+          {% endfor %}
+        </tbody>
+      </table>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/Proyectos/sgt_mvc/src/Controller/PartidoController.php</code></li>
-        <li>Your template at <code>D:/Proyectos/sgt_mvc/templates/partido/index.html.twig</code></li>
-    </ul>
-</div>
+      {% for key, canchas in partidosProgramados %}
+        <h3>{{ key }}</h3>
+        {% for key, cancha in canchas %}
+          <h4>{{ key }}</h4>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Día</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Cat</th>
+                <th scope="col">Grup</th>
+                <th scope="col">Local</th>
+                <th scope="col">vs</th>
+                <th scope="col">Visitante</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for key, partido in cancha %}
+              <tr>
+                <th scope="row">{{key+1}}</th>
+                <td>{{ partido.fecha|date('d-m-Y') }}</td>
+                <td>{{ partido.hora|date('H:i') }}</td>
+                <td>{{ partido.categoria }}</td>
+                <td>{{ partido.grupo }}</td>
+                <td>{{ partido.equipoLocal }}</td>
+                <td>-</td>
+                <td>{{ partido.equipoVisitante }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+        {% endfor %}
+      {% endfor %}
+  <script>
+    const selec = document.querySelectorAll('select');
+
+    selec.forEach((element) => {
+      element.addEventListener('change', (event) => {
+        cancha_partidoId = event.target.id.replace('cancha', '');
+        canchaId = event.target.value
+        console.log("Cancha Partido ID ", cancha_partidoId);
+        console.log("Cancha ID ", canchaId);
+        document.getElementById('horario' + cancha_partidoId).disabled = false;
+        document.getElementById('var_cancha'+cancha_partidoId).value = canchaId;
+      });
+    });
+
+    const horarios = document.querySelectorAll('input[type="datetime-local"]');
+    horarios.forEach((element, cancha_partidoId ) => {
+      element.addEventListener('change', (event) => {
+        horario_partidoId = event.target.id.replace('horario', '');
+        horario = event.target.value
+        console.log("Horario Partido ID ",horario_partidoId);
+        console.log("Horario ", horario);
+        document.getElementById('var_horario'+horario_partidoId).value = horario;
+        boton = document.getElementById('app_partido_editar' + horario_partidoId)
+        boton.classList.remove('disabled');
+      });
+    });
+  </script>
 {% endblock %}

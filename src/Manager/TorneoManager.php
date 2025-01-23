@@ -74,7 +74,7 @@ class TorneoManager
         $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion), $timezone);
         $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion), $timezone);
         $torneo->setCreador($user);
-        $torneo->setEstado(EstadoTorneo::BORRADOR);
+        $torneo->setEstado(EstadoTorneo::BORRADOR->value);
         $this->torneoRepository->guardar($torneo, false);
 
         return $torneo;
@@ -115,9 +115,9 @@ class TorneoManager
             $torneo->setFechaFinTorneo(new \DateTimeImmutable($fecha_fin_torneo), $timezone);
             $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion), $timezone);
             $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion), $timezone);
-            $torneo->setEstado(EstadoTorneo::BORRADOR);
+            $torneo->setEstado(EstadoTorneo::BORRADOR->value);
 
-            $this->torneoRepository->guardar($torneo, true);
+            $this->torneoRepository->guardar($torneo);
 
             return $torneo;
         } catch (AppException $e) {

@@ -4,6 +4,7 @@ namespace App\Tests\Unit\Manager;
 
 use App\Entity\Categoria;
 use App\Entity\Equipo;
+use App\Entity\Torneo;
 use App\Exception\AppException;
 use App\Manager\EquipoManager;
 use App\Manager\ValidadorManager;
@@ -88,7 +89,16 @@ class EquipoManagerTest extends TestCase
         $validadorManager->expects($this->once())
         ->method('validarEquipo');
 
+        $torneo = new Torneo();
+        $torneo->setRuta('ruta');
+
         $categoria = new Categoria();
+        $categoria->setTorneo($torneo);
+
+        $equipoRepository->expects($this->once())
+        ->method('buscarEquiposXTorneo')
+        ->with('ruta')
+        ->willReturn([]);
 
         $equipoManager->crearEquipo(
             $categoria,

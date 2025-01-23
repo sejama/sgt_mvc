@@ -6,6 +6,7 @@ namespace App\Manager;
 
 use App\Entity\Categoria;
 use App\Entity\Equipo;
+use App\Enum\EstadoEquipo;
 use App\Exception\AppException;
 use App\Repository\EquipoRepository;
 
@@ -59,6 +60,8 @@ class EquipoManager
             $provincia,
             $localidad
         );
+        $ruta = $categoria->getTorneo()->getRuta();
+        $numeroEquipo = count($this->equipoRepository->buscarEquiposXTorneo($ruta)) + 1;
 
         $equipo = new Equipo();
         $equipo->setCategoria($categoria);
@@ -67,6 +70,8 @@ class EquipoManager
         $equipo->setPais($pais);
         $equipo->setProvincia($provincia);
         $equipo->setLocalidad($localidad);
+        $equipo->setEstado(EstadoEquipo::BORRADOR->value);
+        $equipo->setNumero($numeroEquipo);
 
         $this->equipoRepository->guardar($equipo, false);
 

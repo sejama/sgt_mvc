@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\EquipoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EquipoRepository::class)]
@@ -71,6 +72,9 @@ class Equipo
 
     #[ORM\Column(length: 32)]
     private ?string $estado = null;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $numero = null;
 
     public function getId(): ?int
     {
@@ -286,6 +290,18 @@ class Equipo
     public function setEstado(string $estado): static
     {
         $this->estado = $estado;
+
+        return $this;
+    }
+
+    public function getNumero(): ?int
+    {
+        return $this->numero;
+    }
+
+    public function setNumero(int $numero): static
+    {
+        $this->numero = $numero;
 
         return $this;
     }

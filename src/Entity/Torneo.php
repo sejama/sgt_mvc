@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\TorneoRepository;
-use App\Enum\EstadoTorneo;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -73,8 +72,8 @@ class Torneo
     #[ORM\OneToMany(targetEntity: Sede::class, mappedBy: 'torneo')]
     private Collection $sedes;
 
-    #[ORM\Column(length: 32, type: "string", enumType: EstadoTorneo::class)]
-    private ?EstadoTorneo $estado = null;
+    #[ORM\Column(length: 32)]
+    private ?string $estado = null;
 
     public function __construct()
     {
@@ -307,12 +306,12 @@ class Torneo
         return $this;
     }
 
-    public function getEstado(): ?EstadoTorneo
+    public function getEstado(): ?string
     {
         return $this->estado;
     }
 
-    public function setEstado(EstadoTorneo $estado): static
+    public function setEstado(string $estado): static
     {
         $this->estado = $estado;
 

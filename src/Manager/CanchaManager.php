@@ -66,4 +66,9 @@ class CanchaManager
     {
         $this->canchaRepository->eliminar($cancha, true);
     }
+
+    public function obtenerSedesYCanchasByTorneo(string $ruta): array
+    {
+        return $this->canchaRepository->buscarSedesYCanchasByTorneo($ruta);
+    }
 }

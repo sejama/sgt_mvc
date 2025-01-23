@@ -7,6 +7,7 @@ namespace App\Manager;
 use App\Repository\CategoriaRepository;
 use App\Entity\Categoria;
 use App\Entity\Torneo;
+use App\Enum\EstadoCategoria;
 use App\Enum\Genero;
 use App\Exception\AppException;
 
@@ -60,6 +61,7 @@ class CategoriaManager
         $categoria->setGenero(Genero::from($genero));
         $categoria->setNombre($nombre);
         $categoria->setNombreCorto($nombreCorto);
+        $categoria->setEstado(EstadoCategoria::BORRADOR->value);
         $this->categoriaRepository->guardar($categoria, false);
     }
 

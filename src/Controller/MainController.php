@@ -28,7 +28,7 @@ class MainController extends AbstractController
         );
     }
 
-    #[Route('/torneos/{ruta}', name: '_torneo')]
+    #[Route('/torneo/{ruta}', name: '_torneo')]
     public function torneo(
         TorneoManager $torneoManager,
         string $ruta

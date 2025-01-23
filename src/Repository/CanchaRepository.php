@@ -34,6 +34,17 @@ class CanchaRepository extends ServiceEntityRepository
         }
     }
 
+    public function buscarSedesYCanchasByTorneo(string $ruta): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.sede', 's')
+            ->join('s.torneo', 't')
+            ->where('t.ruta = :ruta')
+            ->setParameter('ruta', $ruta)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Cancha[] Returns an array of Cancha objects
     //     */

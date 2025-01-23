@@ -10,12 +10,17 @@
     <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
     <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }}</h3>
     <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
-    {% if equipos[0].grupo == null %}
+    {% if equipos and equipos[0].grupo == null %}
         <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
         <a href="{{ path('app_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
     {% else %}
-        <a href="{{ path('app_partido', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
+        {% if equipos and equipos[0].partidosLocal|length == 0 and equipos[0].partidosVisitante|length == 0 %}
+        <a href="{{ path('app_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
+        {% else %}
+        <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
+        {% endif %}
     {% endif %}
+    
     <table class="table">
         <thead>
             <tr>
