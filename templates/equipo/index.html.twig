@@ -17,7 +17,7 @@
         {% if equipos and equipos[0].partidosLocal|length == 0 and equipos[0].partidosVisitante|length == 0 %}
         <a href="{{ path('app_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
         {% else %}
-        <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
+        <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Armar Clasificación</a>
         {% endif %}
     {% endif %}
     

@@ -43,9 +43,6 @@ class GenerarPdf
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
             logoPath: './assets/img/nuevo.png',
-            //D:\Proyectos\sgt_mvc\src\Utils\GenerarPdf.php
-            //D:\Proyectos\sgt_mvc\public\assets\img
-            //D:\Proyectos\sgt_mvc\src\Utils/assets/img/nuevo.png
             logoResizeToWidth: 75,
             logoPunchoutBackground: true,
             //labelText: 'Partido '. $partido->getNumero(),
@@ -129,6 +126,7 @@ class GenerarPdf
         $pdf->Output(__DIR__ .  'partido-' . $partido->getNumero() . '.pdf', 'F');
         $filesystem->rename(
             __DIR__ . 'partido-' . $partido->getNumero() . '.pdf',
-            $pathPdf . 'partido-' . $partido->getNumero() . '.pdf');
+            $pathPdf . 'partido-' . $partido->getNumero() . '.pdf'
+        );
     }
 }
