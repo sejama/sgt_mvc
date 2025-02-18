@@ -26,7 +26,7 @@ class Partido
     private ?Categoria $categoria = null;
 
     #[ORM\ManyToOne(inversedBy: 'partidos')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Grupo $grupo = null;
 
     #[ORM\ManyToOne(inversedBy: 'partidosLocal')]

@@ -57,8 +57,7 @@ class PartidoManager
 
     public function crearPartidoXCategoria(Categoria $categoria): void
     {
-        $grupos = $this->grupoManager->obtenerGrupos($categoria);
-        foreach ($grupos as $grupo) {
+        foreach ($this->grupoManager->obtenerGrupos($categoria) as $grupo) {
             $this->crearPartidosXGrupo($grupo);
         }
     }

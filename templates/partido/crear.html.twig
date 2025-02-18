@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <h1>{% block title %}SGT- Gestion Partidos Play Offs{% endblock %}</h1>
+    <h2>{{ categoria.nombre }} - Total de {{ categoria.getEquipos|length }} Equipos </h2>
+    <a href="{{ path('app_equipo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-secondary">Volver</a>
+    {% set equiposOro = 0 %}
+    {% set equiposPlata = 0 %}
+    {% set equiposBronce = 0 %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Grupo</th>
+                <th scope="col">Clasifica Oro</th>
+                <th scope="col">Clasifica Plata</th>
+                <th scope="col">Clasifica Bronce</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for grupo in categoria.getGrupos %}
+            <tr>
+                <th scope="row">{{ grupo.nombre }}</th>
+                <td>{{ grupo.clasificaOro ?? 0 }} {% set equiposOro = equiposOro + grupo.clasificaOro ?? 0 %}</td>
+                <td>{{ grupo.clasificaPlata ?? 0 }} {% set equiposPlata = equiposPlata + grupo.clasificaPlata ?? 0 %}</td>
+                <td>{{ grupo.clasificaBronce ?? 0 }} {% set equiposBronce = equiposBronce + grupo.clasificaBronce ?? 0 %}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th scope="row">Total</th>
+            <td>{{ equiposOro }}</td>
+            <td>{{ equiposPlata }}</td>
+            <td>{{ equiposBronce }}</td>
+        </tr>
+        </tbody>    
+    </table>
+    {% set tipoOro = "Partido Cuartos de Final Oro" %}
+    {% set tipoPlata = "Partido Cuartos de Final Plata" %}
+    {% set tipoBronce = "Partido Cuartos de Final Bronce" %}
+    <form class="row g-3 needs-validation" novalidate method="POST">
+        {% if equiposOro > 0 %}
+        <h6>Partidos Play Offs Oro</h6>
+            {% for i in 1 .. equiposOro / 2 %}
+            <div class="border border-success p-2 mb-2 border-opacity-25">
+                <div class="row">
+                    <div class="col-md-4 mt-1">
+                        <label for="nombrePartidoOro{{i}}" class="form-label">Nombre {{ tipoOro }}</label>
+                        <input type="text" class="form-control" id="nombrePartidoOro{{i}}" value="{{ tipoOro }} {{i}}" required>
+                        <div class="invalid-feedback">
+                            Por favor ingrese un nombre para el partido.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-1">
+                        <label for="grupoEquipo1Oro{{i}}" class="form-label">Equipo 1</label>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select" id="grupoEquipo1Oro{{i}}" name="grupoEquipo1Oro{{i}}" required>
+                                    <option selected disabled value="">Grupo</option>
+                                    {% for grupo in categoria.getGrupos %}
+                                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un grupo.
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" id="posicionEquipo1Oro{{i}}" name="posicionEquipo1Oro{{i}}" required>
+                                    <option selected disabled value="">Posición</option>
+                                    {% for i in 1 .. categoria.getGrupos[0].clasificaOro %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona una posición en el grupo.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please select a valid state.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-1">
+                        <label for="grupoEquipo2Oro{{i}}" class="form-label">Equipo 2</label>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select" id="grupoEquipo2Oro{{i}}" name="grupoEquipo2Oro{{i}}" required>
+                                    <option selected disabled value="">Grupo</option>
+                                    {% for grupo in categoria.getGrupos %}
+                                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un grupo.
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" id="posicionEquipo2Oro{{i}}" name="posicionEquipo2Oro{{i}}" required>
+                                    <option selected disabled value="">Posición</option>
+                                    {% for i in 1 .. categoria.getGrupos[0].clasificaOro %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona una posición en el grupo.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% if equiposPlata > 0 %}
+        <h6>Partidos Play Offs Plata</h6>
+            {% for i in 1 .. equiposPlata / 2 %}
+            <div class="border border-success p-2 mb-2 border-opacity-25">
+                <div class="row">
+                    <div class="col-md-4 mt-1">
+                        <label for="nombrePartidoPlata{{i}}" class="form-label">Nombre {{ tipoPlata }}</label>
+                        <input type="text" class="form-control" id="nombrePartidoPlata{{i}}" name="nombrePartidoPlata{{i}}" value="{{ tipoPlata }} {{i}}" required>
+                        <div class="invalid-feedback">
+                            Por favor ingrese un nombre para el partido.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-1">
+                        <label for="grupoEquipo1Plata{{i}}" class="form-label">Equipo 1</label>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select" id="grupoEquipo1Plata{{i}}" name="grupoEquipo1Plata{{i}}" required>
+                                    <option selected disabled value="">Grupo</option>
+                                    {% for grupo in categoria.getGrupos %}
+                                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un grupo.
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" id="posicionEquipo1Plata{{i}}" name="posicionEquipo1Plata{{i}}" required>
+                                    <option selected disabled value="">Posición</option>
+                                    {% for i in 1 .. categoria.getGrupos[0].clasificaPlata %}
+                                    <option value="{{ equiposOro + i }}">{{ equiposOro + i }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona una posición en el grupo.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-1">
+                        <label for="grupoEquipo2Plata{{i}}" class="form-label">Equipo 2</label>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select" id="grupoEquipo2Plata{{i}}" name="grupoEquipo2Plata{{i}}" required>
+                                    <option selected disabled value="">Grupo</option>
+                                    {% for grupo in categoria.getGrupos %}
+                                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un grupo.
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" id="posicionEquipo2Plata{{i}}" name="posicionEquipo2Plata{{i}}" required>
+                                    <option selected disabled value="">Posición</option>
+                                    {% for i in 1 .. categoria.getGrupos[0].clasificaPlata %}
+                                    <option value="{{ equiposOro + i }}">{{ equiposOro + i }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona una posición en el grupo.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% if equiposBronce > 0 %}
+        <h6>Partidos Play Offs Bornce</h6>
+            {% for i in 1 .. equiposBronce / 2 %}
+            <div class="border border-success p-2 mb-2 border-opacity-25">
+                <div class="row">
+                    <div class="col-md-4 mt-1">
+                        <label for="nombrePartidoBronce{{i}}" class="form-label">Nombre {{ tipoBronce }}</label>
+                        <input type="text" class="form-control" id="nombrePartidoBronce{{i}}" name="nombrePartidoBronce{{i}}" value="{{ tipoBronce }} {{i}}" required>
+                        <div class="invalid-feedback">
+                            Por favor ingrese un nombre para el partido.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-1">
+                        <label for="grupoEquipo1Bronce{{i}}" class="form-label">Equipo 1</label>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select" id="grupoEquipo1Bronce{{i}}" name="grupoEquipo1Bronce{{i}}" required>
+                                    <option selected disabled value="">Grupo</option>
+                                    {% for grupo in categoria.getGrupos %}
+                                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un grupo.
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" id="posicionEquipo1Bronce{{i}}" name="posicionEquipo1Bronce{{i}}" required>
+                                    <option selected disabled value="">Posición</option>
+                                    {% for i in 1 .. categoria.getGrupos[0].clasificaBronce %}
+                                    <option value="{{ equiposPlata + i }}">{{ equiposPlata + i }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona una posición en el grupo.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-1">
+                        <label for="grupoEquipo2Bronce{{i}}" class="form-label">Equipo 2</label>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select" id="grupoEquipo2Bronce{{i}}" name="grupoEquipo2Bronce{{i}}" required>
+                                    <option selected disabled value="">Grupo</option>
+                                    {% for grupo in categoria.getGrupos %}
+                                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un grupo.
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" id="posicionEquipo2Bronce{{i}}" name="posicionEquipo2Bronce{{i}}" required>
+                                    <option selected disabled value="">Posición</option>
+                                    {% for i in 1 .. categoria.getGrupos[0].clasificaPlata %}
+                                    <option value="{{ equiposPlata + i }}">{{ equiposPlata + i }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona una posición en el grupo.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Crear Partidos</button>
+        </div>
+    </form>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+    'use strict'
+  
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.needs-validation')
+  
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+  
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>
+{% endblock %}

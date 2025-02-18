@@ -8,7 +8,7 @@
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
     <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
-    <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }}</h3>
+    <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }} con {{ categoria.getEquipos|length }} Equipos </h2></h3>
     <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
     {% if equipos and equipos[0].grupo == null %}
         <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
@@ -16,8 +16,6 @@
     {% else %}
         {% if equipos and equipos[0].partidosLocal|length == 0 and equipos[0].partidosVisitante|length == 0 %}
         <a href="{{ path('app_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
-        {% else %}
-        <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Armar Clasificación</a>
         {% endif %}
     {% endif %}
     

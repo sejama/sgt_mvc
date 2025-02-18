@@ -29,7 +29,6 @@ class GrupoController extends AbstractController
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         if ($request->isMethod('POST')) {
             try {
-
                 $grupos = [];
                 $cantidadGrupos = (int)$request->request->get('cantidadGrupos');
                 $gruposReq =  $request->request->all('grupos');
@@ -45,8 +44,8 @@ class GrupoController extends AbstractController
                         'categoria' => $categoriaId,
                         'cantidad' => (int)$grupoReq['cantidadEquipo'],
                         'clasificaOro' => (int)$grupoReq['clasificaOro'],
-                        'clasificaPlata' => $grupoReq['clasificaPlata'] != '' ? (int)$grupoReq['clasificaPlata'] :  null,
-                        'clasificaBronce' => $grupoReq['clasificaBronce'] != '' ? (int)$grupoReq['clasificaBronce'] :  null,
+                        'clasificaPlata' => (int)$grupoReq['clasificaPlata'] !== 0 ? (int)$grupoReq['clasificaPlata'] : null,
+                        'clasificaBronce' => (int)$grupoReq['clasificaBronce'] !== 0 ? (int)$grupoReq['clasificaBronce'] : null,
                     ];
                 }
                 $grupoManager->crearGrupos($grupos);

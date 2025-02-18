@@ -18,26 +18,45 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class PartidoController extends AbstractController
 {
-    #[Route('/categoria/{categoriaId}/partido/crear', name: 'app_partido_crear')]
-    public function crearPartidos(
+    #[Route('/categoria/{categoriaId}/partido/crear', name: 'app_partido_crear', methods: ['GET','POST'])]
+    public function crearPartidoClasificatorio(
         string $ruta,
         int $categoriaId,
         CategoriaManager $categoriaManager,
         TorneoManager $torneoManager,
         EquipoManager $equipoManager,
-        PartidoManager $partidoManager
+        PartidoManager $partidoManager,
+        Request $request
     ): Response {
-        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
-        $partidoManager->crearPartidoXCategoria($categoria);
+        try {
+            $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+            $torneo = $torneoManager->obtenerTorneo($ruta);
+            $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
+            $partidoManager->crearPartidoXCategoria($categoria);
+            if ($request->isMethod('POST')) {
+                var_dump($request->request->all());
+                $partidoManager->crearPartidoXCategoria($categoria);
+                return $this->render('equipo/index.html.twig', [
+                    'torneo' => $torneo,
+                    'categoria' => $categoria,
+                    'equipos' => $equipos,
+                ]);
+            }
 
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
-
-        return $this->render('equipo/index.html.twig', [
-            'torneo' => $torneo,
-            'categoria' => $categoria,
-            'equipos' => $equipos,
-        ]);
+            return $this->render('partido/crear.html.twig', [
+                'torneo' => $torneo,
+                'categoria' => $categoria,
+                'equipos' => $equipos,
+            ]);
+        } catch (AppException $ae) {
+            // Handle the exception
+            $this->addFlash('error', $ae->getMessage());
+            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        } catch (Throwable $e) {
+            // Handle the exception
+            $this->addFlash('error', 'Ocurrió un error al crear el partido ' . $e);
+            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        }
     }
 
     #[Route('/partido', name: 'app_partido')]

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,21 +32,19 @@ class MainController extends AbstractController
     #[Route('/torneo/{ruta}', name: '_torneo')]
     public function torneo(
         TorneoManager $torneoManager,
+        PartidoManager $partidoManager,
         string $ruta
     ): Response {
 
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categorias = $torneo->getCategorias();
-        $grupos = [];
-        foreach ($categorias as $categoria) {
-            $grupos[] = $categoria->getGrupos();
-        }
+        $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);
         return $this->render(
             'main/torneo.html.twig',
             [
             'torneo' => $torneo,
             'categorias' => $categorias,
-            'grupos' => $grupos,
+            'partidosProgramados' => $partidosProgramados,
             ]
         );
     }

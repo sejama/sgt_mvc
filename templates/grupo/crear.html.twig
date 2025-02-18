@@ -40,21 +40,21 @@
             </div>
             <div class="col-md">
                 <label for="clasificaOro0" class="form-label">Clasifica Oro</label>
-                <input type="number" class="form-control" id="clasificaOro0" name='grupos[0][clasificaOro]' min="1"  required>
+                <input type="number" class="form-control" id="clasificaOro0" name='grupos[0][clasificaOro]' min=1 value=1 required>
                 <div id="nombreFeedback" class="invalid-feedback">
                     Cantidad de equipos que clasifican a Oro no valido
                 </div>
             </div>
             <div class="col-md">
                 <label for="clasificaPlata0" class="form-label">Clasifica Plata</label>
-                <input type="number" class="form-control" id="clasificaPlata0" name='grupos[0][clasificaPlata]'>
+                <input type="number" class="form-control" id="clasificaPlata0" name='grupos[0][clasificaPlata]' min=0 value=0 required>
                 <div id="nombreFeedback" class="invalid-feedback">
                     Cantidad de equipos que clasifican a Plata no valido
                 </div>
             </div>
             <div class="col-md">
                 <label for="clasificaBronce0" class="form-label">Clasifica Bronce</label>
-                <input type="number" class="form-control" id="clasificaBronce0" name='grupos[0][clasificaBronce]'>
+                <input type="number" class="form-control" id="clasificaBronce0" name='grupos[0][clasificaBronce]'  min=0 value=0  required>
                 <div id="nombreFeedback" class="invalid-feedback">
                     Cantidad de equipos que clasifican a Bronce no valido
                 </div>
@@ -93,21 +93,21 @@
                     </div>
                     <div class="col-md">
                         <label for="clasificaOro${i}" class="form-label">Clasifica Oro</label>
-                        <input type="number" class="form-control" id="clasificaOro${i}" name='grupos[${i}][clasificaOro]' min="1"  required>
+                        <input type="number" class="form-control" id="clasificaOro${i}" name='grupos[${i}][clasificaOro]' min=1 value=1 required>
                         <div id="nombreFeedback" class="invalid-feedback">
                             Cantidad de equipos que clasifican a Oro no valido
                         </div>
                     </div>
                     <div class="col-md">
                         <label for="clasificaPlata${i}" class="form-label">Clasifica Plata</label>
-                        <input type="number" class="form-control" id="clasificaPlata${i}" name='grupos[${i}][clasificaPlata]'>
+                        <input type="number" class="form-control" id="clasificaPlata${i}" name='grupos[${i}][clasificaPlata]' min=0 value=0 required>
                         <div id="nombreFeedback" class="invalid-feedback">
                             Cantidad de equipos que clasifican a Plata no valido
                         </div>
                     </div>
                     <div class="col-md">
                         <label for="clasificaBronce${i}" class="form-label">Clasifica Bronce</label>
-                        <input type="number" class="form-control" id="clasificaBronce${i}" name='grupos[${i}][clasificaBronce]'>
+                        <input type="number" class="form-control" id="clasificaBronce${i}" name='grupos[${i}][clasificaBronce]' min=0 value=0 required>
                         <div id="nombreFeedback" class="invalid-feedback">
                             Cantidad de equipos que clasifican a Bronce no valido
                         </div>

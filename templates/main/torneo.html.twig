@@ -10,9 +10,40 @@
         <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
     {% endfor %}
 </select>
-{% for grupo in grupos %}
-    {{ dump(grupo) }}
-{% endfor %}
+{% for key, canchas in partidosProgramados %}
+        <h3>{{ key }}</h3>
+        {% for key, cancha in canchas %}
+          <h4>{{ key }}</h4>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Categoría</th>
+                <th scope="col">Grupo</th>
+                <th scope="col">Local</th>
+                <th scope="col">vs</th>
+                <th scope="col">Visitante</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            {% for key, partido in cancha %}
+              <tr>
+                <th scope="row">{{key+1}}</th>
+                <td>{{ partido.fecha|date('d-m-Y') }}</td>
+                <td>{{ partido.hora|date('H:i') }}</td>
+                <td>{{ partido.categoria }}</td>
+                <td>{{ partido.grupo }}</td>
+                <td>{{ partido.equipoLocal }}</td>
+                <td>-</td>
+                <td>{{ partido.equipoVisitante }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endfor %}
+      {% endfor %}
 <script>
     
 </script>
