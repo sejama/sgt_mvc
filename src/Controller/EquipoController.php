@@ -30,11 +30,13 @@ class EquipoController extends AbstractController
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
-        return $this->render('equipo/index.html.twig', [
+        return $this->render(
+            'equipo/index.html.twig', [
             'torneo' => $torneo,
             'categoria' => $categoria,
             'equipos' => $equipos,
-        ]);
+            ]
+        );
     }
 
     #[Route('/nuevo', name: 'app_equipo_nuevo', methods: ['GET', 'POST'])]
@@ -83,11 +85,13 @@ class EquipoController extends AbstractController
         foreach (TipoDocumento::cases() as $tipoDocumento) {
             $tipoDocumentos[] = $tipoDocumento->value;
         }
-        return $this->render('equipo/nuevo.html.twig', [
+        return $this->render(
+            'equipo/nuevo.html.twig', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'tipoDocumentos' => $tipoDocumentos,
-        ]);
+            ]
+        );
     }
 
     #[Route('/{equipoId}/editar', name: 'app_equipo_editar', methods: ['GET', 'POST'])]
@@ -120,11 +124,13 @@ class EquipoController extends AbstractController
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
             }
         }
-        return $this->render('equipo/editar.html.twig', [
+        return $this->render(
+            'equipo/editar.html.twig', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'equipo' => $equipo,
-        ]);
+            ]
+        );
     }
 
     #[Route('/{equipoId}/eliminar', name: 'app_equipo_eliminar', methods: ['GET'])]

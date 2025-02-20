@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Cancha;
 use App\Entity\Sede;
 use App\Entity\Torneo;
 use Doctrine\Bundle\FixturesBundle\Fixture;

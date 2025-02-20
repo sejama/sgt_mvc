@@ -68,7 +68,7 @@ class CategoriaFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference(self::CATM50_REFERENCE, $catM50);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             TorneoFixtures::class,

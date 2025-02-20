@@ -48,12 +48,11 @@ class JugadorManager
         string $celular
     ): void {
 
-        if (
-            $this->jugadorRepository->findOneBy(
-                ['equipo' => $equipo,
+        if ($this->jugadorRepository->findOneBy(
+            ['equipo' => $equipo,
                 'tipoDocumento' => $tipoDocumento,
                 'numeroDocumento' => $numeroDocumento]
-            )
+        )
         ) {
             throw new AppException('Ya existe un jugador con ese DNI');
         }
@@ -96,9 +95,8 @@ class JugadorManager
         string $celular
     ): void {
 
-        if (
-            $jugador->getNumeroDocumento() !== $numeroDocumento &&
-            $this->jugadorRepository->findOneBy(['numeroDocumento' => $numeroDocumento])
+        if ($jugador->getNumeroDocumento() !== $numeroDocumento 
+            && $this->jugadorRepository->findOneBy(['numeroDocumento' => $numeroDocumento])
         ) {
             throw new AppException('Ya existe un jugador con ese DNI');
         }

@@ -13,8 +13,7 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(
         TorneoManager $torneoManager
-    ): Response
-    {
+    ): Response {
         if ($this->getUser() != null) {
             if ($this->getUser()->getCreatedAt() == $this->getUser()->getUpdatedAt()) {
                 return $this->render('usuario/cambiar_password.html.twig', ['idUser' => $this->getUser()->getId()]);

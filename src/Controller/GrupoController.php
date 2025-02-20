@@ -58,9 +58,11 @@ class GrupoController extends AbstractController
                 $this->addFlash('danger', "Ocurrió un error al crear el grupo.");
             }
         }
-        return $this->render('grupo/crear.html.twig', [
+        return $this->render(
+            'grupo/crear.html.twig', [
             'torneo' => $torneo,
             'categoria' => $categoria,
-        ]);
+            ]
+        );
     }
 }

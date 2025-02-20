@@ -28,12 +28,14 @@ class JugadorController extends AbstractController
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
         $jugadores = $jugadorManager->obtenerJugadoresPorEquipo($equipo);
-        return $this->render('jugador/index.html.twig', [
+        return $this->render(
+            'jugador/index.html.twig', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'equipo' => $equipo,
             'jugadores' => $jugadores,
-        ]);
+            ]
+        );
     }
 
     #[Route('/nuevo', name: 'app_jugador_nuevo')]
@@ -73,11 +75,13 @@ class JugadorController extends AbstractController
                     $celular
                 );
                 $this->addFlash('success', 'Jugador editado correctamente');
-                return $this->redirectToRoute('app_jugador', [
+                return $this->redirectToRoute(
+                    'app_jugador', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,
                     'equipoId' => $equipoId,
-                ]);
+                    ]
+                );
             } catch (\Exception $e) {
                 $this->addFlash('error', $e->getMessage());
                 $logger->error($e->getMessage());
@@ -94,13 +98,15 @@ class JugadorController extends AbstractController
         foreach (TipoPersona::cases() as $tipoPersona) {
             $tipoPersonas[] = $tipoPersona->value;
         }
-        return $this->render('jugador/nuevo.html.twig', [
+        return $this->render(
+            'jugador/nuevo.html.twig', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'equipo' => $equipo,
             'tipoDocumentos' => $tipoDocumentos,
             'tipoPersonas' => $tipoPersonas,
-        ]);
+            ]
+        );
     }
 
     #[Route('/{jugadorId}/editar', name: 'app_jugador_editar')]
@@ -142,11 +148,13 @@ class JugadorController extends AbstractController
                     $celular
                 );
                 $this->addFlash('success', 'Jugador creado correctamente');
-                return $this->redirectToRoute('app_jugador', [
+                return $this->redirectToRoute(
+                    'app_jugador', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,
                     'equipoId' => $equipoId,
-                ]);
+                    ]
+                );
             } catch (\Exception $e) {
                 $this->addFlash('error', $e->getMessage());
                 $logger->error($e->getMessage());
@@ -164,14 +172,16 @@ class JugadorController extends AbstractController
             $tipoPersonas[] = $tipoPersona->value;
         }
 
-        return $this->render('jugador/editar.html.twig', [
+        return $this->render(
+            'jugador/editar.html.twig', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'equipo' => $equipo,
             'jugador' => $jugador,
             'tipoDocumentos' => $tipoDocumentos,
             'tipoPersonas' => $tipoPersonas,
-        ]);
+            ]
+        );
     }
 
     #[Route('/{jugadorId}/eliminar', name: 'app_jugador_eliminar')]
@@ -186,10 +196,12 @@ class JugadorController extends AbstractController
         $equipo = $equipoManager->obtenerEquipo($equipoId);
         $jugador = $jugadorManager->obtenerJugador($jugadorId);
         $jugadorManager->eliminarJugador($jugador);
-        return $this->redirectToRoute('app_jugador', [
+        return $this->redirectToRoute(
+            'app_jugador', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'equipoId' => $equipoId,
-        ]);
+            ]
+        );
     }
 }

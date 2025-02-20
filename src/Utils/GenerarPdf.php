@@ -81,8 +81,8 @@ class GenerarPdf
         $pdf->Write(0, strtoupper($partido->getCategoria()->getNombre()));
 
         //Rama
-        #$pdf->SetXY(176, 32);
-        #$pdf->Write(0, strtoupper($partido->getEquipoLocal()->getTorneoGeneroCategoria()->getGenero()->getNombre()));
+        // $pdf->SetXY(176, 32);
+        // $pdf->Write(0, strtoupper($partido->getEquipoLocal()->getTorneoGeneroCategoria()->getGenero()->getNombre()));
 
         //Fecha y Hora
         $pdf->SetXY(236, 32);

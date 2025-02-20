@@ -87,16 +87,14 @@ class EquipoManager
         string $localidad
     ): void {
 
-        if (
-            $equipo->getNombre() !== $nombre &&
-            $this->equipoRepository->findOneBy(['categoria' => $equipo->getCategoria(), 'nombre' => $nombre])
+        if ($equipo->getNombre() !== $nombre 
+            && $this->equipoRepository->findOneBy(['categoria' => $equipo->getCategoria(), 'nombre' => $nombre])
         ) {
             throw new AppException('Ya existe un equipo con ese nombre');
         }
 
-        if (
-            $equipo->getNombreCorto() !== $nombreCorto &&
-            $this->equipoRepository->findOneBy(['categoria' => $equipo->getCategoria(), 'nombreCorto' => $nombreCorto])
+        if ($equipo->getNombreCorto() !== $nombreCorto 
+            && $this->equipoRepository->findOneBy(['categoria' => $equipo->getCategoria(), 'nombreCorto' => $nombreCorto])
         ) {
             throw new AppException('Ya existe un equipo con ese nombre corto');
         }

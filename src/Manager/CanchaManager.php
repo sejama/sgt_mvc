@@ -48,9 +48,8 @@ class CanchaManager
 
     public function editarCancha(Cancha $cancha, string $nombre, string $descripcion): void
     {
-        if (
-            $cancha->getNombre() !== $nombre &&
-            $this->canchaRepository->findOneBy(['sede' => $cancha->getSede(), 'nombre' => $nombre])
+        if ($cancha->getNombre() !== $nombre 
+            && $this->canchaRepository->findOneBy(['sede' => $cancha->getSede(), 'nombre' => $nombre])
         ) {
             throw new AppException('Ya existe una cancha con ese nombre');
         }

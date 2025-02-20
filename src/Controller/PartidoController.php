@@ -36,18 +36,22 @@ class PartidoController extends AbstractController
             if ($request->isMethod('POST')) {
                 var_dump($request->request->all());
                 $partidoManager->crearPartidoXCategoria($categoria);
-                return $this->render('equipo/index.html.twig', [
+                return $this->render(
+                    'equipo/index.html.twig', [
                     'torneo' => $torneo,
                     'categoria' => $categoria,
                     'equipos' => $equipos,
-                ]);
+                    ]
+                );
             }
 
-            return $this->render('partido/crear.html.twig', [
+            return $this->render(
+                'partido/crear.html.twig', [
                 'torneo' => $torneo,
                 'categoria' => $categoria,
                 'equipos' => $equipos,
-            ]);
+                ]
+            );
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
@@ -69,12 +73,14 @@ class PartidoController extends AbstractController
         $partidosSinAsignar = $partidoManager->obtenerPartidosSinAsignarXTorneo($ruta);
         $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);
         $canchas = $partidoManager->obtenerSedesyCanchasXTorneo($ruta);
-        return $this->render('partido/index.html.twig', [
+        return $this->render(
+            'partido/index.html.twig', [
             'torneo' => $torneo,
             'partidosSinAsignar' => $partidosSinAsignar,
             'partidosProgramados' => $partidosProgramados,
             'canchas' => $canchas,
-        ]);
+            ]
+        );
     }
 
     #[Route('/partido/editar', name: 'app_partido_editar', methods: ['POST'])]
@@ -113,7 +119,7 @@ class PartidoController extends AbstractController
             $resultadoLocal = (int)$request->request->get('var_resultado_local');
             $resultadoVisitante = (int)$request->request->get('var_resultado_visitante');
 
-           // $partidoManager->cargarResultado($partidoId, $resultadoLocal, $resultadoVisitante);
+            // $partidoManager->cargarResultado($partidoId, $resultadoLocal, $resultadoVisitante);
 
             return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
         } catch (AppException $ae) {

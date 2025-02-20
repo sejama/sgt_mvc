@@ -26,10 +26,12 @@ class CanchaController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $sede = $sedeManager->obtenerSede($sedeId);
-        return $this->render('cancha/index.html.twig', [
+        return $this->render(
+            'cancha/index.html.twig', [
             'torneo' => $torneo,
             'sede' => $sede,
-        ]);
+            ]
+        );
     }
 
     #[Route('/nuevo', name: 'app_torneo_sede_cancha_nueva', methods: ['GET', 'POST'])]
@@ -61,10 +63,12 @@ class CanchaController extends AbstractController
                 $this->addFlash('error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.');
             }
         }
-        return $this->render('cancha/nuevo.html.twig', [
+        return $this->render(
+            'cancha/nuevo.html.twig', [
             'torneo' => $torneo,
             'sede' => $sede,
-        ]);
+            ]
+        );
     }
 
     #[Route(
@@ -102,11 +106,13 @@ class CanchaController extends AbstractController
                 $this->addFlash('error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.');
             }
         }
-        return $this->render('cancha/editar.html.twig', [
+        return $this->render(
+            'cancha/editar.html.twig', [
             'torneo' => $torneo,
             'sede' => $sede,
             'cancha' => $cancha,
-        ]);
+            ]
+        );
     }
 
     #[Route('/{canchaId}/eliminar', name: 'app_torneo_sede_cancha_eliminar', methods: ['GET'])]
