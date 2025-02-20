@@ -30,11 +30,13 @@ class PartidoController extends AbstractController
     ): Response {
         try {
             $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+            $grupos = $categoria->getGrupos();
+            $tipoOro =  $tipoPlata = $tipoBronce = '';
+            $equiposOro = $equiposPlata = $equiposBronce = 0;
             $torneo = $torneoManager->obtenerTorneo($ruta);
-            $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
-            $partidoManager->crearPartidoXCategoria($categoria);
+            
             if ($request->isMethod('POST')) {
-                var_dump($request->request->all());
+                var_dump($request->request->all()); die();
                 $partidoManager->crearPartidoXCategoria($categoria);
                 return $this->render(
                     'equipo/index.html.twig', [
@@ -45,11 +47,65 @@ class PartidoController extends AbstractController
                 );
             }
 
+            foreach ($grupos as $grupo) {
+                $equiposOro += $grupo->getClasificaOro();
+                $equiposPlata += $grupo->getClasificaPlata();
+                $equiposBronce += $grupo->getClasificaBronce();
+            }
+
+            switch ($equiposOro) {
+                case 2:
+                    $tipoOro = 'Partido Final Oro';
+                    break;
+                case 4:
+                    $tipoOro = 'Partido Semi Final Oro';
+                    break;
+                case 8:
+                    $tipoOro = 'Partido Cuartos de Final Oro';
+                    break;
+                default:
+                    break;
+            }
+
+            switch ($equiposPlata) {
+                case 2:
+                    $tipoPlata = 'Partido Final Plata';
+                    break;
+                case 4:
+                    $tipoPlata = 'Partido Semi Final Plata';
+                    break;
+                case 8:
+                    $tipoPlata = 'Partido Cuartos de Final Plata';
+                    break;
+                default:
+                    break;
+            }
+
+            switch ($equiposBronce) {
+                case 2:
+                    $tipoBronce = 'Partido Final Bronce';
+                    break;
+                case 4:
+                    $tipoBronce = 'Partido Semi Final Bronce';
+                    break;
+                case 8:
+                    $tipoBronce = 'Partido Cuartos de Final Bronce';
+                    break;
+                default:
+                    break;
+            }
+
             return $this->render(
                 'partido/crear.html.twig', [
                 'torneo' => $torneo,
                 'categoria' => $categoria,
-                'equipos' => $equipos,
+                'grupos' => $grupos,
+                'equiposOro' => $equiposOro, 
+                'equiposPlata' => $equiposPlata,
+                'equiposBronce' => $equiposBronce,
+                'tipoOro' => $tipoOro, 
+                'tipoPlata' =>  $tipoPlata,
+                'tipoBronce' => $tipoBronce
                 ]
             );
         } catch (AppException $ae) {
