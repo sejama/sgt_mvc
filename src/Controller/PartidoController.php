@@ -31,7 +31,7 @@ class PartidoController extends AbstractController
         try {
             $categoria = $categoriaManager->obtenerCategoria($categoriaId);
             $grupos = $categoria->getGrupos();
-            $tipoOro =  $tipoPlata = $tipoBronce = '';
+            $tipoOro =  $tipoPlata = $tipoBronce = [];
             $equiposOro = $equiposPlata = $equiposBronce = 0;
             $torneo = $torneoManager->obtenerTorneo($ruta);
             
@@ -55,13 +55,16 @@ class PartidoController extends AbstractController
 
             switch ($equiposOro) {
                 case 2:
-                    $tipoOro = 'Partido Final Oro';
+                    $tipoOro[] = 'Final Oro';
                     break;
                 case 4:
-                    $tipoOro = 'Partido Semi Final Oro';
+                    $tipoOro[] = 'Semi Final Oro';
+                    $tipoOro[] = 'Final Oro';
                     break;
                 case 8:
-                    $tipoOro = 'Partido Cuartos de Final Oro';
+                    $tipoOro[] = 'Cuartos de Final Oro';
+                    $tipoOro[] = 'Semi Final Oro';
+                    $tipoOro[] = 'Final Oro';
                     break;
                 default:
                     break;
@@ -69,13 +72,16 @@ class PartidoController extends AbstractController
 
             switch ($equiposPlata) {
                 case 2:
-                    $tipoPlata = 'Partido Final Plata';
+                    $tipoPlata[] = 'Final Plata';
                     break;
                 case 4:
-                    $tipoPlata = 'Partido Semi Final Plata';
+                    $tipoPlata[] = 'Semi Final Plata';
+                    $tipoPlata[] = 'Final Plata';
                     break;
                 case 8:
-                    $tipoPlata = 'Partido Cuartos de Final Plata';
+                    $tipoPlata[] = 'Cuartos de Final Plata';
+                    $tipoPlata[] = 'Semi Final Plata';
+                    $tipoPlata[] = 'Final Plata';
                     break;
                 default:
                     break;
@@ -83,13 +89,16 @@ class PartidoController extends AbstractController
 
             switch ($equiposBronce) {
                 case 2:
-                    $tipoBronce = 'Partido Final Bronce';
+                    $tipoBronce[] = 'Final Bronce';
                     break;
                 case 4:
-                    $tipoBronce = 'Partido Semi Final Bronce';
+                    $tipoBronce[] = 'Semi Final Bronce';
+                    $tipoBronce[] = 'Final Bronce';
                     break;
                 case 8:
-                    $tipoBronce = 'Partido Cuartos de Final Bronce';
+                    $tipoBronce[] = 'Cuartos de Final Bronce';
+                    $tipoBronce[] = 'Semi Final Bronce';
+                    $tipoBronce[] = 'Final Bronce';
                     break;
                 default:
                     break;

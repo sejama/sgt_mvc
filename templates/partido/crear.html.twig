@@ -41,27 +41,28 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <h6>Partidos Play Offs Oro</h6>
+                    <h5>Partidos Play Offs Oro</h5>
                 </button>
               </h2>
               <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    {% if equiposOro == 2 or equiposOro == 4 or equiposOro == 8 %}
+                    {% if tipoOro %}
+                    <h6>Partidos {{tipoOro[0]}}</h6>
                         {% for i in 1 .. equiposOro / 2 %}
                         <div class="border border-success p-2 mb-2 border-opacity-25">
                             <div class="row">
                                 <div class="col-md-4 mt-1">
-                                    <label for="nombrePartidoOro{{i}}" class="form-label">Nombre {{ tipoOro }}</label>
-                                    <input type="text" class="form-control" id="nombrePartidoOro{{i}}" name="nombrePartidoOro{{i}}" value="{{ tipoOro }} {{i}}" required>
+                                    <label for="nombre{{tipoOro[0]}}{{i}}" class="form-label">Nombre {{ tipoOro[0] }}</label>
+                                    <input type="text" class="form-control" id="nombre{{tipoOro[0]}}{{i}}" name="nombre{{tipoOro[0]}}{{i}}" value="{{ tipoOro[0] }} {{i}}" required>
                                     <div class="invalid-feedback">
                                         Por favor ingrese un nombre para el partido.
                                     </div>
                                 </div>
                                 <div class="col-md-4 mt-1">
-                                    <label for="grupoEquipo1Oro{{i}}" class="form-label">Equipo 1</label>
+                                    <label for="grupoEquipo1{{tipoOro[0]}}{{i}}" class="form-label">Equipo 1</label>
                                     <div class="row">
                                         <div class="col">
-                                            <select class="form-select" id="grupoEquipo1Oro{{i}}" name="grupoEquipo1Oro{{i}}" required>
+                                            <select class="form-select" id="grupoEquipo1{{tipoOro[0]}}{{i}}" name="grupoEquipo1{{tipoOro[0]}}{{i}}" required>
                                                 <option selected disabled value="">Grupo</option>
                                                 {% for grupo in grupos %}
                                                 <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
@@ -72,7 +73,7 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <select class="form-select" id="posicionEquipo1Oro{{i}}" name="posicionEquipo1Oro{{i}}" required>
+                                            <select class="form-select" id="posicionEquipo1{{tipoOro[0]}}{{i}}" name="posicionEquipo1{{tipoOro[0]}}{{i}}" required>
                                                 <option selected disabled value="">Posición</option>
                                                 {% for i in 1 .. grupos[0].clasificaOro %}
                                                 <option value="{{ i }}">{{ i }}</option>
@@ -85,10 +86,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 mt-1">
-                                    <label for="grupoEquipo2Oro{{i}}" class="form-label">Equipo 2</label>
+                                    <label for="grupoEquipo2{{tipoOro[0]}}{{i}}" class="form-label">Equipo 2</label>
                                     <div class="row">
                                         <div class="col">
-                                            <select class="form-select" id="grupoEquipo2Oro{{i}}" name="grupoEquipo2Oro{{i}}" required>
+                                            <select class="form-select" id="grupoEquipo2{{tipoOro[0]}}{{i}}" name="grupoEquipo2{{tipoOro[0]}}{{i}}" required>
                                                 <option selected disabled value="">Grupo</option>
                                                 {% for grupo in grupos %}
                                                 <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
@@ -99,7 +100,7 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <select class="form-select" id="posicionEquipo2Oro{{i}}" name="posicionEquipo2Oro{{i}}" required>
+                                            <select class="form-select" id="posicionEquipo2{{tipoOro[0]}}{{i}}" name="posicionEquipo2{{tipoOro[0]}}{{i}}" required>
                                                 <option selected disabled value="">Posición</option>
                                                 {% for i in 1 .. grupos[0].clasificaOro %}
                                                 <option value="{{ i }}">{{ i }}</option>
@@ -115,33 +116,151 @@
                         </div>
                         {% endfor %}
                     {% endif %}
+                    {% if tipoOro|length == 2 %}
+                        <h6>Partidos {{tipoOro[1]}}</h6>
+                        {% for i in 1 .. equiposOro / 4 %}
+                        <div class="border border-success p-2 mb-2 border-opacity-25">
+                            <div class="row">
+                                <div class="col-md-4 mt-1">
+                                    <label for="nombre{{tipoOro[1]}}{{i}}" class="form-label">Nombre Prtido {{ tipoOro[1] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{tipoOro[1]}}{{i}}" name="nombrePartido{{tipoOro[1]}}{{i}}" value="Partido {{ tipoOro[1] }} {{i}}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un nombre para el partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo1{{tipoOro[1]}}{{i}}" class="form-label">Equipo 1</label>
+                                    <select class="form-select" id="grupoEquipo1{{tipoOro[1]}}{{i}}" name="grupoEquipo1{{tipoOro[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un grupo.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo2{{tipoOro[1]}}{{i}}" class="form-label">Equipo 2</label>
+                                    <select class="form-select" id="grupoEquipo2{{tipoOro[1]}}{{i}}" name="grupoEquipo2{{tipoOro[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un grupo.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    {% if tipoOro|length == 3 %}
+                        <h6>Partidos {{tipoOro[1]}}</h6>
+                        {% for i in 1 .. equiposOro / 4 %}
+                        <div class="border border-success p-2 mb-2 border-opacity-25">
+                            <div class="row">
+                                <div class="col-md-4 mt-1">
+                                    <label for="nombrePartido{{tipoOro[1]}}{{i}}" class="form-label">Nombre Prtido {{ tipoOro[1] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{tipoOro[1]}}{{i}}" name="nombrePartido{{tipoOro[1]}}{{i}}" value="Partido {{ tipoOro[1] }} {{i}}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un nombre para el partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo1{{tipoOro[1]}}{{i}}" class="form-label">Equipo 1</label>
+                                    <select class="form-select" id="grupoEquipo1{{tipoOro[1]}}{{i}}" name="grupoEquipo1{{tipoOro[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                        <option value="3">Partido 3</option>
+                                        <option value="4">Partido 4</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un grupo.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo2{{tipoOro[1]}}{{i}}" class="form-label">Equipo 2</label>
+                                    <select class="form-select" id="grupoEquipo2{{tipoOro[1]}}{{i}}" name="grupoEquipo2{{tipoOro[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                        <option value="3">Partido 3</option>
+                                        <option value="4">Partido 4</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un grupo.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <h6>Partidos {{tipoOro[2]}}</h6>
+                        {% for i in 1 .. equiposOro / 8 %}
+                        <div class="border border-success p-2 mb-2 border-opacity-25">
+                            <div class="row">
+                                <div class="col-md-4 mt-1">
+                                    <label for="nombrePartido{{tipoOro[2]}}{{i}}" class="form-label">Nombre Partido {{ tipoOro[2] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{tipoOro[2]}}{{i}}" name="nombrePartido{{tipoOro[2]}}{{i}}" value="Partido {{ tipoOro[2] }} {{i}}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un nombre para el partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo1{{tipoOro[2]}}{{i}}" class="form-label">Equipo 1</label>
+                                    <select class="form-select" id="grupoEquipo1{{tipoOro[2]}}{{i}}" name="grupoEquipo1{{tipoOro[2]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un grupo.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo2{{tipoOro[2]}}{{i}}" class="form-label">Equipo 2</label>
+                                    <select class="form-select" id="grupoEquipo2{{tipoOro[2]}}{{i}}" name="grupoEquipo2{{tipoOro[2]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
               </div>
             </div>
+<!-- Partidos PLata-->
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <h6>Partidos Play Offs Plata</h6>
+                    <h5>Partidos Play Offs Plata</h5>
                 </button>
               </h2>
               <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    {% if equiposPlata == 2 or equiposPlata == 4 or equiposPlata == 8 %}
+                    {% if tipoPlata %}
+                    <h6>Partidos {{ tipoPlata[0] }}</h6>
                         {% for i in 1 .. equiposPlata / 2 %}
                         <div class="border border-success p-2 mb-2 border-opacity-25">
                             <div class="row">
                                 <div class="col-md-4 mt-1">
-                                    <label for="nombrePartidoPlata{{i}}" class="form-label">Nombre {{ tipoPlata }}</label>
-                                    <input type="text" class="form-control" id="nombrePartidoPlata{{i}}" name="nombrePartidoPlata{{i}}" value="{{ tipoPlata }} {{i}}" required>
+                                    <label for="nombrePartido{{ tipoPlata[0] }}{{i}}" class="form-label">Nombre {{ tipoPlata[0] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{ tipoPlata[0] }}{{i}}" name="nombrePartido{{ tipoPlata[0] }}{{i}}" value="{{ tipoPlata[0] }} {{i}}" required>
                                     <div class="invalid-feedback">
                                         Por favor ingrese un nombre para el partido.
                                     </div>
                                 </div>
                                 <div class="col-md-4 mt-1">
-                                    <label for="grupoEquipo1Plata{{i}}" class="form-label">Equipo 1</label>
+                                    <label for="grupoEquipo1{{ tipoPlata[0] }}{{i}}" class="form-label">Equipo 1</label>
                                     <div class="row">
                                         <div class="col">
-                                            <select class="form-select" id="grupoEquipo1Plata{{i}}" name="grupoEquipo1Plata{{i}}" required>
+                                            <select class="form-select" id="grupoEquipo1{{ tipoPlata[0] }}{{i}}" name="grupoEquipo1{{ tipoPlata[0] }}{{i}}" required>
                                                 <option selected disabled value="">Grupo</option>
                                                 {% for grupo in grupos %}
                                                 <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
@@ -152,7 +271,7 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <select class="form-select" id="posicionEquipo1Plata{{i}}" name="posicionEquipo1Plata{{i}}" required>
+                                            <select class="form-select" id="posicionEquipo1{{ tipoPlata[0] }}{{i}}" name="posicionEquipo1{{ tipoPlata[0] }}{{i}}" required>
                                                 <option selected disabled value="">Posición</option>
                                                 {% for i in 1 .. grupos[0].clasificaPlata %}
                                                 <option value="{{ equiposOro + i }}">{{ equiposOro + i }}</option>
@@ -165,10 +284,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 mt-1">
-                                    <label for="grupoEquipo2Plata{{i}}" class="form-label">Equipo 2</label>
+                                    <label for="grupoEquipo2{{ tipoPlata[0] }}{{i}}" class="form-label">Equipo 2</label>
                                     <div class="row">
                                         <div class="col">
-                                            <select class="form-select" id="grupoEquipo2Plata{{i}}" name="grupoEquipo2Plata{{i}}" required>
+                                            <select class="form-select" id="grupoEquipo2{{ tipoPlata[0] }}{{i}}" name="grupoEquipo2{{ tipoPlata[0] }}{{i}}" required>
                                                 <option selected disabled value="">Grupo</option>
                                                 {% for grupo in grupos %}
                                                 <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
@@ -179,7 +298,7 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <select class="form-select" id="posicionEquipo2Plata{{i}}" name="posicionEquipo2Plata{{i}}" required>
+                                            <select class="form-select" id="posicionEquipo2{{ tipoPlata[0] }}{{i}}" name="posicionEquipo2{{ tipoPlata[0] }}{{i}}" required>
                                                 <option selected disabled value="">Posición</option>
                                                 {% for i in 1 .. grupos[0].clasificaPlata %}
                                                 <option value="{{ equiposOro + i }}">{{ equiposOro + i }}</option>
@@ -194,34 +313,156 @@
                             </div>
                         </div>
                         {% endfor %}
+                        {% if tipoPlata|length == 2 %}
+                        <h6>Partidos {{ tipoPlata[1] }}</h6>
+                        {% for i in 1 .. equiposPlata / 4 %}
+                        <div class="border border-success p-2 mb-2 border-opacity-25">
+                            <div class="row">
+                                <div class="col-md-4 mt-1">
+                                    <label for="nombrePartido{{ tipoPlata[1] }}{{i}}" class="form-label">Nombre {{ tipoPlata[1] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{ tipoPlata[1] }}{{i}}" name="nombrePartido{{ tipoPlata[1] }}{{i}}" value="{{ tipoPlata[1] }} {{i}}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un nombre para el partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo1{{ tipoPlata[1] }}{{i}}" class="form-label">Equipo 1</label>
+                                    <select class="form-select" id="grupoEquipo1{{tipoPlata[1]}}{{i}}" name="grupoEquipo1{{tipoPlata[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo2{{ tipoPlata[1] }}{{i}}" class="form-label">Equipo 2</label>
+                                    <select class="form-select" id="grupoEquipo2{{tipoPlata[1]}}{{i}}" name="grupoEquipo2{{tipoPlata[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% if tipoPlata|length == 3 %}
+                        <h6>Partidos {{ tipoPlata[1] }}</h6>
+                        {% for i in 1 .. equiposPlata / 4 %}
+                        <div class="border border-success p-2 mb-2 border-opacity-25">
+                            <div class="row">
+                                <div class="col-md-4 mt-1">
+                                    <label for="nombrePartido{{ tipoPlata[1] }}{{i}}" class="form-label">Nombre {{ tipoPlata[1] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{ tipoPlata[1] }}{{i}}" name="nombrePartido{{ tipoPlata[1] }}{{i}}" value="{{ tipoPlata[1] }} {{i}}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un nombre para el partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo1{{ tipoPlata[1] }}{{i}}" class="form-label">Equipo 1</label>
+                                    <select class="form-select" id="grupoEquipo1{{tipoPlata[1]}}{{i}}" name="grupoEquipo1{{tipoPlata[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                        <option value="3">Partido 3</option>
+                                        <option value="4">Partido 4</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo2{{tipoPlata[1]}}{{i}}" class="form-label">Equipo 2</label>
+                                    <select class="form-select" id="grupoEquipo2{{tipoPlata[1]}}{{i}}" name="grupoEquipo2{{tipoPlata[1]}}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                        <option value="3">Partido 3</option>
+                                        <option value="4">Partido 4</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <h6>Partidos {{ tipoPlata[2] }}</h6>
+                        {% for i in 1 .. equiposPlata / 8 %}
+                        <div class="border border-success p-2 mb-2 border-opacity-25">
+                            <div class="row">
+                                <div class="col-md-4 mt-1">
+                                    <label for="nombrePartido{{ tipoPlata[2] }}{{i}}" class="form-label">Nombre {{ tipoPlata[2] }}</label>
+                                    <input type="text" class="form-control" id="nombrePartido{{ tipoPlata[2] }}{{i}}" name="nombrePartido{{ tipoPlata[2] }}{{i}}" value="{{ tipoPlata[2] }} {{i}}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un nombre para el partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo1{{ tipoPlata[2] }}{{i}}" class="form-label">Equipo 1</label>
+                                    <select class="form-select" id="grupoEquipo1{{ tipoPlata[2] }}{{i}}" name="grupoEquipo1{{ tipoPlata[2] }}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label for="grupoEquipo2{{ tipoPlata[2] }}{{i}}" class="form-label">Equipo 2</label>
+                                    <select class="form-select" id="grupoEquipo2{{ tipoPlata[2] }}{{i}}" name="grupoEquipo2{{ tipoPlata[2] }}{{i}}" required>
+                                        <option selected disabled value="">Ganador del Partido</option>
+                                        <option value="1">Partido 1</option>
+                                        <option value="2">Partido 2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona un partido.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            No se pueden crear partidos de Plata con {{ equiposPlata }} equipos.
+                        </div>
                     {% endif %}
                 </div>
               </div>
             </div>
+<!-- PArtidos Bronce -->
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    <h6>Partidos Play Offs Bornce</h6>
+                    <h5>Partidos Play Offs Bornce</h5>
                 </button>
               </h2>
               <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    {% if equiposBronce == 2 or equiposBronce == 4 or equiposBronce == 8 %}
+                {% if tipoBronce %}
+                    <h6>Partidos {{ tipoBronce[0] }}</h6>
                     {% for i in 1 .. equiposBronce / 2 %}
                     <div class="border border-success p-2 mb-2 border-opacity-25">
                         <div class="row">
                             <div class="col-md-4 mt-1">
-                                <label for="nombrePartidoBronce{{i}}" class="form-label">Nombre {{ tipoBronce }}</label>
-                                <input type="text" class="form-control" id="nombrePartidoBronce{{i}}" name="nombrePartidoBronce{{i}}" value="{{ tipoBronce }} {{i}}" required>
+                                <label for="nombrePartido{{ tipoBronce[0] }}{{i}}" class="form-label">Nombre {{ tipoBronce[0] }}</label>
+                                <input type="text" class="form-control" id="nombrePartido{{ tipoBronce[0] }}{{i}}" name="nombrePartido{{ tipoBronce[0] }}{{i}}" value="{{ tipoBronce[0] }} {{i}}" required>
                                 <div class="invalid-feedback">
                                     Por favor ingrese un nombre para el partido.
                                 </div>
                             </div>
                             <div class="col-md-4 mt-1">
-                                <label for="grupoEquipo1Bronce{{i}}" class="form-label">Equipo 1</label>
+                                <label for="grupoEquipo1{{ tipoBronce[0] }}{{i}}" class="form-label">Equipo 1</label>
                                 <div class="row">
                                     <div class="col">
-                                        <select class="form-select" id="grupoEquipo1Bronce{{i}}" name="grupoEquipo1Bronce{{i}}" required>
+                                        <select class="form-select" id="grupoEquipo1{{ tipoBronce[0] }}{{i}}" name="grupoEquipo1{{ tipoBronce[0] }}{{i}}" required>
                                             <option selected disabled value="">Grupo</option>
                                             {% for grupo in grupos %}
                                             <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
@@ -232,10 +473,10 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <select class="form-select" id="posicionEquipo1Bronce{{i}}" name="posicionEquipo1Bronce{{i}}" required>
+                                        <select class="form-select" id="posicionEquipo1{{ tipoBronce[0] }}{{i}}" name="posicionEquipo1{{ tipoBronce[0] }}{{i}}" required>
                                             <option selected disabled value="">Posición</option>
                                             {% for i in 1 .. grupos[0].clasificaBronce %}
-                                            <option value="{{ equiposPlata + i }}">{{ equiposPlata + i }}</option>
+                                            <option value="{{ equiposOro + equiposPlata + i }}">{{ equiposOro + equiposPlata + i }}</option>
                                             {% endfor %}
                                         </select>
                                         <div class="invalid-feedback">
@@ -245,10 +486,10 @@
                                 </div>
                             </div>
                             <div class="col-md-4 mt-1">
-                                <label for="grupoEquipo2Bronce{{i}}" class="form-label">Equipo 2</label>
+                                <label for="grupoEquipo2{{ tipoBronce[0] }}{{i}}" class="form-label">Equipo 2</label>
                                 <div class="row">
                                     <div class="col">
-                                        <select class="form-select" id="grupoEquipo2Bronce{{i}}" name="grupoEquipo2Bronce{{i}}" required>
+                                        <select class="form-select" id="grupoEquipo2{{ tipoBronce[0] }}{{i}}" name="grupoEquipo2{{ tipoBronce[0] }}{{i}}" required>
                                             <option selected disabled value="">Grupo</option>
                                             {% for grupo in grupos %}
                                             <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
@@ -259,10 +500,10 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <select class="form-select" id="posicionEquipo2Bronce{{i}}" name="posicionEquipo2Bronce{{i}}" required>
+                                        <select class="form-select" id="posicionEquipo2{{ tipoBronce[0] }}{{i}}" name="posicionEquipo2{{ tipoBronce[0] }}{{i}}" required>
                                             <option selected disabled value="">Posición</option>
                                             {% for i in 1 .. grupos[0].clasificaPlata %}
-                                            <option value="{{ equiposPlata + i }}">{{ equiposPlata + i }}</option>
+                                            <option value="{{ equiposOro + equiposPlata + i }}">{{ equiposOro + equiposPlata + i }}</option>
                                             {% endfor %}
                                         </select>
                                         <div class="invalid-feedback">
@@ -274,10 +515,127 @@
                         </div>
                     </div>
                     {% endfor %}
-                    {% else %}
-                        <div class="alert alert-warning" role="alert">
-                            No se pueden crear partidos de Bronce con {{ equiposBronce }} equipos.
+                    {% if tipoBronce|length == 2 %}
+                    <h6>Partidos {{ tipoBronce[1] }}</h6>
+                    {% for i in 1 .. equiposBronce / 4 %}
+                    <div class="border border-success p-2 mb-2 border-opacity-25">
+                        <div class="row">
+                            <div class="col-md-4 mt-1">
+                                <label for="nombrePartido{{ tipoBronce[1] }}{{i}}" class="form-label">Nombre {{ tipoBronce[1] }}</label>
+                                <input type="text" class="form-control" id="nombrePartido{{ tipoBronce[1] }}{{i}}" name="nombrePartido{{ tipoBronce[1] }}{{i}}" value="{{ tipoBronce[1] }} {{i}}" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingrese un nombre para el partido.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label for="grupoEquipo1{{ tipoBronce[1] }}{{i}}" class="form-label">Equipo 1</label>
+                                <select class="form-select" id="grupoEquipo1{{ tipoBronce[1] }}{{i}}" name="grupoEquipo1{{ tipoBronce[1] }}{{i}}" required>
+                                    <option selected disabled value="">Ganador del Partido</option>
+                                    <option value="1">Partido 1</option>
+                                    <option value="2">Partido 2</option>   
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un partido.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label for="grupoEquipo2{{ tipoBronce[1] }}{{i}}" class="form-label">Equipo 2</label>
+                                <select class="form-select" id="grupoEquipo2{{ tipoBronce[1] }}{{i}}" name="grupoEquipo2{{ tipoBronce[1] }}{{i}}" required>
+                                    <option selected disabled value="">Ganador del Partido</option>
+                                    <option value="1">Partido 1</option>
+                                    <option value="2">Partido 2</option>   
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un partido.
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% if tipoBronce|length == 3 %}
+                    <h6>Partidos {{ tipoBronce[1] }}</h6>
+                    {% for i in 1 .. equiposBronce / 4 %}
+                    <div class="border border-success p-2 mb-2 border-opacity-25">
+                        <div class="row">
+                            <div class="col-md-4 mt-1">
+                                <label for="nombrePartido{{ tipoBronce[1] }}{{i}}" class="form-label">Nombre {{ tipoBronce[1] }}</label>
+                                <input type="text" class="form-control" id="nombrePartido{{ tipoBronce[1] }}{{i}}" name="nombrePartido{{ tipoBronce[1] }}{{i}}" value="{{ tipoBronce[1] }} {{i}}" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingrese un nombre para el partido.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label for="grupoEquipo1{{ tipoBronce[1] }}{{i}}" class="form-label">Equipo 1</label>
+                                <select class="form-select" id="grupoEquipo1{{ tipoBronce[1] }}{{i}}" name="grupoEquipo1{{ tipoBronce[1] }}{{i}}" required>
+                                    <option selected disabled value="">Ganador del Partido</option>
+                                    <option value="1">Partido 1</option>
+                                    <option value="2">Partido 2</option>
+                                    <option value="3">Partido 3</option>
+                                    <option value="4">Partido 4</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un partido.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label for="grupoEquipo2{{ tipoBronce[1] }}{{i}}" class="form-label">Equipo 2</label>
+                                <select class="form-select" id="grupoEquipo2{{ tipoBronce[1] }}{{i}}" name="grupoEquipo2{{ tipoBronce[1] }}{{i}}" required>
+                                    <option selected disabled value="">Ganador del Partido</option>
+                                    <option value="1">Partido 1</option>
+                                    <option value="2">Partido 2</option>
+                                    <option value="3">Partido 3</option>
+                                    <option value="4">Partido 4</option>
+
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un partido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <h6>Partidos {{ tipoBronce[2] }}</h6>
+                    {% for i in 1 .. equiposBronce / 8 %}
+                    <div class="border border-success p-2 mb-2 border-opacity-25">
+                        <div class="row">
+                            <div class="col-md-4 mt-1">
+                                <label for="nombrePartido{{ tipoBronce[2] }}{{i}}" class="form-label">Nombre {{ tipoBronce[2] }}</label>
+                                <input type="text" class="form-control" id="nombrePartido{{ tipoBronce[2] }}{{i}}" name="nombrePartido{{ tipoBronce[2] }}{{i}}" value="{{ tipoBronce[2] }} {{i}}" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingrese un nombre para el partido.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label for="grupoEquipo1{{ tipoBronce[2] }}{{i}}" class="form-label">Equipo 1</label>
+                                <select class="form-select" id="grupoEquipo1{{ tipoBronce[2] }}{{i}}" name="grupoEquipo1{{ tipoBronce[2] }}{{i}}" required>
+                                    <option selected disabled value="">Ganador del Partido</option>
+                                    <option value="1">Partido 1</option>
+                                    <option value="2">Partido 2</option>   
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un partido.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label for="grupoEquipo2{{ tipoBronce[2] }}{{i}}" class="form-label">Equipo 2</label>
+                                <select class="form-select" id="grupoEquipo2{{ tipoBronce[2] }}{{i}}" name="grupoEquipo2{{ tipoBronce[2] }}{{i}}" required>
+                                    <option selected disabled value="">Ganador del Partido</option>
+                                    <option value="1">Partido 1</option>
+                                    <option value="2">Partido 2</option>   
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona un partido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning" role="alert">
+                        No se pueden crear partidos de Bronce con {{ equiposBronce }} equipos.
+                    </div>
                 {% endif %}
                 </div>
               </div>
