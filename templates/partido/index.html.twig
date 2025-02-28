@@ -23,7 +23,7 @@
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          {% for partido in partidosSinAsignar %}
+          {% for partido in partidosSinAsignar['clasificatorios'] %}
             <tr>
                 <th scope="row">{{ partido.numero }}</th>
                 <td>
@@ -59,6 +59,26 @@
           {% endfor %}
         </tbody>
       </table>
+      {% for partido in partidosSinAsignar['eliminatorias'] %}
+      <p>{{ partido.id }} 
+      {{ partido.numero }}
+      {{ partido.nombre }}
+      {{ partido.equipoLocal }}
+      {{ partido.equipoVisitante }}
+      {{ partido.categoria }}
+      {{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}
+      {{ partido.fechaFinTorneo|date('Y-m-d H:i') }}</p>
+      {% endfor %}
+      {% for partido in partidosSinAsignar['finales'] %}
+      <p>{{ partido.id }}
+      {{ partido.numero }}
+      {{ partido.nombre }}
+      {{ partido.categoria }}
+      {{ partido.equipoPartidoLocal }}
+      {{ partido.equipoPartidoVisitante }}
+      {{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}
+      {{ partido.fechaFinTorneo|date('Y-m-d H:i') }}</p>
+      {% endfor %}
 
       {% for key, canchas in partidosProgramados %}
         <h3>{{ key }}</h3>
