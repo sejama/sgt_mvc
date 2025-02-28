@@ -36,8 +36,9 @@ class PartidoController extends AbstractController
             $torneo = $torneoManager->obtenerTorneo($ruta);
             
             if ($request->isMethod('POST')) {
-                var_dump($request->request->all()); die();
-                $partidoManager->crearPartidoXCategoria($categoria);
+                $partidosPlayOff = $request->request->all();
+                $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
+                $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
                 return $this->render(
                     'equipo/index.html.twig', [
                     'torneo' => $torneo,
@@ -136,6 +137,7 @@ class PartidoController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $partidosSinAsignar = $partidoManager->obtenerPartidosSinAsignarXTorneo($ruta);
+        var_dump($partidosSinAsignar); die();
         $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);
         $canchas = $partidoManager->obtenerSedesyCanchasXTorneo($ruta);
         return $this->render(

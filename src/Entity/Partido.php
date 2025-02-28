@@ -82,6 +82,9 @@ class Partido
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $numero = null;
 
+    #[ORM\OneToOne(mappedBy: 'partido', cascade: ['persist', 'remove'])]
+    private ?PartidoConfig $partidoConfig = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -338,6 +341,23 @@ class Partido
     public function setNumero(int $numero): static
     {
         $this->numero = $numero;
+
+        return $this;
+    }
+
+    public function getPartidoConfig(): ?PartidoConfig
+    {
+        return $this->partidoConfig;
+    }
+
+    public function setPartidoConfig(PartidoConfig $partidoConfig): static
+    {
+        // set the owning side of the relation if necessary
+        if ($partidoConfig->getPartido() !== $this) {
+            $partidoConfig->setPartido($this);
+        }
+
+        $this->partidoConfig = $partidoConfig;
 
         return $this;
     }

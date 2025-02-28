@@ -50,6 +50,17 @@ class PartidoRepository extends ServiceEntityRepository
 
     public function buscarPartidosSinAsignarXTorneo(string $ruta): array
     {
+        /*
+        SELECT p.id AS id, p.numero, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, c.nombre AS categoria, t.fecha_inicio_torneo AS fechaInicioTorneo, t.fecha_fin_torneo AS fechaFinTorneo 
+        FROM partido AS p 
+        JOIN grupo g ON p.grupo_id = g.id 
+        JOIN categoria c ON g.categoria_id = c.id
+        JOIN torneo t ON c.torneo_id = t.id
+        JOIN equipo eLocal ON p.equipo_local_id = eLocal.id
+        JOIN equipo eVisitante ON p.equipo_visitante_id = eVisitante.id
+        WHERE t.ruta = 'xiv-sudamericano-master-voley-sf' and p.cancha_id IS NULL
+        ORDER BY p.id ASC;
+        */
         return $this->createQueryBuilder('p')
             ->select('p.id AS id, p.numero, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
             ->join('p.grupo', 'g')
@@ -59,6 +70,69 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('p.equipoVisitante', 'eVisitante')
             ->where('t.ruta = :ruta')
             ->andWhere('p.cancha IS NULL')
+            ->setParameter('ruta', $ruta)
+            ->addOrderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function buscarPartidosPlayOffGrupoXTorneo(string $ruta): array
+    { 
+        /*
+        SELECT p.id AS id, p.numero, pc.nombre AS nombre, CONCAT(g1.nombre,'-',pc.posicion_equipo1) AS equipoLocal, CONCAT(g2.nombre,'-',pc.posicion_equipo2) AS equipoVisitante,
+        c.nombre AS categoria, t.fecha_inicio_torneo AS fechaInicioTorneo, t.fecha_fin_torneo AS fechaFinTorneo
+        FROM partido p 
+        JOIN partido_config pc ON pc.partido_id = p.id
+        JOIN categoria c ON c.id = p.categoria_id
+        JOIN grupo g1 ON pc.grupo_equipo1_id = g1.id
+        JOIN grupo g2 ON pc.grupo_equipo2_id = g2.id
+        JOIN torneo t ON c.torneo_id = t.id
+        WHERE t.ruta = 'xiv-sudamericano-master-voley-sf' and p.cancha_id IS NULL
+        ORDER BY p.id ASC
+        */
+
+        return $this->createQueryBuilder('p')
+            ->select('p.id AS id, p.numero, pc.nombre AS nombre, CONCAT(g1.nombre, \'-\', pc.posicionEquipo1) AS equipoLocal, CONCAT(g2.nombre, \'-\', pc.posicionEquipo2) AS equipoVisitante, c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
+            ->join('p.partidoConfig', 'pc')
+            ->join('p.categoria', 'c')
+            ->join('pc.grupoEquipo1', 'g1')
+            ->join('pc.grupoEquipo2', 'g2')
+            ->join('c.torneo', 't')
+            ->where('t.ruta = :ruta')
+            ->andWhere('p.cancha IS NULL')
+            ->setParameter('ruta', $ruta)
+            ->addOrderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function buscarPartidosPlayOffFinalesXTorneo(string $ruta): array
+    {
+        /*
+        SELECT p.id AS id, p.numero, pc.nombre AS nombre, pc1.nombre AS equipoPartidoLocal, pc2.nombre AS equipoPartidoVisitante,
+        c.nombre AS categoria, t.fecha_inicio_torneo AS fechaInicioTorneo, t.fecha_fin_torneo AS fechaFinTorneo
+        FROM partido p 
+        JOIN partido_config pc ON pc.partido_id = p.id
+        JOIN partido_config pc1 ON pc.ganador_partido1_id = pc1.partido_id
+        JOIN partido_config pc2 ON pc.ganador_partido2_id = pc2.partido_id
+        JOIN categoria c ON c.id = p.categoria_id
+        JOIN torneo t ON c.torneo_id = t.id
+        WHERE t.ruta = 'xiv-sudamericano-master-voley-sf' AND p.cancha_id IS NULL AND pc.ganador_partido1_id IS NOT NULL AND pc.ganador_partido2_id IS NOT NULL
+        ORDER BY p.id ASC
+        */
+        return $this->createQueryBuilder('p')
+            ->select('p.id AS id, p.numero, pc.nombre AS nombre, pc1.nombre AS equipoPartidoLocal, pc2.nombre AS equipoPartidoVisitante, c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
+            ->join('p.partidoConfig', 'pc')
+            ->join('pc.ganadorPartido1', 'p1')
+            ->join('pc.ganadorPartido2', 'p2')
+            ->join('p1.partidoConfig', 'pc1')
+            ->join('p2.partidoConfig', 'pc2')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->where('t.ruta = :ruta')
+            ->andWhere('p.cancha IS NULL')
+            ->andWhere('pc.ganadorPartido1 IS NOT NULL')
+            ->andWhere('pc.ganadorPartido2 IS NOT NULL')
             ->setParameter('ruta', $ruta)
             ->addOrderBy('p.id', 'ASC')
             ->getQuery()
@@ -78,6 +152,11 @@ class PartidoRepository extends ServiceEntityRepository
             ->orderBy('s.id, c.id, horario')
             ->getQuery()
             ->getResult();
+    }
+
+    public function obtenerPartidoXNumero(int $numero): Partido
+    {
+        return $this->findOneBy(['numero' => $numero]);
     }
 
     /*
