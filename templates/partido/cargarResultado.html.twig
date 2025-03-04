@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <h1>{% block title %}SGT- Cargar resultado del partido {{ partido.id }} - {{ partido.numero }}{% endblock %}</h1>
+    <h2>{{ partido.equipoLocal.nombre }} vs {{ partido.equipoVisitante.nombre }}</h2>
+    <form class="row g-3 needs-validation" novalidate action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoId': partido.id}) }}" method="post">
+        <div class="input-group mb-3">
+            <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 1 {{ partido.equipoLocal.nombre }}" aria-label="Set 1 {{ partido.equipoLocal.nombre }}" min=0 required>
+            <span class="input-group-text">vs</span>
+            <input type="number" class="form-control" name="puntosVisitante[]" placeholder="Set 1 {{ partido.equipoVisitante.nombre }}" aria-label="Set 1 {{ partido.equipoVisitante.nombre }}" min=0 required>
+        </div>
+        <div class="input-group mb-3">
+            <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 2 {{ partido.equipoLocal.nombre }}" aria-label="Set 2 {{ partido.equipoLocal.nombre }}" min=0 required>
+            <span class="input-group-text">vs</span>
+            <input type="number" class="form-control" name="puntosVisitante[]" placeholder="Set 2 {{ partido.equipoVisitante.nombre }}" aria-label="Set 2 {{ partido.equipoVisitante.nombre }}" min=0 required>
+        </div>
+        <div class="input-group mb-3">
+            <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 3 {{ partido.equipoLocal.nombre }}" aria-label="Set 3 {{ partido.equipoLocal.nombre }}" min=0>
+            <span class="input-group-text">vs</span>
+            <input type="number" class="form-control" name="puntosVisitante[]" placeholder="Set 3 {{ partido.equipoVisitante.nombre }}" aria-label="Set 3 {{ partido.equipoVisitante.nombre }}" min=0>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Guardar</button>
+        </div>
+    </form>
+<script>
+    (() => {
+        'use strict'
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+    
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

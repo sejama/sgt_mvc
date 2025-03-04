@@ -37,6 +37,7 @@ class CanchaRepository extends ServiceEntityRepository
     public function buscarSedesYCanchasByTorneo(string $ruta): array
     {
         return $this->createQueryBuilder('c')
+            ->select('s.nombre as sede, c.id, c.nombre as cancha')
             ->join('c.sede', 's')
             ->join('s.torneo', 't')
             ->where('t.ruta = :ruta')

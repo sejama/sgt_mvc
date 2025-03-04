@@ -16,7 +16,7 @@ class Grupo
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 16)]
+    #[ORM\Column(length: 25)]
     private ?string $nombre = null;
 
     /**

@@ -139,12 +139,27 @@ class PartidoController extends AbstractController
         $partidosSinAsignar = $partidoManager->obtenerPartidosSinAsignarXTorneo($ruta);
         $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);
         $canchas = $partidoManager->obtenerSedesyCanchasXTorneo($ruta);
+        // Organizar las sedes y sus canchas en un array estructurado
+        $sedesCanchas = [];
+        foreach ($canchas as $cancha) {
+            $sedeNombre = $cancha['sede'];
+            $canchaNombre = [
+                'id' => $cancha['id'],
+                'cancha' => $cancha['cancha'],
+            ];
+
+            if (!isset($sedesCanchas[$sedeNombre])) {
+                $sedesCanchas[$sedeNombre] = [];
+            }
+
+            $sedesCanchas[$sedeNombre][] = $canchaNombre;
+        }
         return $this->render(
             'partido/index.html.twig', [
             'torneo' => $torneo,
             'partidosSinAsignar' => $partidosSinAsignar,
             'partidosProgramados' => $partidosProgramados,
-            'canchas' => $canchas,
+            'canchas' => $sedesCanchas,
             ]
         );
     }
@@ -182,12 +197,20 @@ class PartidoController extends AbstractController
         PartidoManager $partidoManager
     ): Response {
         try {
-            $resultadoLocal = (int)$request->request->get('var_resultado_local');
-            $resultadoVisitante = (int)$request->request->get('var_resultado_visitante');
+            if($request->isMethod('POST')) {
+                
+                $resultadoLocal = $request->request->all('puntosLocal');
+                $resultadoVisitante = $request->request->all('puntosVisitante');
+                $partidoManager->cargarResultado($partidoId, $resultadoLocal, $resultadoVisitante);
+            }
+            $partido = $partidoManager->obtenerPartido($partidoId);
 
-            // $partidoManager->cargarResultado($partidoId, $resultadoLocal, $resultadoVisitante);
-
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->render(
+                'partido/cargarResultado.html.twig', [
+                'partido' => $partido,
+                'ruta' => $ruta,
+                ]
+            );
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());

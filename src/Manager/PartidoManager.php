@@ -154,4 +154,20 @@ class PartidoManager
         $pdf->generarPdf($partido, $ruta);
         $this->partidoRepository->guardar($partido);
     }
+
+    public function cargarResultado(int $partidoId, array $resultadoLocal, array $resultadoVisitante): void
+    {
+        $partido = $this->obtenerPartido($partidoId);
+        
+        $partido->setLocalSet1((int)$resultadoLocal[0]);
+        $partido->setLocalSet2((int)$resultadoLocal[1]);
+        $partido->setLocalSet3((int)$resultadoLocal[2]);
+
+        $partido->setVisitanteSet1((int)$resultadoVisitante[0]);
+        $partido->setVisitanteSet2((int)$resultadoVisitante[1]);
+        $partido->setVisitanteSet3((int)$resultadoVisitante[2]);
+        
+        $partido->setEstado(\App\Enum\EstadoPartido::FINALIZADO->value);
+        $this->partidoRepository->guardar($partido);
+    }
 }

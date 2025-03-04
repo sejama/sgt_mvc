@@ -8,6 +8,8 @@
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
     <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
+    <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+    <h3>Partidos clasificatorios</h3>
     <table class="table table-striped">
         <thead>
           <tr>
@@ -27,12 +29,16 @@
             <tr>
                 <th scope="row">{{ partido.numero }}</th>
                 <td>
-                    <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-                      <option selected>Seleccionar Cancha</option>
-                      {% for cancha in canchas %}
-                          <option value="{{ cancha.id }}">{{ cancha.sede.nombre }} - {{ cancha.nombre }}</option>
+                  <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
+                    <option selected>Seleccionar Cancha</option>
+                    {% for key,sede in canchas %}
+                      <optgroup label="{{key}}">	
+                      {% for cancha in sede %}
+                        <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
                       {% endfor %}
-                    </select>
+                      </optgroup>
+                    {% endfor %}
+                  </select>
                 </td>
                 <td>
                     <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
@@ -59,27 +65,119 @@
           {% endfor %}
         </tbody>
       </table>
+      <h3>Partidos eliminatorios post grupos</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cancha</th>
+            <th scope="col">Horario</th>
+            <th scope="col">Categoría</th>
+            <th scope="col">Partido</th>
+            <th scope="col">Local</th>
+            <th scope="col">vs</th>
+            <th scope="col">Visitante</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
       {% for partido in partidosSinAsignar['eliminatorias'] %}
-      <p>{{ partido.id }} 
-      {{ partido.numero }}
-      {{ partido.nombre }}
-      {{ partido.equipoLocal }}
-      {{ partido.equipoVisitante }}
-      {{ partido.categoria }}
-      {{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}
-      {{ partido.fechaFinTorneo|date('Y-m-d H:i') }}</p>
-      {% endfor %}
-      {% for partido in partidosSinAsignar['finales'] %}
-      <p>{{ partido.id }}
-      {{ partido.numero }}
-      {{ partido.nombre }}
-      {{ partido.categoria }}
-      {{ partido.equipoPartidoLocal }}
-      {{ partido.equipoPartidoVisitante }}
-      {{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}
-      {{ partido.fechaFinTorneo|date('Y-m-d H:i') }}</p>
-      {% endfor %}
+      <tr>
+        <th scope="row">{{ partido.numero }}</th>
+        <td>
+          <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
+            <option selected>Seleccionar Cancha</option>
+            {% for key,sede in canchas %}
+              <optgroup label="{{key}}">	
+              {% for cancha in sede %}
+                <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+              {% endfor %}
+              </optgroup>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+            <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
 
+              min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
+              max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+              disabled
+            >
+        </td>
+        <td>{{ partido.categoria }}</td>
+        <td>{{ partido.nombre }}</td>
+        <td>{{ partido.equipoLocal }}</td>
+        <td>-</td>
+        <td>{{ partido.equipoVisitante }}</td>
+        <td>
+          <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
+            <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
+            <input type="hidden" id="var_cancha{{ partido.id }}" name="var_cancha" value="">
+            <input type="hidden" id="var_horario{{ partido.id }}" name="var_horario" value="">
+            <button id="app_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
+          </form>
+      </td>
+    </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+      <h3>Partidos eliminatorios finales</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cancha</th>
+            <th scope="col">Horario</th>
+            <th scope="col">Categoría</th>
+            <th scope="col">Partido</th>
+            <th scope="col">Local</th>
+            <th scope="col">vs</th>
+            <th scope="col">Visitante</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+      {% for partido in partidosSinAsignar['finales'] %}
+      <tr>
+        <th scope="row">{{ partido.numero }}</th>
+        <td>
+          <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
+            <option selected>Seleccionar Cancha</option>
+            {% for key,sede in canchas %}
+              <optgroup label="{{key}}">	
+              {% for cancha in sede %}
+                <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+              {% endfor %}
+              </optgroup>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+            <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
+
+              min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
+              max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+              disabled
+            >
+        </td>
+        <td>{{ partido.categoria }}</td>
+        <td>{{ partido.nombre }}</td>
+        <td>{{ partido.equipoPartidoLocal }}</td>
+        <td>-</td>
+        <td>{{ partido.equipoPartidoVisitante }}</td>
+        <td>
+          <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
+            <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
+            <input type="hidden" id="var_cancha{{ partido.id }}" name="var_cancha" value="">
+            <input type="hidden" id="var_horario{{ partido.id }}" name="var_horario" value="">
+            <button id="app_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
+          </form>
+      </td>
+    </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+      <h3>Partidos programados</h3>
       {% for key, canchas in partidosProgramados %}
         <h3>{{ key }}</h3>
         {% for key, cancha in canchas %}

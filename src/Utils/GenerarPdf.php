@@ -6,6 +6,8 @@ use App\Entity\Partido;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\OpenSans;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Symfony\Component\Filesystem\Filesystem;
@@ -36,15 +38,15 @@ class GenerarPdf
             writerOptions: [],
             validateResult: false,
             data: 'https://' . $_SERVER['HTTP_HOST'] .
-                'sgt_mvc/public/admin/torneo/' . $ruta . '/partido/' . $partido->getNumero() . '/cargar-resultado',
+                'sgt_mvc/public/admin/torneo/' . $ruta . '/partido/' . $partido->getNumero() . '/cargar_resultado',
             encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::High,
             size: 300,
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
-            logoPath: './assets/img/nuevo.png',
-            logoResizeToWidth: 75,
-            logoPunchoutBackground: true,
+            //logoPath: './assets/img/nuevo.png',
+            //logoResizeToWidth: 75,
+            //logoPunchoutBackground: true,
             //labelText: 'Partido '. $partido->getNumero(),
             //labelFont: new OpenSans(30),
             //labelAlignment: LabelAlignment::Center
