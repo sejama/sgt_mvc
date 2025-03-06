@@ -14,37 +14,39 @@
     <h1>SGT - Usuarios</h1>
     <a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
     <a href="{{ path('app_usuario_nuevo') }}" class="btn btn-success">Registrar</a>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Apellido</th>
-                <th scope="col">Usuario</th>
-                <th scope="col">Roles</th>
-                <th scope="col" style="width: 170px;">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in usuarios %}
+    <div class="table-responsive">
+        <table class="table align-middle" style="white-space: nowrap; overflow-x: auto;">
+            <thead>
                 <tr>
-                    <th scope="row">{{ loop.index }}</th>
-                    <td>{{ user.nombre }}</td>
-                    <td>{{ user.apellido }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>
-                        {% for rol in user.roles %}
-                            {{ rol }}
-                        {% endfor %}
-                    </td>
-                    <td>
-                        <a href="{{ path('app_usuario_editar', {'id': user.id}) }}" class="btn btn-info">Editar</a>
-                        <a class="btn btn-danger" id="btnEliminarUsuario{{ user.id }}">Eliminar</a>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Usuario</th>
+                    <th>Roles</th>
+                    <th class="w-auto" >Acciones</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-      </table>
-      
+            </thead>
+            <tbody>
+                {% for user in usuarios %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ user.nombre }}</td>
+                        <td>{{ user.apellido }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            {% for rol in user.roles %}
+                                {{ rol }}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_usuario_editar', {'id': user.id}) }}" class="btn btn-info">Editar</a>
+                            <a class="btn btn-danger" id="btnEliminarUsuario{{ user.id }}">Eliminar</a>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     {% include "./componentes/modal.html.twig" %}
 
     <script>

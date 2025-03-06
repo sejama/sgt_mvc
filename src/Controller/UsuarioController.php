@@ -14,9 +14,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
 #[Route('/admin/usuario')]
-#[IsGranted('ROLE_ADMIN')]
 class UsuarioController extends AbstractController
 {
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/', name: 'app_usuario', methods: ['GET'])]
     public function usuarios(
         UsuarioManager $rm,

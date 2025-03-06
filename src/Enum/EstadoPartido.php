@@ -7,8 +7,8 @@ namespace App\Enum;
 enum EstadoPartido: string
 {
     case BORRADOR = "Borrador";
-    case ZONAS_CREADAS = "Zonas_creadas";
-    case PARTIDOS_CREADOS = "Partidos_creados";
+    case ACTIVO = "Activo";
+    case SUSPENDIDO = "Suspendido";
     case FINALIZADO = "Finalizado";
 
     public static function getValues(): array

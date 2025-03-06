@@ -8,8 +8,11 @@ enum EstadoEquipo: string
 {
     case BORRADOR = "Borrador";
     case Activo = "Activo";
-    case NO_SE_PRESENTO = "Partidos_creados";
-    case FINALIZADO = "Finalizado";
+    case NO_SE_PRESENTO = "No_se_presento";
+    case SUSPENDIDO = "Suspendido";
+    case DESCALIFICADO = "Descalificado";
+    case RETIRADO = "Retirado";
+    case ELIMINADO = "Eliminado";
 
     public static function getValues(): array
     {

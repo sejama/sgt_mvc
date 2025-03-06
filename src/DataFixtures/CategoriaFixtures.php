@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Categoria;
 use App\Entity\Torneo;
+use App\Enum\EstadoCategoria;
 use App\Enum\Genero;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -27,30 +28,35 @@ class CategoriaFixtures extends Fixture implements DependentFixtureInterface
         $catF35->setGenero(Genero::FEMENINO);
         $catF35->setNombre('Femenino +35');
         $catF35->setNombreCorto('F35');
+        $catF35->setEstado(EstadoCategoria::BORRADOR->value);
 
         $catF40 = new Categoria();
         $catF40->setTorneo($torneo);
         $catF40->setGenero(Genero::FEMENINO);
         $catF40->setNombre('Femenino +40');
         $catF40->setNombreCorto('F40');
+        $catF40->setEstado(EstadoCategoria::BORRADOR->value);
 
         $catF45 = new Categoria();
         $catF45->setTorneo($torneo);
         $catF45->setGenero(Genero::FEMENINO);
         $catF45->setNombre('Femenino +45');
         $catF45->setNombreCorto('F45');
+        $catF45->setEstado(EstadoCategoria::BORRADOR->value);
 
         $catM42 = new Categoria();
         $catM42->setTorneo($torneo);
         $catM42->setGenero(Genero::MASCULINO);
         $catM42->setNombre('Masculino +42');
         $catM42->setNombreCorto('M42');
+        $catM42->setEstado(EstadoCategoria::BORRADOR->value);
 
         $catM50 = new Categoria();
         $catM50->setTorneo($torneo);
         $catM50->setGenero(Genero::MASCULINO);
         $catM50->setNombre('Masculino +50');
         $catM50->setNombreCorto('M50');
+        $catM50->setEstado(EstadoCategoria::BORRADOR->value);
 
         $manager->persist($catF35);
         $manager->persist($catF40);

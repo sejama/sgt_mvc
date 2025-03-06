@@ -35,7 +35,7 @@ class TorneoFixtures extends Fixture implements DependentFixtureInterface
         $torneo->setFechaFinTorneo(
             new \DateTimeImmutable('2024-12-02 21:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
         );
-        $torneo->setEstado(EstadoTorneo::BORRADOR);
+        $torneo->setEstado(EstadoTorneo::BORRADOR->value);
 
         $manager->persist($torneo);
 

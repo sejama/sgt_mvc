@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Categoria;
 use App\Entity\Equipo;
 use App\Entity\Jugador;
+use App\Enum\EstadoEquipo;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -18,7 +19,7 @@ class EquipoFixtures extends Fixture implements DependentFixtureInterface
         $catF45 = $this->getReference(CategoriaFixtures::CATF45_REFERENCE, Categoria::class);
         $catM42 = $this->getReference(CategoriaFixtures::CATM42_REFERENCE, Categoria::class);
         $catM50 = $this->getReference(CategoriaFixtures::CATM50_REFERENCE, Categoria::class);
-
+        $numero = 1;
         $equiposF35 = [
             [
                 'nombre' => 'VILLA DORA',
@@ -142,6 +143,8 @@ class EquipoFixtures extends Fixture implements DependentFixtureInterface
             $equipo->setPais($equipoF35['pais']);
             $equipo->setProvincia($equipoF35['provincia']);
             $equipo->setLocalidad($equipoF35['localidad']);
+            $equipo->setEstado(EstadoEquipo::BORRADOR->value);
+            $equipo->setNumero($numero++);
 
             $manager->persist($equipo);
 
@@ -257,6 +260,8 @@ class EquipoFixtures extends Fixture implements DependentFixtureInterface
             $equipo->setPais($equipoF40['pais']);
             $equipo->setProvincia($equipoF40['provincia']);
             $equipo->setLocalidad($equipoF40['localidad']);
+            $equipo->setEstado(EstadoEquipo::BORRADOR->value);
+            $equipo->setNumero($numero++);
 
             $manager->persist($equipo);
 
@@ -337,6 +342,8 @@ class EquipoFixtures extends Fixture implements DependentFixtureInterface
             $equipo->setPais($equipoF45['pais']);
             $equipo->setProvincia($equipoF45['provincia']);
             $equipo->setLocalidad($equipoF45['localidad']);
+            $equipo->setEstado(EstadoEquipo::BORRADOR->value);
+            $equipo->setNumero($numero++);
 
             $manager->persist($equipo);
 
@@ -424,6 +431,8 @@ class EquipoFixtures extends Fixture implements DependentFixtureInterface
             $equipo->setPais($equipoM42['pais']);
             $equipo->setProvincia($equipoM42['provincia']);
             $equipo->setLocalidad($equipoM42['localidad']);
+            $equipo->setEstado(EstadoEquipo::BORRADOR->value);
+            $equipo->setNumero($numero++);
 
             $manager->persist($equipo);
 
@@ -511,6 +520,8 @@ class EquipoFixtures extends Fixture implements DependentFixtureInterface
             $equipo->setPais($equipoM50['pais']);
             $equipo->setProvincia($equipoM50['provincia']);
             $equipo->setLocalidad($equipoM50['localidad']);
+            $equipo->setEstado(EstadoEquipo::BORRADOR->value);
+            $equipo->setNumero($numero++);
 
             $manager->persist($equipo);
 
