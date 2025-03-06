@@ -7,6 +7,16 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PartidoConfigRepository::class)]
+#[ORM\UniqueConstraint(
+    name: 'partido_config_grupo_posicion_1', 
+    fields: ['grupoEquipo1', 'posicionEquipo1'],
+    options: ['where' => 'grupoEquipo1 IS NOT NULL']
+)]
+#[ORM\UniqueConstraint(
+    name: 'partido_config_grupo_posicion_2', 
+    fields: ['grupoEquipo2', 'posicionEquipo2'],
+    options: ['where' => 'grupoEquipo2 IS NOT NULL']
+)]
 #[ORM\HasLifecycleCallbacks]
 class PartidoConfig
 {
@@ -20,12 +30,14 @@ class PartidoConfig
     private ?Partido $partido = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\Column(nullable: true, unique: false)]
     private ?Grupo $grupoEquipo1 = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $posicionEquipo1 = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\Column(nullable: true, unique: false)]
     private ?grupo $grupoEquipo2 = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
