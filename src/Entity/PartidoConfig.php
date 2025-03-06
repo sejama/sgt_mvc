@@ -30,14 +30,12 @@ class PartidoConfig
     private ?Partido $partido = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\Column(nullable: true, unique: false)]
     private ?Grupo $grupoEquipo1 = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $posicionEquipo1 = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\Column(nullable: true, unique: false)]
     private ?grupo $grupoEquipo2 = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]

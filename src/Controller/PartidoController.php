@@ -20,114 +20,116 @@ class PartidoController extends AbstractController
 {
     #[Route('/categoria/{categoriaId}/partido/crear', name: 'app_partido_crear', methods: ['GET','POST'])]
     public function crearPartidoClasificatorio(
-        string $ruta,
-        int $categoriaId,
-        CategoriaManager $categoriaManager,
-        TorneoManager $torneoManager,
-        EquipoManager $equipoManager,
-        PartidoManager $partidoManager,
-        Request $request
-    ): Response {
-        try {
-            $categoria = $categoriaManager->obtenerCategoria($categoriaId);
-            $grupos = $categoria->getGrupos();
-            $tipoOro =  $tipoPlata = $tipoBronce = [];
-            $equiposOro = $equiposPlata = $equiposBronce = 0;
-            $torneo = $torneoManager->obtenerTorneo($ruta);
-            
-            if ($request->isMethod('POST')) {
-                $partidosPlayOff = $request->request->all();
-                $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
-                $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
-                return $this->render(
-                    'equipo/index.html.twig', [
-                    'torneo' => $torneo,
-                    'categoria' => $categoria,
-                    'equipos' => $equipos,
-                    ]
-                );
-            }
-
-            foreach ($grupos as $grupo) {
-                $equiposOro += $grupo->getClasificaOro();
-                $equiposPlata += $grupo->getClasificaPlata();
-                $equiposBronce += $grupo->getClasificaBronce();
-            }
-
-            switch ($equiposOro) {
-                case 2:
-                    $tipoOro[] = 'Final Oro';
-                    break;
-                case 4:
-                    $tipoOro[] = 'Semi Final Oro';
-                    $tipoOro[] = 'Final Oro';
-                    break;
-                case 8:
-                    $tipoOro[] = 'Cuartos de Final Oro';
-                    $tipoOro[] = 'Semi Final Oro';
-                    $tipoOro[] = 'Final Oro';
-                    break;
-                default:
-                    break;
-            }
-
-            switch ($equiposPlata) {
-                case 2:
-                    $tipoPlata[] = 'Final Plata';
-                    break;
-                case 4:
-                    $tipoPlata[] = 'Semi Final Plata';
-                    $tipoPlata[] = 'Final Plata';
-                    break;
-                case 8:
-                    $tipoPlata[] = 'Cuartos de Final Plata';
-                    $tipoPlata[] = 'Semi Final Plata';
-                    $tipoPlata[] = 'Final Plata';
-                    break;
-                default:
-                    break;
-            }
-
-            switch ($equiposBronce) {
-                case 2:
-                    $tipoBronce[] = 'Final Bronce';
-                    break;
-                case 4:
-                    $tipoBronce[] = 'Semi Final Bronce';
-                    $tipoBronce[] = 'Final Bronce';
-                    break;
-                case 8:
-                    $tipoBronce[] = 'Cuartos de Final Bronce';
-                    $tipoBronce[] = 'Semi Final Bronce';
-                    $tipoBronce[] = 'Final Bronce';
-                    break;
-                default:
-                    break;
-            }
-
+    string $ruta,
+    int $categoriaId,
+    CategoriaManager $categoriaManager,
+    TorneoManager $torneoManager,
+    EquipoManager $equipoManager,
+    PartidoManager $partidoManager,
+    Request $request
+): Response {
+    $params = []; // Inicializar la variable $params
+    try {
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        $grupos = $categoria->getGrupos();
+        $tipoOro =  $tipoPlata = $tipoBronce = [];
+        $equiposOro = $equiposPlata = $equiposBronce = 0;
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        
+        if ($request->isMethod('POST')) {
+            $partidosPlayOff = $request->request->all();
+            $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
+            $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
             return $this->render(
-                'partido/crear.html.twig', [
+                'equipo/index.html.twig', [
                 'torneo' => $torneo,
                 'categoria' => $categoria,
-                'grupos' => $grupos,
-                'equiposOro' => $equiposOro, 
-                'equiposPlata' => $equiposPlata,
-                'equiposBronce' => $equiposBronce,
-                'tipoOro' => $tipoOro, 
-                'tipoPlata' =>  $tipoPlata,
-                'tipoBronce' => $tipoBronce
+                'equipos' => $equipos,
                 ]
             );
-        } catch (AppException $ae) {
-            // Handle the exception
-            $this->addFlash('error', $ae->getMessage());
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
-        } catch (Throwable $e) {
-            // Handle the exception
-            $this->addFlash('error', 'Ocurrió un error al crear el partido ' . $e);
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
         }
+
+        foreach ($grupos as $grupo) {
+            $equiposOro += $grupo->getClasificaOro();
+            $equiposPlata += $grupo->getClasificaPlata();
+            $equiposBronce += $grupo->getClasificaBronce();
+        }
+
+        switch ($equiposOro) {
+            case 2:
+                $tipoOro[] = 'Final Oro';
+                break;
+            case 4:
+                $tipoOro[] = 'Semi Final Oro';
+                $tipoOro[] = 'Final Oro';
+                break;
+            case 8:
+                $tipoOro[] = 'Cuartos de Final Oro';
+                $tipoOro[] = 'Semi Final Oro';
+                $tipoOro[] = 'Final Oro';
+                break;
+            default:
+                break;
+        }
+
+        switch ($equiposPlata) {
+            case 2:
+                $tipoPlata[] = 'Final Plata';
+                break;
+            case 4:
+                $tipoPlata[] = 'Semi Final Plata';
+                $tipoPlata[] = 'Final Plata';
+                break;
+            case 8:
+                $tipoPlata[] = 'Cuartos de Final Plata';
+                $tipoPlata[] = 'Semi Final Plata';
+                $tipoPlata[] = 'Final Plata';
+                break;
+            default:
+                break;
+        }
+
+        switch ($equiposBronce) {
+            case 2:
+                $tipoBronce[] = 'Final Bronce';
+                break;
+            case 4:
+                $tipoBronce[] = 'Semi Final Bronce';
+                $tipoBronce[] = 'Final Bronce';
+                break;
+            case 8:
+                $tipoBronce[] = 'Cuartos de Final Bronce';
+                $tipoBronce[] = 'Semi Final Bronce';
+                $tipoBronce[] = 'Final Bronce';
+                break;
+            default:
+                break;
+        }
+
+        $params = [
+            'torneo' => $torneo,
+            'categoria' => $categoria,
+            'grupos' => $grupos,
+            'equiposOro' => $equiposOro, 
+            'equiposPlata' => $equiposPlata,
+            'equiposBronce' => $equiposBronce,
+            'tipoOro' => $tipoOro, 
+            'tipoPlata' =>  $tipoPlata,
+            'tipoBronce' => $tipoBronce,
+            'partidosPlayOff' => $request->request->all() // Mantener los datos del formulario
+        ];
+
+        return $this->render('partido/crear.html.twig', $params);
+    } catch (AppException $ae) {
+        // Handle the exception
+        $this->addFlash('error', $ae->getMessage());
+        return $this->render('partido/crear.html.twig', $params);
+    } catch (Throwable $e) {
+        // Handle the exception
+        $this->addFlash('error', 'Ocurrió un error al crear el partido ' . $e);
+        return $this->render('partido/crear.html.twig', $params);
     }
+}
 
     #[Route('/partido', name: 'app_partido')]
     public function index(
