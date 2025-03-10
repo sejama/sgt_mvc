@@ -36,7 +36,7 @@
         </tr>
         </tbody>    
     </table>
-    <form class="row g-3 needs-validation" novalidate method="POST">
+    <form class="row g-3 needs-validation" novalidate action="{{ path('app_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}" method="POST">
         <div class="accordion" id="accordionExample">
             <!-- Partidos Oro-->
             <div class="accordion-item">

@@ -1,8 +1,8 @@
 <h1> {{ categoria.nombre }}</h1>
 {% for grupo in categoria.grupos %}
-<div class="card">
+<div class="card mt-1">
     <div class="card-header">
-        <h4>{{ grupo.nombre }}</h4>
+        <h4>Nombre Grupo: {{ grupo.nombre }}</h4>
     </div>
     <div class="card-body p-0 table-responsive">
         <table class="table align-middle text-center" style="border-collapse: collapse;">
@@ -50,8 +50,10 @@
             </tbody>
         </table>
     </div>
-    <div class="card-footer">
-        Card footer
-    </div>
+    <!-- 
+        <div class="card-footer">
+            Card footer
+        </div>
+    -->
 </div>
 {% endfor %}

@@ -10,6 +10,11 @@
     <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
     <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
     <h3>Partidos clasificatorios</h3>
+    {% if partidosSinAsignar['clasificatorios']|length == 0 %}
+        <div class="alert alert-warning" role="alert">
+            No hay partidos clasificatorios sin asignar
+        </div>
+    {% else %}
     <table class="table table-striped">
         <thead>
           <tr>
@@ -65,7 +70,13 @@
           {% endfor %}
         </tbody>
       </table>
+      {% endif %}
       <h3>Partidos eliminatorios post grupos</h3>
+      {% if partidosSinAsignar['eliminatorias']|length == 0 %}
+        <div class="alert alert-warning" role="alert">
+            No hay partidos eliminatorios sin asignar
+        </div>
+      {% else %}
       <table class="table table-striped">
         <thead>
           <tr>
@@ -177,7 +188,13 @@
       {% endfor %}
     </tbody>
   </table>
+      {% endif %}
       <h3>Partidos programados</h3>
+      {% if partidosProgramados|length == 0 %}
+        <div class="alert alert-warning" role="alert">
+            No hay partidos programados
+        </div>
+      {% endif %}
       {% for key, canchas in partidosProgramados %}
         <h3>{{ key }}</h3>
         {% for key, cancha in canchas %}

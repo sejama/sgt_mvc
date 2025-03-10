@@ -28,7 +28,6 @@ class PartidoController extends AbstractController
     PartidoManager $partidoManager,
     Request $request
 ): Response {
-    $params = []; // Inicializar la variable $params
     try {
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         $grupos = $categoria->getGrupos();
@@ -38,15 +37,8 @@ class PartidoController extends AbstractController
         
         if ($request->isMethod('POST')) {
             $partidosPlayOff = $request->request->all();
-            $equipos = $equipoManager->obtenerEquiposPorCategoria($categoria);
             $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
-            return $this->render(
-                'equipo/index.html.twig', [
-                'torneo' => $torneo,
-                'categoria' => $categoria,
-                'equipos' => $equipos,
-                ]
-            );
+            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
         }
 
         foreach ($grupos as $grupo) {
@@ -123,11 +115,11 @@ class PartidoController extends AbstractController
     } catch (AppException $ae) {
         // Handle the exception
         $this->addFlash('error', $ae->getMessage());
-        return $this->render('partido/crear.html.twig', $params);
+        return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
     } catch (Throwable $e) {
         // Handle the exception
         $this->addFlash('error', 'Ocurrió un error al crear el partido ' . $e);
-        return $this->render('partido/crear.html.twig', $params);
+        return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
     }
 }
 
