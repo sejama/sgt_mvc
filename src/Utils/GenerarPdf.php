@@ -38,7 +38,7 @@ class GenerarPdf
             writerOptions: [],
             validateResult: false,
             data: 'https://' . $_SERVER['HTTP_HOST'] .
-                'sgt_mvc/public/admin/torneo/' . $ruta . '/partido/' . $partido->getNumero() . '/cargar_resultado',
+                '/sgt_mvc/public/admin/torneo/' . $ruta . '/partido/' . $partido->getNumero() . '/cargar_resultado',
             encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::High,
             size: 300,

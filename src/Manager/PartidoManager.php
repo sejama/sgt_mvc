@@ -152,6 +152,7 @@ class PartidoManager
         $partido = $this->obtenerPartido($partidoId);
         $partido->setCancha($this->canchaManager->obtenerCancha($canchaId));
         $partido->setHorario($horario);
+        $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);
 
         $pdf = new GenerarPdf();
         $pdf->generarPdf($partido, $ruta);

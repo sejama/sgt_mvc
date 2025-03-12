@@ -7,6 +7,7 @@ namespace App\Enum;
 enum EstadoPartido: string
 {
     case BORRADOR = "Borrador";
+    case PROGRAMADO = "Programado";
     case ACTIVO = "Activo";
     case SUSPENDIDO = "Suspendido";
     case FINALIZADO = "Finalizado";
