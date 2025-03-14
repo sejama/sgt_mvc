@@ -9,6 +9,7 @@ use App\Entity\PartidoConfig;
 use App\Exception\AppException;
 use App\Manager\CanchaManager;
 use App\Manager\ValidadorPartidoManager;
+use App\Repository\EquipoRepository;
 use App\Repository\PartidoConfigRepository;
 use App\Repository\PartidoRepository;
 use App\Utils\GenerarPdf;
@@ -18,6 +19,7 @@ class PartidoManager
     public function __construct(
         private CanchaManager $canchaManager,
         private GrupoManager $grupoManager,
+        private EquipoRepository $equipoRepository,
         private PartidoRepository $partidoRepository,
         private PartidoConfigRepository $partidoConfigRepository,
         private ValidadorPartidoManager $validadorPartidoManager
@@ -133,6 +135,19 @@ class PartidoManager
                 $partido->setNumero($numero++);
 
                 $this->partidoRepository->guardar($partido);
+
+                if ($equipos[$i]->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+                    $equipos[$i]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+                    $this->equipoRepository->guardar($equipos[$i]);
+                }
+
+                if ($equipos[$j]->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+                    $equipos[$j]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+                    $this->equipoRepository->guardar($equipos[$j]);
+                }
+
+                $this->equipoRepository->guardar($equipos[$i]);
+                $this->equipoRepository->guardar($equipos[$j]);
             }
         }
     }
@@ -157,6 +172,19 @@ class PartidoManager
         $pdf = new GenerarPdf();
         $pdf->generarPdf($partido, $ruta);
         $this->partidoRepository->guardar($partido);
+        
+        $equipoLocal = $partido->getEquipoLocal();
+        if ($equipoLocal->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+            $equipoLocal->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+            $this->equipoRepository->guardar($equipoLocal);
+        }
+
+        $equipoVisitante = $partido->getEquipoVisitante();
+        if ($equipoVisitante->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+            $equipoVisitante->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+            $this->equipoRepository->guardar($equipoVisitante);
+        }
+
     }
 
     public function cargarResultado(int $partidoId, array $resultadoLocal, array $resultadoVisitante): void

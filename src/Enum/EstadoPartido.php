@@ -10,6 +10,7 @@ enum EstadoPartido: string
     case PROGRAMADO = "Programado";
     case ACTIVO = "Activo";
     case SUSPENDIDO = "Suspendido";
+    case CANCELADO = "Cancelado";
     case FINALIZADO = "Finalizado";
 
     public static function getValues(): array

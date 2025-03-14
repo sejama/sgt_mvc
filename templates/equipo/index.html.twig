@@ -27,6 +27,7 @@
                     <th>Nombre</th>
                     <th>Grupo</th>
                     <th>Ubicación</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -38,10 +39,15 @@
                         <td class="p-1">{{ equipo.nombre }}</td>
                         <td class="p-1">{{ equipo.grupo.nombre ?? '' }}</td>
                         <td class="p-1">{{ equipo.pais }} - {{ equipo.provincia }} - {{ equipo.localidad }}</td>
+                        <td class="p-1">{{ equipo.estado }}</td>
                         <td class="p-1">
                             <a href="{{ path('app_equipo_editar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info p-1">Editar</a>
                             <a href="{{ path('app_jugador', {'ruta': torneo.ruta,'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info p-1">Jugadores</a>
+                            {% if equipo.estado == 'Activo' %}
+                            <a class="btn btn-danger p-1" id="btnBajarEquipo{{ equipo.id }}">Bajar</a>
+                            {% else %}
                             <a class="btn btn-danger p-1" id="btnEliminarEquipo{{ equipo.id }}">Eliminar</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -61,6 +67,18 @@
                 crearModal('Eliminar Equipo', '¿Está seguro que desea eliminar el equipo?');
                 document.getElementById('btnModalAceptar').addEventListener('click', () => {
                     window.location.href = `{{ path('app_equipo_eliminar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': 'ID'}) }}`.replace('ID', index);
+                });
+                
+            });
+        });
+
+        btnBajarEquipos = document.querySelectorAll('[id^="btnBajarEquipo"]');
+        btnBajarEquipos.forEach((btn) => {
+            let index = btn.id.replace('btnBajarEquipo', '');
+            btn.addEventListener('click', () => {
+                crearModal('Bajar Equipo', '¿Está seguro que desea bajar el equipo?');
+                document.getElementById('btnModalAceptar').addEventListener('click', () => {
+                    window.location.href = `{{ path('app_equipo_bajar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': 'ID'}) }}`.replace('ID', index);
                 });
                 
             });

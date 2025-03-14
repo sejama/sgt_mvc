@@ -58,7 +58,7 @@ class PartidoRepository extends ServiceEntityRepository
         JOIN torneo t ON c.torneo_id = t.id
         JOIN equipo eLocal ON p.equipo_local_id = eLocal.id
         JOIN equipo eVisitante ON p.equipo_visitante_id = eVisitante.id
-        WHERE t.ruta = 'xiv-sudamericano-master-voley-sf' and p.cancha_id IS NULL
+        WHERE t.ruta = 'xiv-sudamericano-master-voley-sf' and p.cancha_id IS NULL and p.estado != 'Cancelado'
         ORDER BY p.id ASC;
         */
         return $this->createQueryBuilder('p')
@@ -70,7 +70,9 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('p.equipoVisitante', 'eVisitante')
             ->where('t.ruta = :ruta')
             ->andWhere('p.cancha IS NULL')
+            ->andWhere('p.estado != :estado')
             ->setParameter('ruta', $ruta)
+            ->setParameter('estado', 'Cancelado')
             ->addOrderBy('p.id', 'ASC')
             ->getQuery()
             ->getResult();
@@ -142,7 +144,7 @@ class PartidoRepository extends ServiceEntityRepository
     public function buscarPartidosProgramadosXTorneo(string $ruta): array
     {
         return $this->createQueryBuilder('p')
-            ->select('s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, cat.nombre AS categoria')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, cat.nombre AS categoria')
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.grupo', 'g')

@@ -216,12 +216,13 @@
                 <th scope="col">Local</th>
                 <th scope="col">vs</th>
                 <th scope="col">Visitante</th>
+                <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
             {% for key, partido in cancha %}
               <tr>
-                <th scope="row">{{key+1}}</th>
+                <th scope="row">{{partido.numero}}</th>
                 <td>{{ partido.fecha|date('d-m-Y') }}</td>
                 <td>{{ partido.hora|date('H:i') }}</td>
                 <td>{{ partido.categoria }}</td>
@@ -229,6 +230,9 @@
                 <td>{{ partido.equipoLocal }}</td>
                 <td>-</td>
                 <td>{{ partido.equipoVisitante }}</td>
+                <td>
+                  <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoId': partido.id }) }}" class="btn btn-info">Cargar Resultado</a>
+                </td>
               </tr>
             {% endfor %}
             </tbody>

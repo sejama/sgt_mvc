@@ -9,6 +9,7 @@ use App\Exception\AppException;
 use App\Manager\EquipoManager;
 use App\Manager\ValidadorManager;
 use App\Repository\EquipoRepository;
+use App\Repository\PartidoRepository;
 use PHPUnit\Framework\TestCase;
 
 class EquipoManagerTest extends TestCase
@@ -17,6 +18,7 @@ class EquipoManagerTest extends TestCase
    {
         $equipoManager = new EquipoManager(
             $this->createMock(EquipoRepository::class),
+            $this->createMock(PartidoRepository::class),
             $this->createMock(ValidadorManager::class),
         );
 
@@ -28,9 +30,11 @@ class EquipoManagerTest extends TestCase
     {
         $equipoRepository = $this->createMock(EquipoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -45,10 +49,12 @@ class EquipoManagerTest extends TestCase
         $this->expectExceptionMessage('No se encontró el equipo');
 
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -59,10 +65,12 @@ class EquipoManagerTest extends TestCase
     public function testObtenerEquiposPorCategoria(): void
     {
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -75,10 +83,12 @@ class EquipoManagerTest extends TestCase
     public function testCrearEquipoOk(): void
     {
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -115,10 +125,12 @@ class EquipoManagerTest extends TestCase
         $this->expectExceptionMessage('Ya existe un equipo con ese nombre');
 
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -144,10 +156,12 @@ class EquipoManagerTest extends TestCase
         $this->expectExceptionMessage('Ya existe un equipo con ese nombre corto');
 
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -172,10 +186,12 @@ class EquipoManagerTest extends TestCase
     public function testEditarEquipoOk(): void
     {
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -204,10 +220,12 @@ class EquipoManagerTest extends TestCase
         $this->expectExceptionMessage('Ya existe un equipo con ese nombre');
 
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -234,10 +252,12 @@ class EquipoManagerTest extends TestCase
         $this->expectExceptionMessage('Ya existe un equipo con ese nombre corto');
 
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 
@@ -262,10 +282,12 @@ class EquipoManagerTest extends TestCase
     public function testEliminarEquipoOk(): void
     {
         $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
         $equipoManager = new EquipoManager(
             $equipoRepository,
+            $partidoRepository,
             $validadorManager,
         );
 

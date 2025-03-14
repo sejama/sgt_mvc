@@ -7,12 +7,11 @@ namespace App\Enum;
 enum EstadoEquipo: string
 {
     case BORRADOR = "Borrador";
-    case Activo = "Activo";
-    case NO_SE_PRESENTO = "No_se_presento";
-    case SUSPENDIDO = "Suspendido";
-    case DESCALIFICADO = "Descalificado";
-    case RETIRADO = "Retirado";
+    case ACTIVO = "Activo";
+    case NO_PARTICIPA = "No_participa";
     case ELIMINADO = "Eliminado";
+    case DESCALIFICADO = "Descalificado";
+    case CALIFICADO = "Calificado";
 
     public static function getValues(): array
     {

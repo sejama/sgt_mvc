@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: server-mysql
--- Tiempo de generación: 13-03-2025 a las 21:21:18
+-- Tiempo de generación: 14-03-2025 a las 16:32:11
 -- Versión del servidor: 8.0.40
 -- Versión de PHP: 8.2.27
 
@@ -30,8 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `cancha` (
   `id` int NOT NULL,
   `sede_id` int DEFAULT NULL,
-  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -57,13 +57,13 @@ INSERT INTO `cancha` (`id`, `sede_id`, `nombre`, `descripcion`, `created_at`, `u
 CREATE TABLE `categoria` (
   `id` int NOT NULL,
   `torneo_id` int DEFAULT NULL,
-  `nombre` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `genero` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `disputa` longtext COLLATE utf8mb4_unicode_ci,
-  `estado` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `genero` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `disputa` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `estado` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `nombre_corto` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL
+  `nombre_corto` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -84,7 +84,7 @@ INSERT INTO `categoria` (`id`, `torneo_id`, `nombre`, `genero`, `disputa`, `esta
 --
 
 CREATE TABLE `doctrine_migration_versions` (
-  `version` varchar(191) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `version` varchar(191) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `executed_at` datetime DEFAULT NULL,
   `execution_time` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
@@ -106,14 +106,14 @@ CREATE TABLE `equipo` (
   `id` int NOT NULL,
   `categoria_id` int NOT NULL,
   `grupo_id` int DEFAULT NULL,
-  `nombre` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nombre_corto` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pais` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `provincia` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `localidad` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nombre` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre_corto` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pais` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `provincia` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `localidad` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `estado` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `numero` smallint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -122,57 +122,57 @@ CREATE TABLE `equipo` (
 --
 
 INSERT INTO `equipo` (`id`, `categoria_id`, `grupo_id`, `nombre`, `nombre_corto`, `pais`, `provincia`, `localidad`, `created_at`, `updated_at`, `estado`, `numero`) VALUES
-(1, 1, 1, 'VILLA DORA', 'VD', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 1),
-(2, 1, 1, 'CORRIENTES VOLEY', 'CV', 'Argentina', 'Corrientes', 'Corrientes', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 2),
-(3, 1, 1, 'TREDE BIRRA', 'TB', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 3),
-(4, 1, 1, 'ALUMNI CASILDA', 'AC', 'Argentina', 'Santa Fe', 'Casilda', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 4),
-(5, 1, 2, 'EL QUILLA', 'EQ', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 5),
-(6, 1, 2, 'MONSTARS', 'MON', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 6),
-(7, 1, 2, 'CLUB JUNIN', 'CJ', 'Argentina', 'Buenos Aires', 'Junin', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 7),
-(8, 1, 2, 'REGATAS ROSARIO', 'RR', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 8),
-(9, 1, 3, 'ALIANZA SANTO TOME', 'AST', 'Argentina', 'Santa Fe', 'Santo Tome', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 9),
-(10, 1, 3, 'NAUTICO AVELLANEDA', 'NA', 'Argentina', 'Santa Fe', 'Avellaneda', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 10),
-(11, 1, 3, 'MALUCA', 'MAL', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 11),
-(12, 1, 3, 'LA GRULLAS', 'LG', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 12),
-(13, 1, 4, 'INFINITO', 'INF', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 13),
-(14, 1, 4, 'LA EMILIA', 'LE', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 14),
-(15, 1, 4, 'SANTO TOME', 'ST', 'Argentina', 'Santa Fe', 'Santo Tome', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 15),
-(16, 1, 4, 'LAS CUERVAS', 'LC', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 16),
-(17, 2, 5, 'TREDE BIRRA', 'TB', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 17),
-(18, 2, 5, 'VAMOS EL APOYO', 'VEA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 18),
-(19, 2, 5, 'COSTA CANELONES', 'CC', 'Uruguay', 'Canelones', 'Canelones', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 19),
-(20, 2, 5, 'INTRUSAS', 'INT', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 20),
-(21, 2, 6, 'DOS HACHES', 'DH', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 21),
-(22, 2, 6, 'SOMOS LA 18', 'S18', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 22),
-(23, 2, 6, 'CLUB FISHERTON', 'CF', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 23),
-(24, 2, 6, 'COSTA MIX', 'CM', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 24),
-(25, 2, 7, 'PASO REY', 'PR', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 25),
-(26, 2, 7, 'DESTINO VOLEY', 'DV', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 26),
-(27, 2, 7, 'CITADAS', 'CIT', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 27),
-(28, 2, 7, 'MALUCA', 'MAL', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 28),
-(29, 3, 8, 'EL REJUNTE', 'S18', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 29),
-(30, 3, 8, 'CLUB ROSARIO', 'CR', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 30),
-(31, 3, 8, 'GYE CONCEP URUGUAY', 'GCU', 'Argentina', 'Entre Rios', 'Concepcion del Uruguay', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 31),
-(32, 3, 8, 'MONSTARS', 'MON', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 32),
-(33, 3, 8, 'VOLEY MONTE', 'VM', 'Argentina', 'Santa Fe', 'San Lorenzo', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 33),
-(34, 3, 8, 'BANCO SANTA FE', 'BSF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 34),
-(35, 3, 8, 'UNI', 'UNI', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 35),
-(36, 4, 9, 'MAXI SANTA FE A', 'MSFA', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 36),
-(37, 4, 9, 'PERO', 'PERO', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 37),
-(38, 4, 9, 'RECREATIVO VERA', 'REVE', 'Argentina', 'Santa Fe', 'Vera', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 38),
-(39, 4, 9, 'BOSQUE URUGUAY', 'BOSQUE', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 39),
-(40, 4, 10, 'ROSARIO VOLEY', 'ROVA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 40),
-(41, 4, 10, 'LA TRIBU', 'LATR', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 41),
-(42, 4, 10, 'MAXI SANTA FE B', 'MSFB', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 42),
-(43, 4, 10, 'BANCO PROVINCIA', 'BAPR', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 43),
-(44, 5, 11, 'MAXI SANTA FE', 'MSF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 44),
-(45, 5, 11, 'CORCHA VOLEY', 'CORCHA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 45),
-(46, 5, 11, 'LOS PERKINS', 'LP', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 46),
-(47, 5, 11, 'ABANDONADOS', 'ABA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 47),
-(48, 5, 12, 'ROSARIO VOLEY', 'ROVA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 48),
-(49, 5, 12, 'DEFENSORES MORENO', 'DEFF', 'Argentina', 'Buenos Aires', 'Moreno', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 49),
-(50, 5, 12, 'TUCUMAN DE GIMNASIA', 'TUGI', 'Argentina', 'Tucuman', 'San Miguel de Tucuman', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 50),
-(51, 5, 12, 'DEPORTE RIO  IV', 'DRI4', 'Argentina', 'Cordoba', 'Rio Cuarto', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Borrador', 51);
+(1, 1, 1, 'VILLA DORA', 'VD', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 1),
+(2, 1, 1, 'CORRIENTES VOLEY', 'CV', 'Argentina', 'Corrientes', 'Corrientes', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 2),
+(3, 1, 1, 'TREDE BIRRA', 'TB', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 3),
+(4, 1, 1, 'ALUMNI CASILDA', 'AC', 'Argentina', 'Santa Fe', 'Casilda', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 4),
+(5, 1, 2, 'EL QUILLA', 'EQ', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 5),
+(6, 1, 2, 'MONSTARS', 'MON', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 6),
+(7, 1, 2, 'CLUB JUNIN', 'CJ', 'Argentina', 'Buenos Aires', 'Junin', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 7),
+(8, 1, 2, 'REGATAS ROSARIO', 'RR', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 8),
+(9, 1, 3, 'ALIANZA SANTO TOME', 'AST', 'Argentina', 'Santa Fe', 'Santo Tome', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 9),
+(10, 1, 3, 'NAUTICO AVELLANEDA', 'NA', 'Argentina', 'Santa Fe', 'Avellaneda', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 10),
+(11, 1, 3, 'MALUCA', 'MAL', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 11),
+(12, 1, 3, 'LA GRULLAS', 'LG', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 12),
+(13, 1, 4, 'INFINITO', 'INF', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 13),
+(14, 1, 4, 'LA EMILIA', 'LE', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 14),
+(15, 1, 4, 'SANTO TOME', 'ST', 'Argentina', 'Santa Fe', 'Santo Tome', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 15),
+(16, 1, 4, 'LAS CUERVAS', 'LC', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 16),
+(17, 2, 5, 'TREDE BIRRA', 'TB', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-14 10:13:41', 'No_participa', 17),
+(18, 2, 5, 'VAMOS EL APOYO', 'VEA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-14 08:45:00', 'Activo', 18),
+(19, 2, 5, 'COSTA CANELONES', 'CC', 'Uruguay', 'Canelones', 'Canelones', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 19),
+(20, 2, 5, 'INTRUSAS', 'INT', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 20),
+(21, 2, 6, 'DOS HACHES', 'DH', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 21),
+(22, 2, 6, 'SOMOS LA 18', 'S18', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 22),
+(23, 2, 6, 'CLUB FISHERTON', 'CF', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 23),
+(24, 2, 6, 'COSTA MIX', 'CM', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 24),
+(25, 2, 7, 'PASO REY', 'PR', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 25),
+(26, 2, 7, 'DESTINO VOLEY', 'DV', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 26),
+(27, 2, 7, 'CITADAS', 'CIT', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 27),
+(28, 2, 7, 'MALUCA', 'MAL', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 28),
+(29, 3, 8, 'EL REJUNTE', 'S18', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 29),
+(30, 3, 8, 'CLUB ROSARIO', 'CR', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 30),
+(31, 3, 8, 'GYE CONCEP URUGUAY', 'GCU', 'Argentina', 'Entre Rios', 'Concepcion del Uruguay', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 31),
+(32, 3, 8, 'MONSTARS', 'MON', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 32),
+(33, 3, 8, 'VOLEY MONTE', 'VM', 'Argentina', 'Santa Fe', 'San Lorenzo', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 33),
+(34, 3, 8, 'BANCO SANTA FE', 'BSF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 34),
+(35, 3, 8, 'UNI', 'UNI', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 35),
+(36, 4, 9, 'MAXI SANTA FE A', 'MSFA', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 36),
+(37, 4, 9, 'PERO', 'PERO', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 37),
+(38, 4, 9, 'RECREATIVO VERA', 'REVE', 'Argentina', 'Santa Fe', 'Vera', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 38),
+(39, 4, 9, 'BOSQUE URUGUAY', 'BOSQUE', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 39),
+(40, 4, 10, 'ROSARIO VOLEY', 'ROVA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 40),
+(41, 4, 10, 'LA TRIBU', 'LATR', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 41),
+(42, 4, 10, 'MAXI SANTA FE B', 'MSFB', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 42),
+(43, 4, 10, 'BANCO PROVINCIA', 'BAPR', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 43),
+(44, 5, 11, 'MAXI SANTA FE', 'MSF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 44),
+(45, 5, 11, 'CORCHA VOLEY', 'CORCHA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 45),
+(46, 5, 11, 'LOS PERKINS', 'LP', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 46),
+(47, 5, 11, 'ABANDONADOS', 'ABA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 47),
+(48, 5, 12, 'ROSARIO VOLEY', 'ROVA', 'Argentina', 'Santa Fe', 'Rosario', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 48),
+(49, 5, 12, 'DEFENSORES MORENO', 'DEFF', 'Argentina', 'Buenos Aires', 'Moreno', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 49),
+(50, 5, 12, 'TUCUMAN DE GIMNASIA', 'TUGI', 'Argentina', 'Tucuman', 'San Miguel de Tucuman', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 50),
+(51, 5, 12, 'DEPORTE RIO  IV', 'DRI4', 'Argentina', 'Cordoba', 'Rio Cuarto', '2025-03-06 19:24:01', '2025-03-06 19:24:01', 'Activo', 51);
 
 -- --------------------------------------------------------
 
@@ -183,13 +183,13 @@ INSERT INTO `equipo` (`id`, `categoria_id`, `grupo_id`, `nombre`, `nombre_corto`
 CREATE TABLE `grupo` (
   `id` int NOT NULL,
   `categoria_id` int NOT NULL,
-  `nombre` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `clasifica_oro` int NOT NULL,
   `clasifica_plata` int DEFAULT NULL,
   `clasifica_bronce` int DEFAULT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `estado` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL
+  `estado` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -227,17 +227,17 @@ INSERT INTO `grupo` (`id`, `categoria_id`, `nombre`, `clasifica_oro`, `clasifica
 CREATE TABLE `jugador` (
   `id` int NOT NULL,
   `equipo_id` int DEFAULT NULL,
-  `nombre` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `apellido` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipo_documento` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `numero_documento` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `apellido` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo_documento` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numero_documento` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nacimiento` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)',
   `responsable` tinyint(1) NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `celular` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `celular` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `tipo` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL
+  `tipo` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -305,9 +305,9 @@ INSERT INTO `jugador` (`id`, `equipo_id`, `nombre`, `apellido`, `tipo_documento`
 
 CREATE TABLE `messenger_messages` (
   `id` bigint NOT NULL,
-  `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `headers` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue_name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `body` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `headers` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue_name` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)'
@@ -337,8 +337,8 @@ CREATE TABLE `partido` (
   `visitante_set3` smallint DEFAULT NULL,
   `visitante_set4` smallint DEFAULT NULL,
   `visitante_set5` smallint DEFAULT NULL,
-  `estado` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipo` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `numero` smallint NOT NULL
@@ -387,9 +387,9 @@ INSERT INTO `partido` (`id`, `cancha_id`, `categoria_id`, `grupo_id`, `equipo_lo
 (36, 5, 1, NULL, NULL, NULL, '2024-05-05 17:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-13 17:12:04', 36),
 (37, 6, 1, NULL, NULL, NULL, '2024-05-05 17:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-13 17:12:12', 37),
 (38, 6, 1, NULL, NULL, NULL, '2024-05-05 18:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-13 17:12:34', 38),
-(39, NULL, 2, 5, 17, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-10 16:14:09', 39),
-(40, NULL, 2, 5, 17, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-10 16:14:09', 40),
-(41, NULL, 2, 5, 17, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-10 16:14:09', 41),
+(39, NULL, 2, 5, 17, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Cancelado', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-14 10:13:41', 39),
+(40, NULL, 2, 5, 17, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Cancelado', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-14 10:13:41', 40),
+(41, NULL, 2, 5, 17, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Cancelado', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-14 10:13:41', 41),
 (42, 4, 2, 5, 18, 19, '2024-05-04 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-11 20:50:29', 42),
 (43, 4, 2, 5, 18, 20, '2024-05-04 16:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-11 20:50:59', 43),
 (44, 3, 2, 5, 19, 20, '2024-05-04 14:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-11 20:50:45', 44),
@@ -498,7 +498,7 @@ CREATE TABLE `partido_config` (
   `ganador_partido2_id` int DEFAULT NULL,
   `posicion_equipo1` smallint DEFAULT NULL,
   `posicion_equipo2` smallint DEFAULT NULL,
-  `nombre` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -564,8 +564,8 @@ INSERT INTO `partido_config` (`id`, `partido_id`, `grupo_equipo1_id`, `grupo_equ
 CREATE TABLE `sede` (
   `id` int NOT NULL,
   `torneo_id` int DEFAULT NULL,
-  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `domicilio` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `domicilio` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -587,17 +587,17 @@ INSERT INTO `sede` (`id`, `torneo_id`, `nombre`, `domicilio`, `created_at`, `upd
 CREATE TABLE `torneo` (
   `id` int NOT NULL,
   `creador_id` int NOT NULL,
-  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ruta` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nombre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ruta` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha_inicio_inscripcion` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `fecha_fin_inscripcion` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `fecha_inicio_torneo` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `fecha_fin_torneo` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `reglamento` longtext COLLATE utf8mb4_unicode_ci,
+  `reglamento` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `estado` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL
+  `estado` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -626,12 +626,12 @@ CREATE TABLE `torneo_usuario` (
 
 CREATE TABLE `usuario` (
   `id` int NOT NULL,
-  `username` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `roles` json NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `nombre` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `apellido` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nombre` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `apellido` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

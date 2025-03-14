@@ -154,4 +154,26 @@ class EquipoController extends AbstractController
         }
         return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
+
+    #[Route('/{equipoId}/bajar', name: 'app_equipo_bajar', methods: ['GET'])]
+    public function cambiarEstado(
+        string $ruta,
+        int $categoriaId,
+        int $equipoId,
+        EquipoManager $equipoManager,
+        LoggerInterface $logger
+    ): Response {
+        try {
+            $equipo = $equipoManager->obtenerEquipo($equipoId);
+            $equipoManager->bajarEquipo($equipo);
+            $this->addFlash('success', "Equipo dado de baja con éxito.");
+        } catch (AppException $ae) {
+            $logger->error($ae->getMessage());
+            $this->addFlash('error', $ae->getMessage());
+        } catch (\Throwable $e) {
+            $logger->error($e->getMessage());
+            $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+        }
+        return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+    }
 }

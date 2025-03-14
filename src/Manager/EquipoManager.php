@@ -6,14 +6,18 @@ namespace App\Manager;
 
 use App\Entity\Categoria;
 use App\Entity\Equipo;
+use App\Entity\Partido;
 use App\Enum\EstadoEquipo;
+use App\Enum\EstadoPartido;
 use App\Exception\AppException;
 use App\Repository\EquipoRepository;
+use App\Repository\PartidoRepository;
 
 class EquipoManager
 {
     public function __construct(
         private EquipoRepository $equipoRepository,
+        private PartidoRepository $partidoRepository,
         private ValidadorManager $validadorManager
     ) {
     }
@@ -119,5 +123,23 @@ class EquipoManager
     public function eliminarEquipo(Equipo $equipo): void
     {
         $this->equipoRepository->eliminar($equipo, true);
+    }
+
+    public function bajarEquipo(Equipo $equipo): void
+    {
+        $equipo->setEstado(EstadoEquipo::NO_PARTICIPA->value);
+        $this->equipoRepository->guardar($equipo, true);
+
+        $partidos = $equipo->getPartidosLocal();
+        foreach ($partidos as $partido) {
+            $partido->setEstado(EstadoPartido::CANCELADO->value);
+            $this->partidoRepository->guardar($partido);
+        }
+
+        $partidos = $equipo->getPartidosVisitante();
+        foreach ($partidos as $partido) {
+            $partido->setEstado(EstadoPartido::CANCELADO->value);
+            $this->partidoRepository->guardar($partido);
+        }
     }
 }
