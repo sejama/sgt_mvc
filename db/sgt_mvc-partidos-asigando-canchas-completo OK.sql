@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: server-mysql
--- Tiempo de generación: 12-03-2025 a las 02:28:37
+-- Tiempo de generación: 13-03-2025 a las 21:21:18
 -- Versión del servidor: 8.0.40
 -- Versión de PHP: 8.2.27
 
@@ -384,9 +384,9 @@ INSERT INTO `partido` (`id`, `cancha_id`, `categoria_id`, `grupo_id`, `equipo_lo
 (33, 5, 1, NULL, NULL, NULL, '2024-05-05 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-11 21:24:33', 33),
 (34, 6, 1, NULL, NULL, NULL, '2024-05-05 09:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-11 21:24:40', 34),
 (35, 6, 1, NULL, NULL, NULL, '2024-05-05 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-11 21:24:49', 35),
-(36, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-10 16:14:01', 36),
-(37, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-10 16:14:01', 37),
-(38, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-10 16:14:01', 38),
+(36, 5, 1, NULL, NULL, NULL, '2024-05-05 17:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-13 17:12:04', 36),
+(37, 6, 1, NULL, NULL, NULL, '2024-05-05 17:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-13 17:12:12', 37),
+(38, 6, 1, NULL, NULL, NULL, '2024-05-05 18:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:14:01', '2025-03-13 17:12:34', 38),
 (39, NULL, 2, 5, 17, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-10 16:14:09', 39),
 (40, NULL, 2, 5, 17, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-10 16:14:09', 40),
 (41, NULL, 2, 5, 17, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-03-10 16:14:09', '2025-03-10 16:14:09', 41),
@@ -463,7 +463,7 @@ INSERT INTO `partido` (`id`, `cancha_id`, `categoria_id`, `grupo_id`, `equipo_lo
 (112, 3, 4, NULL, NULL, NULL, '2024-05-05 16:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:15', '2025-03-11 21:23:28', 112),
 (113, 5, 4, NULL, NULL, NULL, '2024-05-05 14:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:15', '2025-03-11 22:08:22', 113),
 (114, 6, 4, NULL, NULL, NULL, '2024-05-05 14:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:15', '2025-03-11 22:08:49', 114),
-(115, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-03-10 16:16:15', '2025-03-10 16:16:15', 115),
+(115, 5, 4, NULL, NULL, NULL, '2024-05-05 18:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:15', '2025-03-13 17:12:50', 115),
 (116, 4, 5, 11, 44, 45, '2024-05-04 14:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Clasificatorio', '2025-03-10 16:16:47', '2025-03-11 21:08:04', 116),
 (117, 3, 5, 11, 44, 46, '2024-05-04 12:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Clasificatorio', '2025-03-10 16:16:47', '2025-03-11 21:07:44', 117),
 (118, 3, 5, 11, 44, 47, '2024-05-03 19:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Clasificatorio', '2025-03-10 16:16:47', '2025-03-11 21:07:07', 118),
@@ -481,7 +481,7 @@ INSERT INTO `partido` (`id`, `cancha_id`, `categoria_id`, `grupo_id`, `equipo_lo
 (130, 3, 5, NULL, NULL, NULL, '2024-05-05 17:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:47', '2025-03-11 21:23:46', 130),
 (131, 5, 5, NULL, NULL, NULL, '2024-05-05 15:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:47', '2025-03-11 22:09:02', 131),
 (132, 6, 5, NULL, NULL, NULL, '2024-05-05 15:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:47', '2025-03-11 22:09:07', 132),
-(133, NULL, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-03-10 16:16:47', '2025-03-10 16:16:47', 133);
+(133, 5, 5, NULL, NULL, NULL, '2024-05-05 20:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Programado', 'Eliminatorio', '2025-03-10 16:16:47', '2025-03-13 17:14:15', 133);
 
 -- --------------------------------------------------------
 
