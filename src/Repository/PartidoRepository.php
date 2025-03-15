@@ -141,8 +141,19 @@ class PartidoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function buscarPartidosProgramadosXTorneo(string $ruta): array
+    public function buscarPartidosProgramadosClasificatorioXTorneo(string $ruta): array
     {
+         /*
+            SELECT s.nombre sede, c.nombre cancha, p.horario hora, eLocal.nombre equipoLocal, eVisitante.nombre equipoVisitante, g.nombre grupo, cat.nombre categoria 
+            FROM partido p 
+            INNER JOIN cancha c ON p.cancha_id = c.id 
+            INNER JOIN sede s ON c.sede_id = s.id 
+            INNER JOIN grupo g ON g.id = p.grupo_id 
+            INNER JOIN categoria cat ON cat.id = g.categoria_id 
+            INNER JOIN equipo eLocal ON eLocal.id = p.equipo_local_id 
+            INNER JOIN equipo eVisitante ON eVisitante.id = p.equipo_visitante_id 
+            ORDER BY s.id, c.id, hora;
+        */
         return $this->createQueryBuilder('p')
             ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, cat.nombre AS categoria')
             ->join('p.cancha', 'c')
@@ -156,22 +167,68 @@ class PartidoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function buscarPartidosProgramadosPlayOffXTorneo(string $ruta): array
+    {
+        /*
+        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT(g1.nombre,' ',pc.posicion_equipo1) equipoLocal, CONCAT(g2.nombre,' ',pc.posicion_equipo2) equipoVisitante, pc.nombre grupo, cat.nombre categoria 
+        FROM partido p 
+        INNER JOIN cancha c ON p.cancha_id = c.id 
+        INNER JOIN sede s ON c.sede_id = s.id 
+        INNER JOIN categoria cat ON cat.id = p.categoria_id
+        INNER JOIN partido_config pc ON pc.partido_id = p.id
+        INNER JOIN grupo g1 ON g1.id = pc.grupo_equipo1_id  
+        INNER JOIN grupo g2 ON g2.id = pc.grupo_equipo2_id 
+        ORDER BY s.id, c.id, hora;
+        */
+
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(g1.nombre, \' \', pc.posicionEquipo1) AS equipoLocal, CONCAT(g2.nombre, \' \', pc.posicionEquipo2) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria')
+            ->join('p.cancha', 'c')
+            ->join('c.sede', 's')
+            ->join('p.categoria', 'cat')
+            ->join('p.partidoConfig', 'pc')
+            ->join('pc.grupoEquipo1', 'g1')
+            ->join('pc.grupoEquipo2', 'g2')
+            ->orderBy('s.id, c.id, horario')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function buscarPartidosProgramadosPlayOffFinalesXTorneo(string $ruta): array
+    {
+        /*
+        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT('Ganador ',pc1.nombre) equipoLocal, CONCAT('Ganador ',pc2.nombre) equipoVisitante, pc.nombre grupo, cat.nombre categoria 
+        FROM partido p 
+        INNER JOIN cancha c ON p.cancha_id = c.id 
+        INNER JOIN sede s ON c.sede_id = s.id 
+        INNER JOIN categoria cat ON cat.id = p.categoria_id
+        INNER JOIN partido_config pc ON pc.partido_id = p.id
+        INNER JOIN partido p1 ON p1.id = pc.ganador_partido1_id
+        INNER JOIN partido_config pc1 ON pc1.partido_id = p1.id
+        INNER JOIN partido p2 ON p2.id = pc.ganador_partido2_id
+        INNER JOIN partido_config pc2 ON pc2.partido_id = p2.id
+        ORDER BY s.id, c.id, hora;
+        */
+        
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(\'Ganador \', pc1.nombre) AS equipoLocal, CONCAT(\'Ganador \', pc2.nombre) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria')
+            ->join('p.cancha', 'c')
+            ->join('c.sede', 's')
+            ->join('p.categoria', 'cat')
+            ->join('p.partidoConfig', 'pc')
+            ->join('pc.ganadorPartido1', 'p1')
+            ->join('p1.partidoConfig', 'pc1')
+            ->join('pc.ganadorPartido2', 'p2')
+            ->join('p2.partidoConfig', 'pc2')
+            ->orderBy('s.id, c.id, horario')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function obtenerPartidoXNumero(int $numero): Partido
     {
         return $this->findOneBy(['numero' => $numero]);
     }
-
-    /*
-    SELECT s.nombre sede, c.nombre cancha, P.horario hora, eLocal.nombre equipoLocal, eVisitante.nombre equipoVisitante, g.nombre grupo, cat.nombre categoria 
-    FROM partido p 
-    INNER JOIN cancha c ON p.cancha_id = c.id 
-    INNER JOIN sede s ON c.sede_id = s.id 
-    INNER JOIN grupo g ON g.id = p.grupo_id 
-    INNER JOIN categoria cat ON cat.id = g.categoria_id 
-    INNER JOIN equipo eLocal ON eLocal.id = p.equipo_local_id 
-    INNER JOIN equipo eVisitante ON eVisitante.id = p.equipo_visitante_id 
-    ORDER BY s.id, c.id, hora;
-    */
 
     //    /**
     //     * @return Partido[] Returns an array of Partido objects

@@ -53,11 +53,23 @@ class PartidoManager
     public function obtenerPartidosProgramadosXTorneo($ruta): array
     {
         $paritdosOrdenados = [];
-        foreach ($this->partidoRepository->buscarPartidosProgramadosXTorneo($ruta) as $partido) {
+        foreach ($this->partidoRepository->buscarPartidosProgramadosClasificatorioXTorneo($ruta) as $partido) {
             $partido['fecha'] = $partido['horario']->format('Y-m-d');
             $partido['hora'] = $partido['horario']->format('H:i');
             $paritdosOrdenados[$partido['sede']][$partido['cancha']][] = $partido;
         }
+        foreach ($this->partidoRepository->buscarPartidosProgramadosPlayOffXTorneo($ruta) as $partido) {
+            $partido['fecha'] = $partido['horario']->format('Y-m-d');
+            $partido['hora'] = $partido['horario']->format('H:i');
+            $paritdosOrdenados[$partido['sede']][$partido['cancha']][] = $partido;
+        }
+
+        foreach ($this->partidoRepository->buscarPartidosProgramadosPlayOffFinalesXTorneo($ruta) as $partido) {
+            $partido['fecha'] = $partido['horario']->format('Y-m-d');
+            $partido['hora'] = $partido['horario']->format('H:i');
+            $paritdosOrdenados[$partido['sede']][$partido['cancha']][] = $partido;
+        }
+        
         return $paritdosOrdenados;
     }
 
