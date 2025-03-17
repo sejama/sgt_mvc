@@ -231,7 +231,9 @@
                 <td>-</td>
                 <td>{{ partido.equipoVisitante }}</td>
                 <td>
-                  <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoId': partido.id }) }}" class="btn btn-info">Cargar Resultado</a>
+                  {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
+                    <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoId': partido.id }) }}" class="btn btn-info">Cargar Resultado</a>
+                  {% endif %}
                 </td>
               </tr>
             {% endfor %}

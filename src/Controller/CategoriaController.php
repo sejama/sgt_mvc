@@ -19,6 +19,25 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class CategoriaController extends AbstractController
 {
+    #[Route('/{categoriaId}', name: 'app_torneo_categoria', methods: ['GET'])]
+    public function verCategoria(
+        string $ruta,
+        int $categoriaId,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        return $this->render(
+            'categoria/index.html.twig',
+            [
+                'torneo' => $torneo,
+                'categoria' => $categoria,
+            ]
+        );
+    }
+
+
     #[Route('/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
     public function agregarCategoria(
         string $ruta,

@@ -196,6 +196,7 @@ class PartidoController extends AbstractController
                 $resultadoLocal = $request->request->all('puntosLocal');
                 $resultadoVisitante = $request->request->all('puntosVisitante');
                 $partidoManager->cargarResultado($partidoId, $resultadoLocal, $resultadoVisitante);
+                return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
             }
             $partido = $partidoManager->obtenerPartido($partidoId);
 
