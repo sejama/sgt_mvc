@@ -1,5 +1,4 @@
-<h1> {{ categoria.nombre }}</h1>
-{% for grupo in categoria.grupos %}
+
 <div class="card mt-1">
     <div class="card-header">
         <h4>Nombre Grupo: {{ grupo.nombre }}</h4>
@@ -31,20 +30,20 @@
                 </tr>   
             </thead>
             <tbody>
-                {% for key, equipo in grupo.equipo %}
+                {% for key, equipo in posiciones %}
                 <tr>
-                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">{{ key + 1 }}</th>
+                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">{{ key }}</th>
                     <td style="position: -webkit-sticky; position: sticky; left: 0px; background: white;">{{ equipo.nombre }}</td>
-                    <td class="table-active">-</td>
-                    <td class="table-active">-</td>
-                    <td class="table-active">-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td class="table-active">-</td>
-                    <td class="table-active">-</td>
-                    <td class="table-active">-</td>
-                    <td></td>
+                    <td class="table-active">{{ equipo.partidosJugados }}</td>
+                    <td class="table-active">{{ equipo.partidosGanados }}</td>
+                    <td class="table-active">{{ equipo.partidosPerdidos }}</td>
+                    <td>{{ equipo.setsFavor }}</td>
+                    <td>{{ equipo.setsContra }} </td>
+                    <td>{{ equipo.setsDiferencia }}</td>
+                    <td class="table-active">{{ equipo.puntosFavor }}</td>
+                    <td class="table-active">{{ equipo.puntosContra }}</td>
+                    <td class="table-active">{{ equipo.puntosDiferencia }}</td>
+                    <td>{{ equipo.puntos }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -56,4 +55,3 @@
         </div>
     -->
 </div>
-{% endfor %}

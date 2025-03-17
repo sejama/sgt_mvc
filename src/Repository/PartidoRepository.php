@@ -143,8 +143,9 @@ class PartidoRepository extends ServiceEntityRepository
 
     public function buscarPartidosProgramadosClasificatorioXTorneo(string $ruta): array
     {
-         /*
-            SELECT s.nombre sede, c.nombre cancha, p.horario hora, eLocal.nombre equipoLocal, eVisitante.nombre equipoVisitante, g.nombre grupo, cat.nombre categoria 
+        /*
+            SELECT s.nombre sede, c.nombre cancha, p.horario hora, eLocal.nombre equipoLocal, eVisitante.nombre equipoVisitante, g.nombre grupo, cat.nombre categoria, 
+            p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5
             FROM partido p 
             INNER JOIN cancha c ON p.cancha_id = c.id 
             INNER JOIN sede s ON c.sede_id = s.id 
@@ -155,7 +156,7 @@ class PartidoRepository extends ServiceEntityRepository
             ORDER BY s.id, c.id, hora;
         */
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5')
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.grupo', 'g')
@@ -170,7 +171,8 @@ class PartidoRepository extends ServiceEntityRepository
     public function buscarPartidosProgramadosPlayOffXTorneo(string $ruta): array
     {
         /*
-        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT(g1.nombre,' ',pc.posicion_equipo1) equipoLocal, CONCAT(g2.nombre,' ',pc.posicion_equipo2) equipoVisitante, pc.nombre grupo, cat.nombre categoria 
+        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT(g1.nombre,' ',pc.posicion_equipo1) equipoLocal, CONCAT(g2.nombre,' ',pc.posicion_equipo2) equipoVisitante, pc.nombre grupo, cat.nombre categoria,
+        p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5
         FROM partido p 
         INNER JOIN cancha c ON p.cancha_id = c.id 
         INNER JOIN sede s ON c.sede_id = s.id 
@@ -182,7 +184,7 @@ class PartidoRepository extends ServiceEntityRepository
         */
 
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(g1.nombre, \' \', pc.posicionEquipo1) AS equipoLocal, CONCAT(g2.nombre, \' \', pc.posicionEquipo2) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(g1.nombre, \' \', pc.posicionEquipo1) AS equipoLocal, CONCAT(g2.nombre, \' \', pc.posicionEquipo2) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1, p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5')
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.categoria', 'cat')
@@ -197,7 +199,8 @@ class PartidoRepository extends ServiceEntityRepository
     public function buscarPartidosProgramadosPlayOffFinalesXTorneo(string $ruta): array
     {
         /*
-        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT('Ganador ',pc1.nombre) equipoLocal, CONCAT('Ganador ',pc2.nombre) equipoVisitante, pc.nombre grupo, cat.nombre categoria 
+        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT('Ganador ',pc1.nombre) equipoLocal, CONCAT('Ganador ',pc2.nombre) equipoVisitante, pc.nombre grupo, cat.nombre categoria,
+        p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5 
         FROM partido p 
         INNER JOIN cancha c ON p.cancha_id = c.id 
         INNER JOIN sede s ON c.sede_id = s.id 
@@ -211,7 +214,7 @@ class PartidoRepository extends ServiceEntityRepository
         */
         
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(\'Ganador \', pc1.nombre) AS equipoLocal, CONCAT(\'Ganador \', pc2.nombre) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(\'Ganador \', pc1.nombre) AS equipoLocal, CONCAT(\'Ganador \', pc2.nombre) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5')
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.categoria', 'cat')

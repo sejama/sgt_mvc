@@ -16,6 +16,27 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class GrupoController extends AbstractController
 {
+    #[Route('/{grupoId}', name: 'app_grupo')]
+    public function index(
+        string $ruta,
+        int $categoriaId,
+        int $grupoId,
+        TorneoManager $torneoManager,
+        GrupoManager $grupoManager,
+        CategoriaManager $categoriaManager
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        $grupo = $grupoManager->obtenerGrupo($grupoId);
+        $posiciones = $grupoManager->calcularPosiciones($grupo);
+        return $this->render(
+            'grupo/index.html.twig', [
+            'torneo' => $torneo,
+            'grupo' => $grupo,
+            'posiciones' => $posiciones,
+            ]
+        );
+    }
+
     #[Route('/crear', name: 'app_grupo_crear', methods: ['GET', 'POST'])]
     public function crearGrupo(
         Request $request,

@@ -227,9 +227,9 @@
                 <td>{{ partido.hora|date('H:i') }}</td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
-                <td>{{ partido.equipoLocal }}</td>
+                <td>{{ partido.equipoLocal }} {{ partido.localSet1 }} {{ partido.localSet2 }} {{ partido.localSet3 }} {{ partido.localSet4 }} {{ partido.localSet5 }}</td>
                 <td>-</td>
-                <td>{{ partido.equipoVisitante }}</td>
+                <td>{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</td>
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
                     <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoId': partido.id }) }}" class="btn btn-info">Cargar Resultado</a>

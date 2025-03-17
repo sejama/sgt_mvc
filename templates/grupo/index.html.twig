@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<h1>{% block title %}SGT- Gestion Grupos{% endblock %}</h1>
+
+{{ include("componentes/tabla.html.twig",{
+    'gurpo': grupo, 'posiciones': posiciones
+}) }}
+
+{% endblock %}
