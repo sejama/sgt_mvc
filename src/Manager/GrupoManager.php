@@ -167,13 +167,6 @@ class GrupoManager
                     }
                 }
 
-                if ($partido->getLocalSet3() !== null && $partido->getVisitanteSet3() !== null) {
-                    if ($partido->getLocalSet3() > $partido->getVisitanteSet3()) {
-                        $setsLocal++;
-                    } else {
-                        $setsVisitante++;
-                    }
-                }
 
                 if ($partido->getLocalSet4() !== null && $partido->getVisitanteSet4() !== null) {
                     if ($partido->getLocalSet4() > $partido->getVisitanteSet4()) {
@@ -193,20 +186,22 @@ class GrupoManager
 
                 $posiciones[$equipoLocal->getId()]['setsFavor'] += $setsLocal;
                 $posiciones[$equipoLocal->getId()]['setsContra'] += $setsVisitante;
-                $posiciones[$equipoLocal->getId()]['setsDiferencia'] += ($setsLocal - $setsVisitante);
+                $posiciones[$equipoLocal->getId()]['setsDiferencia'] += $setsLocal - $setsVisitante;
 
                 $posiciones[$equipoVisitante->getId()]['setsFavor'] += $setsVisitante;
                 $posiciones[$equipoVisitante->getId()]['setsContra'] += $setsLocal;
-                $posiciones[$equipoVisitante->getId()]['setsDiferencia'] += ($setsVisitante - $setsLocal);
+                $posiciones[$equipoVisitante->getId()]['setsDiferencia'] += $setsVisitante - $setsLocal;
 
                 if ($setsLocal > $setsVisitante) {
                     $posiciones[$equipoLocal->getId()]['partidosGanados']++;
                     $posiciones[$equipoVisitante->getId()]['partidosPerdidos']++;
+
                     $posiciones[$equipoLocal->getId()]['puntos'] += $setsLocal;
                     $posiciones[$equipoVisitante->getId()]['puntos'] += $setsVisitante;
                 } else {
                     $posiciones[$equipoVisitante->getId()]['partidosGanados']++;
                     $posiciones[$equipoLocal->getId()]['partidosPerdidos']++;
+
                     $posiciones[$equipoVisitante->getId()]['puntos'] += $setsVisitante;
                     $posiciones[$equipoLocal->getId()]['puntos'] += $setsLocal;
                 }
