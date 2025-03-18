@@ -196,18 +196,28 @@ class GrupoManager
                     $posiciones[$equipoLocal->getId()]['partidosGanados']++;
                     $posiciones[$equipoVisitante->getId()]['partidosPerdidos']++;
 
-                    $posiciones[$equipoLocal->getId()]['puntos'] += $setsLocal;
-                    $posiciones[$equipoVisitante->getId()]['puntos'] += $setsVisitante;
                 } else {
                     $posiciones[$equipoVisitante->getId()]['partidosGanados']++;
                     $posiciones[$equipoLocal->getId()]['partidosPerdidos']++;
 
-                    $posiciones[$equipoVisitante->getId()]['puntos'] += $setsVisitante;
-                    $posiciones[$equipoLocal->getId()]['puntos'] += $setsLocal;
                 }
+
+                $posiciones[$equipoLocal->getId()]['puntos'] = $posiciones[$equipoLocal->getId()]['partidosGanados'] * 2 + $posiciones[$equipoLocal->getId()]['partidosPerdidos'];
+                $posiciones[$equipoVisitante->getId()]['puntos'] = $posiciones[$equipoVisitante->getId()]['partidosGanados'] * 2 + $posiciones[$equipoVisitante->getId()]['partidosPerdidos'];
 
             }
         }
+
+        // Ordenar el array por puntos, setsDiferencia y puntosDiferencia
+        usort($posiciones, function ($a, $b) {
+            if ($a['puntos'] === $b['puntos']) {
+                if ($a['setsDiferencia'] === $b['setsDiferencia']) {
+                    return $b['puntosDiferencia'] <=> $a['puntosDiferencia'];
+                }
+                return $b['setsDiferencia'] <=> $a['setsDiferencia'];
+            }
+            return $b['puntos'] <=> $a['puntos'];
+        });
 
         return $posiciones;
     }
