@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Grupo;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
@@ -16,6 +17,31 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class GrupoController extends AbstractController
 {
+    #[Route('/', name: 'app_grupos')]
+    public function grupos(
+        string $ruta,
+        int $categoriaId,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        GrupoManager $grupoManager
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        $grupos = $categoria->getGrupos();
+        $gruposPosiciones = [];
+        foreach ($grupos as $grupo) {
+            $gruposPosiciones[$grupo->getId()][] = $grupo;
+            $gruposPosiciones[$grupo->getId()][] = $grupoManager->calcularPosiciones($grupo);
+        }
+        return $this->render(
+            'grupo/index.html.twig', [
+            'torneo' => $torneo,
+            'categoria' => $categoria,
+            'grupos' => $gruposPosiciones,
+            ]
+        );
+    }
+
     #[Route('/{grupoId}', name: 'app_grupo')]
     public function index(
         string $ruta,
@@ -23,7 +49,6 @@ class GrupoController extends AbstractController
         int $grupoId,
         TorneoManager $torneoManager,
         GrupoManager $grupoManager,
-        CategoriaManager $categoriaManager
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $grupo = $grupoManager->obtenerGrupo($grupoId);

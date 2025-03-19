@@ -124,9 +124,10 @@ class GrupoManager
                 'puntos' => 0,
             ];
         }
-
+        $partidosFinalizados = 0;
         foreach ($partidos as $partido) {
             if ($partido->getEstado() === EstadoPartido::FINALIZADO->value) {
+                $partidosFinalizados++;
                 $equipoLocal = $partido->getEquipoLocal();
                 $equipoVisitante = $partido->getEquipoVisitante();
 
@@ -204,7 +205,10 @@ class GrupoManager
 
                 $posiciones[$equipoLocal->getId()]['puntos'] = $posiciones[$equipoLocal->getId()]['partidosGanados'] * 2 + $posiciones[$equipoLocal->getId()]['partidosPerdidos'];
                 $posiciones[$equipoVisitante->getId()]['puntos'] = $posiciones[$equipoVisitante->getId()]['partidosGanados'] * 2 + $posiciones[$equipoVisitante->getId()]['partidosPerdidos'];
-
+            }
+            if ($partidosFinalizados === count($partidos) && $grupo->getEstado() !== EstadoGrupo::FINALIZADO->value) {
+                $grupo->setEstado(EstadoGrupo::FINALIZADO->value);
+                $this->grupoRepository->guardar($grupo);
             }
         }
 

@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 <h1>{% block title %}SGT- Gestion Grupos{% endblock %}</h1>
+<a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+{% for grupo in grupos %}
 
-{{ include("componentes/tabla.html.twig",{
-    'gurpo': grupo, 'posiciones': posiciones
-}) }}
+    {{ include("componentes/tabla.html.twig",{
+        'grupo': grupo[0], 'posiciones': grupo[1]
+    }) }}
+{% endfor %}
 
 {% endblock %}
