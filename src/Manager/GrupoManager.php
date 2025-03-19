@@ -205,11 +205,19 @@ class GrupoManager
 
                 $posiciones[$equipoLocal->getId()]['puntos'] = $posiciones[$equipoLocal->getId()]['partidosGanados'] * 2 + $posiciones[$equipoLocal->getId()]['partidosPerdidos'];
                 $posiciones[$equipoVisitante->getId()]['puntos'] = $posiciones[$equipoVisitante->getId()]['partidosGanados'] * 2 + $posiciones[$equipoVisitante->getId()]['partidosPerdidos'];
+                
+            
             }
-            if ($partidosFinalizados === count($partidos) && $grupo->getEstado() !== EstadoGrupo::FINALIZADO->value) {
-                $grupo->setEstado(EstadoGrupo::FINALIZADO->value);
-                $this->grupoRepository->guardar($grupo);
+            
+            if ($partido->getEstado() === EstadoPartido::CANCELADO->value) {
+                $partidosFinalizados++;
             }
+            
+        }
+
+        if ($partidosFinalizados === count($partidos) && $grupo->getEstado() !== EstadoGrupo::FINALIZADO->value) {
+            $grupo->setEstado(EstadoGrupo::FINALIZADO->value);
+            $this->grupoRepository->guardar($grupo);
         }
 
         // Ordenar el array por puntos, setsDiferencia y puntosDiferencia
