@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Grupo;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
+use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,7 @@ class GrupoController extends AbstractController
         int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        GrupoManager $grupoManager
+        TablaManager $tablaManager
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
@@ -31,7 +31,7 @@ class GrupoController extends AbstractController
         $gruposPosiciones = [];
         foreach ($grupos as $grupo) {
             $gruposPosiciones[$grupo->getId()][] = $grupo;
-            $gruposPosiciones[$grupo->getId()][] = $grupoManager->calcularPosiciones($grupo);
+            $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
         }
 
         $partidos = []; 
@@ -58,10 +58,11 @@ class GrupoController extends AbstractController
         int $grupoId,
         TorneoManager $torneoManager,
         GrupoManager $grupoManager,
+        TablaManager $tablaManager  
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $grupo = $grupoManager->obtenerGrupo($grupoId);
-        $posiciones = $grupoManager->calcularPosiciones($grupo);
+        $posiciones = $tablaManager->calcularPosiciones($grupo);
         return $this->render(
             'grupo/index.html.twig', [
             'torneo' => $torneo,
