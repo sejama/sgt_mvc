@@ -33,11 +33,20 @@ class GrupoController extends AbstractController
             $gruposPosiciones[$grupo->getId()][] = $grupo;
             $gruposPosiciones[$grupo->getId()][] = $grupoManager->calcularPosiciones($grupo);
         }
+
+        $partidos = []; 
+        foreach ($categoria->getPartidos() as $partido) {
+            if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
+                $partidos[] = $partido;
+            }
+        }
         return $this->render(
             'grupo/index.html.twig', [
             'torneo' => $torneo,
             'categoria' => $categoria,
             'grupos' => $gruposPosiciones,
+            'playOff' => $categoriaManager->armarPlayOff($categoria),
+            'partidos' => $partidos,
             ]
         );
     }

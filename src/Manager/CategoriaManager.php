@@ -4,19 +4,43 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
+use Symfony\Contracts\Service\LazyServiceTrait;
 use App\Repository\CategoriaRepository;
 use App\Entity\Categoria;
 use App\Entity\Torneo;
 use App\Enum\EstadoCategoria;
+use App\Enum\EstadoGrupo;
 use App\Enum\Genero;
 use App\Exception\AppException;
 
 class CategoriaManager
 {
+    private GrupoManager $grupoManager;
+
     public function __construct(
         private CategoriaRepository $categoriaRepository,
-        private ValidadorManager $validadorManager
+        private ValidadorManager $validadorManager,
     ) {
+    }
+
+    /*
+    Inyección diferida (Lazy Loading)
+    En lugar de inyectar directamente GrupoManager en el constructor de CategoriaManager, puedes usar un contenedor de servicios o un proxy para cargar GrupoManager solo cuando sea necesario. Esto rompe la dependencia circular.
+    
+    En este caso:
+
+    GrupoManager no se inyecta directamente en el constructor.
+    Se utiliza un método setGrupoManager para inyectarlo después de que el contenedor de servicios haya resuelto todas las dependencias.
+    En Symfony, puedes configurar esto en services.yaml:
+
+    services:
+    App\Manager\CategoriaManager:
+        calls:
+            - [setGrupoManager, ['@App\Manager\GrupoManager']]
+    */
+    public function setGrupoManager(GrupoManager $grupoManager): void
+    {
+        $this->grupoManager = $grupoManager;
     }
 
     public function obtenerCategorias(): array
@@ -105,5 +129,19 @@ class CategoriaManager
     public function eliminarCategoria(Categoria $categoria): void
     {
         $this->categoriaRepository->eliminar($categoria, true);
+    }
+
+    public function armarPlayOff(Categoria $categoria): array
+    {
+        $grupos = $categoria->getGrupos();
+        $gruposPosiciones = [];
+        foreach ($grupos as $grupo) {
+            if ($grupo->getEstado() !== EstadoGrupo::FINALIZADO->value) {
+                throw new AppException('No se puede armar el play off si no se han finalizado todos los grupos');
+            }
+            $gruposPosiciones[$grupo->getNombre()] = $this->grupoManager->calcularPosiciones($grupo);
+        }
+
+        return $gruposPosiciones;
     }
 }
