@@ -205,11 +205,11 @@ class PartidoManager
         
         $partido->setLocalSet1((int)$resultadoLocal[0]);
         $partido->setLocalSet2((int)$resultadoLocal[1]);
-        $partido->setLocalSet3((int)$resultadoLocal[2]);
+        $partido->setLocalSet3($resultadoLocal[2] ? (int)$resultadoLocal[2] : null);
 
         $partido->setVisitanteSet1((int)$resultadoVisitante[0]);
         $partido->setVisitanteSet2((int)$resultadoVisitante[1]);
-        $partido->setVisitanteSet3((int)$resultadoVisitante[2]);
+        $partido->setVisitanteSet3($resultadoVisitante[2] ? (int)$resultadoVisitante[2] : null);
         
         $partido->setEstado(\App\Enum\EstadoPartido::FINALIZADO->value);
         $this->partidoRepository->guardar($partido);

@@ -34,7 +34,7 @@ INSERT INTO `partido_config`(`partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id
 INSERT INTO partido(`categoria_id`,`estado`,`tipo`,`created_at`,`updated_at`,`numero`,`grupo_id`) VALUES (2,'Borrador','Eliminatorio',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,68,16);
 INSERT INTO `partido_config`(`partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id`, `posicion_equipo1`, `posicion_equipo2`, `nombre`, `created_at`, `updated_at`) VALUES (68,7,6,3,3,'Partido 1 Triangular 2 Plata', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO partido(`categoria_id`,`estado`,`tipo`,`created_at`,`updated_at`,`numero`,`grupo_id`) VALUES (2,'Borrador','Eliminatorio',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,69,16);
-INSERT INTO `partido_config`(`partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id`, `posicion_equipo1`, `posicion_equipo2`, `nombre`, `created_at`, `updated_at`) VALUES (69,6,4,3,4,'Partido 2 Triangular 2 Plata', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `partido_config`(`partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id`, `posicion_equipo1`, `posicion_equipo2`, `nombre`, `created_at`, `updated_at`) VALUES (69,6,5,3,4,'Partido 2 Triangular 2 Plata', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO partido(`categoria_id`,`estado`,`tipo`,`created_at`,`updated_at`,`numero`,`grupo_id`) VALUES (2,'Borrador','Eliminatorio',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,70,16);
 INSERT INTO `partido_config`(`partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id`, `posicion_equipo1`, `posicion_equipo2`, `nombre`, `created_at`, `updated_at`) VALUES (70,5,7,4,3,'Partido 3 Triangular 2 Plata', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 

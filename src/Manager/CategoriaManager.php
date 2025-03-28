@@ -11,11 +11,13 @@ use App\Enum\EstadoCategoria;
 use App\Enum\EstadoGrupo;
 use App\Enum\Genero;
 use App\Exception\AppException;
+use App\Repository\PartidoRepository;
 
 class CategoriaManager
 {
     public function __construct(
         private CategoriaRepository $categoriaRepository,
+        private PartidoRepository $partidoRepository,
         private ValidadorManager $validadorManager,
         private TablaManager $tablaManager
     ) {
@@ -109,7 +111,7 @@ class CategoriaManager
         $this->categoriaRepository->eliminar($categoria, true);
     }
 
-    public function armarPlayOff(Categoria $categoria): array
+    public function armarPlayOff(Categoria $categoria): void
     {
         $grupos = $categoria->getGrupos();
         $gruposPosiciones = [];
@@ -120,6 +122,25 @@ class CategoriaManager
             $gruposPosiciones[$grupo->getNombre()] = $this->tablaManager->calcularPosiciones($grupo);
         }
 
-        return $gruposPosiciones;
+        $partidosConfig = $this->partidoRepository->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria->getId());
+
+
+        foreach ($categoria->getPartidos() as $partido) {
+            if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
+                if ($partido->getPartidoConfig()->getGrupoEquipo1() !== null && $partido->getPartidoConfig()->getGrupoEquipo2() !== null) {
+                    $grupoEquipo1 = $partido->getPartidoConfig()->getGrupoEquipo1();
+                    $posicionEquipo1 = $partido->getPartidoConfig()->getPosicionEquipo1();
+                    
+                    $grupoEquipo2 = $partido->getPartidoConfig()->getGrupoEquipo2();
+                    $posicionEquipo2 = $partido->getPartidoConfig()->getPosicionEquipo2();
+                    
+                    
+                    $partido->setEquipoLocal($gruposPosiciones[$grupoEquipo1->getNombre()][$posicionEquipo1 - 1]['equipo']);
+                    $partido->setEquipoVisitante($gruposPosiciones[$grupoEquipo2->getNombre()][$posicionEquipo2 - 1]['equipo']);
+                    
+                    $this->partidoRepository->guardar($partido, true);
+                }
+            }
+        }
     }
 }

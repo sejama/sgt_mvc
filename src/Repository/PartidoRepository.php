@@ -172,7 +172,7 @@ class PartidoRepository extends ServiceEntityRepository
     {
         /*
         SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, CONCAT(g1.nombre,' ',pc.posicion_equipo1) equipoLocal, CONCAT(g2.nombre,' ',pc.posicion_equipo2) equipoVisitante, pc.nombre grupo, cat.nombre categoria,
-        p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5
+        p.local_set1, p.visitante_set1, p.local_set2, p.visitante_set2, p.local_set3, p.visitante_set3, p.local_set4, p.visitante_set4, p.local_set5, p.visitante_set5
         FROM partido p 
         INNER JOIN cancha c ON p.cancha_id = c.id 
         INNER JOIN sede s ON c.sede_id = s.id 
@@ -232,6 +232,40 @@ class PartidoRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['numero' => $numero]);
     }
+
+    public function obtenerPartidosXCategoriaEliminatoriaPostClasificatorio(int $categoriaId): array
+    {
+        /*
+        SELECT partido.id, equipo_local_id as Local, equipo_visitante_id as Visitante, estado, tipo, partido_config.grupo_equipo1_id as Grupo1, partido_config.posicion_equipo1 as Posicion1, partido_config.grupo_equipo2_id as Grupo2, partido_config.posicion_equipo2 as Posicion2 
+        FROM `partido` 
+        INNER JOIN partido_config ON partido_config.partido_id = partido.id
+        WHERE `categoria_id` = 1 AND `equipo_local_id` IS NULL AND `equipo_visitante_id` IS NULL AND grupo_equipo1_id IS NOT NULL AND grupo_equipo2_id IS NOT NULL
+        */
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.estado, p.tipo, g1.id AS Grupo1, pc.posicionEquipo1 AS Posicion1, g2.id AS Grupo2, pc.posicionEquipo2 AS Posicion2')
+            ->join('p.partidoConfig', 'pc')
+            ->join('pc.grupoEquipo1', 'g1')
+            ->join('pc.grupoEquipo2', 'g2')
+            ->where('p.categoria = :categoriaId')
+            ->andWhere('p.equipoLocal IS NULL')
+            ->andWhere('p.equipoVisitante IS NULL')
+            ->andWhere('pc.grupoEquipo1 IS NOT NULL')
+            ->andWhere('pc.grupoEquipo2 IS NOT NULL')
+            ->setParameter('categoriaId', $categoriaId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /*
+    Ver los partidos de una categoria que tienen configuracion de partido
+    
+    SELECT partido.id, local.nombre as Local, visitante.nombre as Visitante, partido.estado, partido.tipo, partido_config.grupo_equipo1_id as Grupo1, partido_config.posicion_equipo1 as Posicion1, partido_config.grupo_equipo2_id as Grupo2, partido_config.posicion_equipo2 as Posicion2 
+    FROM `partido` 
+    INNER JOIN partido_config ON partido_config.partido_id = partido.id
+    INNER JOIN equipo as local ON partido.equipo_local_id = local.id
+    INNER JOIN equipo as visitante on partido.equipo_visitante_id = visitante.id
+    WHERE partido.categoria_id = 1 AND grupo_equipo1_id IS NOT NULL AND grupo_equipo2_id IS NOT NULL
+     */
 
     //    /**
     //     * @return Partido[] Returns an array of Partido objects

@@ -2,8 +2,6 @@
 {% block body %}
 <h1>{% block title %}SGT- Gestion Grupos{% endblock %}</h1>
 <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
-{{ dump(playOff) }}
-{{ dump(partidos) }}
 {% for grupo in grupos %}
 
     {{ include("componentes/tabla.html.twig",{
