@@ -181,8 +181,10 @@ class PartidoManager
         $partido->setHorario($horario);
         $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);
 
-        $pdf = new GenerarPdf();
-        $pdf->generarPdf($partido, $ruta);
+        if ($partido->getEquipoLocal() !== null || $partido->getEquipoVisitante() !== null) {
+            $pdf = new GenerarPdf();
+            $pdf->generarPdf($partido, $ruta);
+        }
         $this->partidoRepository->guardar($partido);
         
         $equipoLocal = $partido->getEquipoLocal();

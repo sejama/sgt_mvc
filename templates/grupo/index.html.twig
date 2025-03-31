@@ -1,9 +1,15 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
 <h1>{% block title %}SGT- Gestion Grupos{% endblock %}</h1>
 <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+<a href="{{ path('app_grupo_playoff', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-primary">Armar Play off</a>
 {% for grupo in grupos %}
-
     {{ include("componentes/tabla.html.twig",{
         'grupo': grupo[0], 'posiciones': grupo[1]
     }) }}

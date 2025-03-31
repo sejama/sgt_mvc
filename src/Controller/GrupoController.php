@@ -13,11 +13,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/torneo/{ruta}/categoria/{categoriaId}/grupo')]
+#[Route('/admin/torneo/{ruta}/categoria/{categoriaId}')]
 #[IsGranted('ROLE_ADMIN')]
 class GrupoController extends AbstractController
 {
-    #[Route('/', name: 'app_grupos')]
+    #[Route('/grupos', name: 'app_grupos')]
     public function grupos(
         string $ruta,
         int $categoriaId,
@@ -34,8 +34,6 @@ class GrupoController extends AbstractController
             $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
         }
 
-        $categoriaManager->armarPlayOff($categoria);
-
         return $this->render(
             'grupo/index.html.twig', [
             'torneo' => $torneo,
@@ -45,7 +43,35 @@ class GrupoController extends AbstractController
         );
     }
 
-    #[Route('/{grupoId}', name: 'app_grupo')]
+    #[Route('/armarPlayoff', name: 'app_grupo_playoff')]
+    public function armarPlayOff(
+        string $ruta,
+        int $categoriaId,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        TablaManager $tablaManager
+    ): Response {
+        try {
+            $torneo = $torneoManager->obtenerTorneo($ruta);
+            $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+            $grupos = $categoria->getGrupos();
+            $gruposPosiciones = [];
+            foreach ($grupos as $grupo) {
+                $gruposPosiciones[$grupo->getId()][] = $grupo;
+                $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
+            }
+            $categoriaManager->armarPlayOff($categoria);
+            $this->addFlash('success', 'Playoff armado con éxito para la categoría ' . $categoria->getNombre() . '.');
+            return $this->redirectToRoute('app_grupos', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+        } catch (AppException $ae) {
+            $this->addFlash('danger', $ae->getMessage());
+        } catch (\Exception $e) {
+            $this->addFlash('danger', "Ocurrió un error al armar el playoff.");
+        }
+        return $this->redirectToRoute('app_grupos', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+    }
+
+    #[Route('/grupo/{grupoId}', name: 'app_grupo')]
     public function index(
         string $ruta,
         int $categoriaId,
@@ -60,13 +86,13 @@ class GrupoController extends AbstractController
         return $this->render(
             'grupo/index.html.twig', [
             'torneo' => $torneo,
-            'grupo' => $grupo,
+            'grupos' => $grupo,
             'posiciones' => $posiciones,
             ]
         );
     }
 
-    #[Route('/crear', name: 'app_grupo_crear', methods: ['GET', 'POST'])]
+    #[Route('/grupo/crear', name: 'app_grupo_crear', methods: ['GET', 'POST'])]
     public function crearGrupo(
         Request $request,
         GrupoManager $grupoManager,

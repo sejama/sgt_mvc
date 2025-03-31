@@ -12,6 +12,7 @@ use App\Enum\EstadoGrupo;
 use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Repository\PartidoRepository;
+use App\Utils\GenerarPdf;
 
 class CategoriaManager
 {
@@ -122,9 +123,6 @@ class CategoriaManager
             $gruposPosiciones[$grupo->getNombre()] = $this->tablaManager->calcularPosiciones($grupo);
         }
 
-        $partidosConfig = $this->partidoRepository->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria->getId());
-
-
         foreach ($categoria->getPartidos() as $partido) {
             if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
                 if ($partido->getPartidoConfig()->getGrupoEquipo1() !== null && $partido->getPartidoConfig()->getGrupoEquipo2() !== null) {
@@ -134,11 +132,13 @@ class CategoriaManager
                     $grupoEquipo2 = $partido->getPartidoConfig()->getGrupoEquipo2();
                     $posicionEquipo2 = $partido->getPartidoConfig()->getPosicionEquipo2();
                     
-                    
                     $partido->setEquipoLocal($gruposPosiciones[$grupoEquipo1->getNombre()][$posicionEquipo1 - 1]['equipo']);
                     $partido->setEquipoVisitante($gruposPosiciones[$grupoEquipo2->getNombre()][$posicionEquipo2 - 1]['equipo']);
                     
-                    $this->partidoRepository->guardar($partido, true);
+                    $this->partidoRepository->guardar($partido);
+
+                    $pdf = new GenerarPdf();
+                    $pdf->generarPdf($partido, $categoria->getTorneo()->getRuta());
                 }
             }
         }
