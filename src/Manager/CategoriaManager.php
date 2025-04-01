@@ -107,6 +107,11 @@ class CategoriaManager
         $this->categoriaRepository->guardar($categoria, true);
     }
 
+    public function guardar(Categoria $categoria, bool $flush = true): void
+    {
+        $this->categoriaRepository->guardar($categoria, $flush);
+    }
+
     public function eliminarCategoria(Categoria $categoria): void
     {
         $this->categoriaRepository->eliminar($categoria, true);
@@ -142,5 +147,8 @@ class CategoriaManager
                 }
             }
         }
+
+        $categoria->setEstado(EstadoCategoria::ZONAS_CERRADAS->value);
+        $this->categoriaRepository->guardar($categoria, true);
     }
 }

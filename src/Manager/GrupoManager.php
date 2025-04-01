@@ -4,6 +4,7 @@ namespace App\Manager;
 
 use App\Entity\Categoria;
 use App\Entity\Grupo;
+use App\Enum\EstadoCategoria;
 use App\Enum\EstadoGrupo;
 use App\Exception\AppException;
 use App\Repository\GrupoRepository;
@@ -92,6 +93,8 @@ class GrupoManager
                 foreach ($equiposGrupo as $equipo) {
                     $entidad->addEquipo($equipo);
                 }
+                $categoria->setEstado(EstadoCategoria::ZONAS_CREADAS->value);
+                $this->categoriaManager->guardar($categoria, false);
                 $this->grupoRepository->guardar($entidad);
             } catch (AppException $e) {
                 throw new AppException($e->getMessage());

@@ -5,8 +5,10 @@ namespace App\Tests\Unit\Manager;
 use App\Entity\Categoria;
 use App\Entity\Torneo;
 use App\Manager\CategoriaManager;
+use App\Manager\TablaManager;
 use App\Manager\ValidadorManager;
 use App\Repository\CategoriaRepository;
+use App\Repository\PartidoRepository;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\exactly;
@@ -16,11 +18,15 @@ class CategoriaManagerTest extends TestCase
     public function testObtenerCategorias(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $this->assertIsArray($categoriaManager->obtenerCategorias());
@@ -30,11 +36,15 @@ class CategoriaManagerTest extends TestCase
     public function testObtenerCategoriaOk(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $categoria = $this->createMock(Categoria::class);
@@ -46,11 +56,15 @@ class CategoriaManagerTest extends TestCase
     public function testObtenerCategoriaNoEncontrada(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $this->assertNull($categoriaManager->obtenerCategoria(1));
@@ -59,11 +73,15 @@ class CategoriaManagerTest extends TestCase
     public function testObtenerCategoriasPorTorneo(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $torneo = new Torneo();
@@ -77,11 +95,15 @@ class CategoriaManagerTest extends TestCase
     public function testCrearCategoriaOk(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $torneo = new Torneo();
@@ -102,11 +124,15 @@ class CategoriaManagerTest extends TestCase
     public function testCrearCategoriaYaExisteNombreGenero(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $torneo = new Torneo();
@@ -122,11 +148,15 @@ class CategoriaManagerTest extends TestCase
     public function testCrearCategoriaYaExisteNombreCorto(): void
     {
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
 
         $categoriaManager = new CategoriaManager(
             $categoriaRepository,
+            $partidoRepository,
             $validadorManager,
+            $tablaManager
         );
 
         $torneo = new Torneo();

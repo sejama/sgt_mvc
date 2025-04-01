@@ -7,8 +7,10 @@ namespace App\Enum;
 enum EstadoCategoria: string
 {
     case BORRADOR = "Borrador";
+    case ACTIVA = "Activa";
+    case CERRADA = "Cerrada";
     case ZONAS_CREADAS = "Zonas_creadas";
-    case PARTIDOS_CREADOS = "Partidos_creados";
+    case ZONAS_CERRADAS = "Zonas_cerradas";
     case FINALIZADO = "Finalizado";
 
     public static function getValues(): array

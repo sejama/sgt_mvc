@@ -7,12 +7,18 @@
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
 <h1>{% block title %}SGT- Gestion Grupos{% endblock %}</h1>
-<a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
-<a href="{{ path('app_grupo_playoff', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-primary">Armar Play off</a>
+<div>
+    <form action="{{ path('app_grupo_playoff', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" method="post">
+    <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+    {% if categoria.estado != 'Zonas_cerradas' %}
+        <input class="btn btn-primary" type="submit" value="Armar Play off" />
+    </form>
+    {% endif %}
+</div>
 {% for grupo in grupos %}
     {{ include("componentes/tabla.html.twig",{
         'grupo': grupo[0], 'posiciones': grupo[1]
     }) }}
 {% endfor %}
 
-{% endblock %}
+{% endblock %}  

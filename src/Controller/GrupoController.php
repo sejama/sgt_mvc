@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Enum\EstadoCategoria;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
 use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
+use PhpParser\Builder\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +45,7 @@ class GrupoController extends AbstractController
         );
     }
 
-    #[Route('/armarPlayoff', name: 'app_grupo_playoff')]
+    #[Route('/armarPlayoff', name: 'app_grupo_playoff', methods: ['POST'])]
     public function armarPlayOff(
         string $ruta,
         int $categoriaId,
@@ -64,7 +66,7 @@ class GrupoController extends AbstractController
             $this->addFlash('success', 'Playoff armado con éxito para la categoría ' . $categoria->getNombre() . '.');
             return $this->redirectToRoute('app_grupos', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
         } catch (AppException $ae) {
-            $this->addFlash('danger', $ae->getMessage());
+            $this->addFlash('danger', "una app exception");
         } catch (\Exception $e) {
             $this->addFlash('danger', "Ocurrió un error al armar el playoff.");
         }
