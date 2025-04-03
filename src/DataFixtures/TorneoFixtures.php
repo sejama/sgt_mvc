@@ -24,16 +24,16 @@ class TorneoFixtures extends Fixture implements DependentFixtureInterface
         $torneo->setDescripcion('XIV Torneo Sudamericano de Master Voley Santa Fe');
         $torneo->setRuta('xiv-sudamericano-master-voley-sf');
         $torneo->setFechaInicioInscripcion(
-            new \DateTimeImmutable('2024-12-02 18:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
+            new \DateTimeImmutable('2024-01-02 00:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
         );
         $torneo->setFechaFinInscripcion(
-            new \DateTimeImmutable('2024-12-02 19:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
+            new \DateTimeImmutable('2024-05-01 23:59:59', new \DateTimeZone('America/Argentina/Buenos_Aires'))
         );
         $torneo->setFechaInicioTorneo(
-            new \DateTimeImmutable('2024-12-02 20:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
+            new \DateTimeImmutable('2024-05-03 18:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
         );
         $torneo->setFechaFinTorneo(
-            new \DateTimeImmutable('2024-12-02 21:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
+            new \DateTimeImmutable('2024-05-05 22:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'))
         );
         $torneo->setEstado(EstadoTorneo::BORRADOR->value);
 

@@ -180,6 +180,7 @@ class PartidoRepository extends ServiceEntityRepository
         INNER JOIN partido_config pc ON pc.partido_id = p.id
         INNER JOIN grupo g1 ON g1.id = pc.grupo_equipo1_id  
         INNER JOIN grupo g2 ON g2.id = pc.grupo_equipo2_id 
+        WHERE equipo_local_id IS null AND equipo_visitante_id IS null
         ORDER BY s.id, c.id, hora;
         */
 
@@ -191,6 +192,8 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('p.partidoConfig', 'pc')
             ->join('pc.grupoEquipo1', 'g1')
             ->join('pc.grupoEquipo2', 'g2')
+            ->where('p.equipoLocal IS NULL')
+            ->andWhere('p.equipoVisitante IS NULL')
             ->orderBy('s.id, c.id, horario')
             ->getQuery()
             ->getResult();

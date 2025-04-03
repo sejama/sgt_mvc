@@ -72,7 +72,7 @@
                         'tipo': tipoPlata, 
                         'equipos': equiposPlata, 
                         'grupos': grupos, 
-                        'clasificaAnterior': equiposOro,
+                        'clasificaAnterior': grupos[0].clasificaOro,
                         'clasifica': grupos[0].clasificaPlata 
                     } ) }}
                 </div>
@@ -92,7 +92,7 @@
                         'tipo': tipoBronce, 
                         'equipos': equiposBronce, 
                         'grupos': grupos, 
-                        'clasificaAnterior': equiposOro + equiposPlata,
+                        'clasificaAnterior': grupos[0].clasificaOro + grupos[0].clasificaPlata,
                         'clasifica': grupos[0].clasificaBronce 
                     } ) }}
                 </div>
