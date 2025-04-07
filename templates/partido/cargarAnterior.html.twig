@@ -1,0 +1,261 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+        <h1>{% block title %}Editar Partido N° {{ partido.id }}{% endblock %}</h1>
+        <form class="needs-validation" novalidate>
+            <div class="form-floating mb-1">
+                <select class="form-select" id="floatingSelectCancha" name="cancha" aria-label="Floating label select example" 
+                    {% if app.user and app.user.roles[0] == 'ROLE_USER' %} disabled {% endif %}>
+                    <option value="" selected>Seleccione una cancha</option>
+                    {% for cancha in canchas %}
+                        {% if partido.cancha and partido.cancha.id == cancha.id %}
+                            <option value="{{partido.cancha.id}}" selected>{{ partido.cancha.club.nombre}} - {{ partido.cancha.nombre }}</option>
+                        {% else %}
+                            <option value="{{cancha.id}}">{{ cancha.club.nombre }} - {{ cancha.nombre }}</option>
+                        {% endif %}
+                        
+                    {% endfor %}
+                </select>
+                <label class="form-label" for="floatingSelectCancha">Cancha:</label>
+            </div>
+            <div class="form-floating mb-1">
+                <select class="form-select" id="floatingSelectZona" name="zona" aria-label="Floating label select example" 
+                    {% if app.user and app.user.roles[0] == 'ROLE_USER' %} disabled {% endif %}>
+                    {% if partido.zona != null %}
+                        <option value="{{partido.zona.id}}" selected>{{ partido.zona.id }}</option>
+                    {% endif %}
+                </select>
+                <label class="form-label" for="floatingSelectZona" name="zona">Zona:</label>
+            </div>
+            
+            <div class="row g-2">
+                <div class="col">
+                    <div class="form-floating mb-1">
+                        <select class="form-select" id="floatingSelectLocal" name="equipoLocal" aria-label="Floating label select example" 
+                            {% if app.user and app.user.roles[0] == 'ROLE_USER' %} disabled {% endif %}>
+                            <option value="{{ partido.equipoLocal.id }}" selected>{{ partido.equipoLocal.nombre }}</option>
+                        </select>
+                        <label class="form-label" for="floatingSelectLocal" name="equipoLocal">Equipo Local:</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-1">
+                        <select class="form-select" id="floatingSelectVisitante" name="equipoVisitante" aria-label="Floating label select example" 
+                            {% if app.user and app.user.roles[0] == 'ROLE_USER' %} disabled {% endif %}>
+                            <option value="{{ partido.equipoVisitante.id }}" selected>{{ partido.equipoVisitante.nombre }}</option>
+                        </select>
+                        <label class="form-label" for="floatingSelectVisitante">Equipo Visitante:</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-1">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridlocalSet1" name="localSet1" placeholder="0" 
+                            value="{{ partido.localSet1 ? partido.localSet1  }}" min="0" max="99">
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridlocalSet1">Puntos Set 1 Local</label>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridvisitanteSet1" name="visitanteSet1" placeholder="0" 
+                            value="{{ partido.visitanteSet1 ? partido.visitanteSet1}}" min="0" max="99">
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridvisitanteSet1">Puntos Set 1 Visitante</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-1">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridlocalSet2" name="localSet2" placeholder="0" 
+                            value="{{ partido.localSet2 }}" min="0" max="99">
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridlocalSet2">Puntos Set 2 Local</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridvisitanteSet2" name="visitanteSet2" placeholder="0" 
+                            value="{{ partido.visitanteSet2 }}" min="0" max="99">
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridvisitanteSet2">Puntos Set 2 Visitante</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-1">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridlocalSet3" name="localSet3" placeholder="0" 
+                            value="{{ partido.localSet3 }}" min="0" max="99">
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridlocalSet3">Puntos Set 3 Local</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridvisitanteSet3" name="visitanteSet3" placeholder="0" 
+                            value="{{ partido.visitanteSet3 }}" min="0" max="99">
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridvisitanteSet3">Puntos Set 3 Visitante</label>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="row g-2 mb-1">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridlocalSet4" name="localSet4" placeholder="0" 
+                            value="{{ partido.localSet4 }}" min="0" max="99" disabled>
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridlocalSet4">Puntos Set 4 Local</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridvisitanteSet4" name="visitanteSet4" placeholder="0" 
+                            value="{{ partido.visitanteSet4 }}" min="0" max="99" disabled>
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridvisitanteSet4">Puntos Set 4 Visitante</label>
+                    </div>
+                </div>
+            </div>
+            -->
+            <!--
+            <div class="row g-2 mb-1">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridlocalSet5" name="localSet5" placeholder="0" 
+                            value="{{ partido.localSet5 }}" min="0" max="99" disabled>
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridlocalSet5">Puntos Set 5 Local</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInputGridvisitanteSet5" name="visitanteSet5" placeholder="0" 
+                            value="{{ partido.visitanteSet5 }}" min="0" max="99" disabled>
+                        <div class="invalid-feedback">Este campo es obligatorio</div>
+                        <label class="form-label" for="floatingInputGridvisitanteSet5">Puntos Set 5 Visitante</label>
+                    </div>
+                </div>
+            </div>
+            -->
+            <div class="row g-2 mb-1">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="floatingInputGridhorarioFecha" name="horarioFecha" placeholder="dd/mm/aaaa" 
+                            value="{{ partido.horario|date("Y-m-d") }}" {% if app.user and app.user.roles[0] == 'ROLE_USER' %} disabled {% endif %}>
+                        <label class="form-label" for="floatingInputGridhorarioFecha">Fecha:</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="time" class="form-control" id="floatingInputGridhorarioHora" name="horarioHora" placeholder="hh:mm" 
+                            value="{{ partido.horario|date("H:i") }}" {% if app.user and app.user.roles[0] == 'ROLE_USER' %} disabled {% endif %}>
+                        <label class="form-label" for="floatingInputGridhorarioHora">Hora:</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btnEditarPartido" class="btn btn-success">Guardar</button>
+            <a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
+        </form>
+
+<script>
+    let inputs = document.querySelectorAll("input[type=number]")
+    for (let i = 0; i < inputs.length; i+=2) {
+        inputs[i].addEventListener("change",function() {
+            inputs[i].required = true;
+            inputs[i+1].required = true;
+            for (let j = i; j >= 0; j--) {
+                inputs[j].required = true;
+            }
+        })
+    }
+    for (let i = 1; i < inputs.length; i+=2) {
+        inputs[i].addEventListener("change",function() {
+            inputs[i].required = true;
+            for (let j = i; j >= 0; j--) {
+                inputs[j].required = true;
+            }
+        })
+    }
+
+    const btnEditarPartido = document.getElementById('btnEditarPartido')
+
+    btnEditarPartido.addEventListener('click', function(event) {
+        let local = visitante = 0;
+        const form = document.querySelector('.needs-validation')
+        const validadorSet1 = validarSet(0, 1, 1, 25)
+        const validadorSet2 = validarSet(2, 3, 2, 25)
+        const validadorSet3 = validarSet(4, 5, 3, 15)
+        //const validador = true
+        if (inputs[0].value > 0 || inputs[1].value > 0) {
+                if ( inputs[0].value < inputs[1].value) {
+                    visitante++
+                } else {
+                    local++
+                }
+            }
+            if (inputs[2].value > 0 || inputs[3].value > 0) {
+                if ( inputs[2].value < inputs[3].value ) {
+                    visitante++
+                } else {
+                    local++
+                }
+            }
+            if (inputs[4].value > 0 || inputs[5].value > 0) {
+                if ( inputs[4].value < inputs[5].value ) {
+                    visitante++
+                } else {
+                    local++
+                }
+            }
+            /*if (local < 2 && visitante < 2) {
+                alert('El partido es el mejor a 3 sets!')
+                validador = false
+            }*/
+        if (!form.checkValidity() || !validadorSet1 || !validadorSet2 || !validadorSet3 /*|| !validador*/){
+            event.preventDefault()
+            event.stopPropagation()
+        }else{
+            form.classList.add('was-validated')
+            form.action="{{ path('app_partido_editar', {'id': partido.id}) }}"
+            form.method="POST"
+            form.submit()
+        }
+        
+    })
+
+function validarSet(Poslocal, Posvisitante, set , puntos)
+{
+    if (inputs[Poslocal].required && inputs[Posvisitante].required)
+    {
+        if (inputs[Poslocal].value >= puntos && inputs[Posvisitante].value >= puntos)
+        {
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > 2 || inputs[Poslocal].value - inputs[Posvisitante].value < -2)
+            {
+                alert('La diferencia de puntos entre los equipos debe ser de 2 en set '+set+'!')
+                return false
+            }
+        }
+        if (inputs[Poslocal].value >= puntos || inputs[Posvisitante].value >= puntos)
+        {
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > -2 && inputs[Poslocal].value - inputs[Posvisitante].value < 2)
+            {
+                alert('La diferencia de puntos entre los equipos debe ser mayor o igual a 2 en set '+set+'!')
+                return false
+            }
+        } else {
+            alert('Los puntos de un set deben ser mayor o igual a '+puntos+' en set '+set+'!')
+            return false
+        }
+    }
+    return true
+}
+</script>
+
+{% endblock %}

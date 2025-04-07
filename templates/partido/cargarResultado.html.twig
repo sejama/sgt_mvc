@@ -11,6 +11,25 @@
     <a href="{{ path('app_partido', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
     <h2>{{ partido.equipoLocal.nombre }} vs {{ partido.equipoVisitante.nombre }}</h2>
     <form class="row g-3 needs-validation" novalidate action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoId': partido.id}) }}" method="post">
+        <div class="row g-2 mb-1">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingInputGridlocalSet1" name="localSet1" placeholder="0" 
+                        value="{{ partido.localSet1 ? partido.localSet1  }}" min="0" max="99">
+                    <div class="invalid-feedback">Este campo es obligatorio</div>
+                    <label class="form-label" for="floatingInputGridlocalSet1">Puntos Set 1 Local</label>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingInputGridvisitanteSet1" name="visitanteSet1" placeholder="0" 
+                        value="{{ partido.visitanteSet1 ? partido.visitanteSet1}}" min="0" max="99">
+                    <div class="invalid-feedback">Este campo es obligatorio</div>
+                    <label class="form-label" for="floatingInputGridvisitanteSet1">Puntos Set 1 Visitante</label>
+                </div>
+            </div>
+        </div>
         <div class="input-group mb-3">
             <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 1 {{ partido.equipoLocal.nombre }}" aria-label="Set 1 {{ partido.equipoLocal.nombre }}" min=0 required>
             <span class="input-group-text">vs</span>
