@@ -56,18 +56,28 @@ class PartidoManager
         foreach ($this->partidoRepository->buscarPartidosProgramadosClasificatorioXTorneo($ruta) as $partido) {
             $partido['fecha'] = $partido['horario']->format('Y-m-d');
             $partido['hora'] = $partido['horario']->format('H:i');
-            $paritdosOrdenados[$partido['sede']][$partido['cancha']][] = $partido;
+            
+            // Validar que 'cancha' y 'fecha' existan y sean válidos
+            if (isset($partido['sede'], $partido['cancha'], $partido['fecha'])) {
+                $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
+            }
         }
         foreach ($this->partidoRepository->buscarPartidosProgramadosPlayOffXTorneo($ruta) as $partido) {
             $partido['fecha'] = $partido['horario']->format('Y-m-d');
             $partido['hora'] = $partido['horario']->format('H:i');
-            $paritdosOrdenados[$partido['sede']][$partido['cancha']][] = $partido;
+            
+            if (isset($partido['sede'], $partido['cancha'], $partido['fecha'])) {
+                $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
+            }
         }
 
         foreach ($this->partidoRepository->buscarPartidosProgramadosPlayOffFinalesXTorneo($ruta) as $partido) {
             $partido['fecha'] = $partido['horario']->format('Y-m-d');
             $partido['hora'] = $partido['horario']->format('H:i');
-            $paritdosOrdenados[$partido['sede']][$partido['cancha']][] = $partido;
+            
+            if (isset($partido['sede'], $partido['cancha'], $partido['fecha'])) {
+                $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
+            }
         }
         
         return $paritdosOrdenados;
@@ -205,12 +215,12 @@ class PartidoManager
     {
         $partido = $this->obtenerPartido($partidoId);
         
-        $partido->setLocalSet1((int)$resultadoLocal[0]);
-        $partido->setLocalSet2((int)$resultadoLocal[1]);
+        $partido->setLocalSet1($resultadoLocal[0] ? (int)$resultadoLocal[0] : null);
+        $partido->setLocalSet2($resultadoLocal[1] ? (int)$resultadoLocal[1] : null);
         $partido->setLocalSet3($resultadoLocal[2] ? (int)$resultadoLocal[2] : null);
 
-        $partido->setVisitanteSet1((int)$resultadoVisitante[0]);
-        $partido->setVisitanteSet2((int)$resultadoVisitante[1]);
+        $partido->setVisitanteSet1($resultadoVisitante[0] ? (int)$resultadoVisitante[0] : null);
+        $partido->setVisitanteSet2($resultadoVisitante[1] ? (int)$resultadoVisitante[1] : null);
         $partido->setVisitanteSet3($resultadoVisitante[2] ? (int)$resultadoVisitante[2] : null);
         
         $partido->setEstado(\App\Enum\EstadoPartido::FINALIZADO->value);

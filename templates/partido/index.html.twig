@@ -196,20 +196,22 @@
   </table>
       {% endif %}
       <h3>Partidos programados</h3>
+      {# dump(partidosProgramados) #}
       {% if partidosProgramados|length == 0 %}
         <div class="alert alert-warning" role="alert">
             No hay partidos programados
         </div>
-      {% endif %}
+        {% endif %}
       {% for key, canchas in partidosProgramados %}
         <h3>{{ key }}</h3>
-        {% for key, cancha in canchas %}
+        {% for key, fechas in canchas %}
           <h4>{{ key }}</h4>
+          {% for key, partidos in fechas %}
+            <h5>{{ key }}</h5>
           <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Fecha</th>
                 <th scope="col">Hora</th>
                 <th scope="col">Categoría</th>
                 <th scope="col">Grupo</th>
@@ -220,10 +222,9 @@
               </tr>
             </thead>
             <tbody class="table-group-divider">
-            {% for key, partido in cancha %}
+            {% for key, partido in partidos  %}
               <tr>
                 <th scope="row">{{partido.numero}}</th>
-                <td>{{ partido.fecha|date('d-m-Y') }}</td>
                 <td>{{ partido.hora|date('H:i') }}</td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
@@ -240,6 +241,7 @@
             </tbody>
           </table>
         {% endfor %}
+      {% endfor %}
       {% endfor %}
   <script>
     const selec = document.querySelectorAll('select');

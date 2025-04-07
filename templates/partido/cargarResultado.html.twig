@@ -9,62 +9,178 @@
     {% endfor %}
     <h1>{% block title %}SGT- Cargar resultado del partido {{ partido.id }} - {{ partido.numero }}{% endblock %}</h1>
     <a href="{{ path('app_partido', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
-    <h2>{{ partido.equipoLocal.nombre }} vs {{ partido.equipoVisitante.nombre }}</h2>
-    <form class="row g-3 needs-validation" novalidate action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoId': partido.id}) }}" method="post">
+    <form class="row g-3 needs-validation" novalidate>
+        <div class="row g-2">
+            <div class="col">
+                <div class="form-floating mb-1">
+                    <select class="form-select" id="floatingSelectLocal" name="equipoLocal" aria-label="Floating label select example" disabled>
+                        <option value="{{ partido.equipoLocal.id }}" selected>{{ partido.equipoLocal.nombre }}</option>
+                    </select>
+                    <label class="form-label" for="floatingSelectLocal" name="equipoLocal">Equipo Local:</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-1">
+                    <select class="form-select" id="floatingSelectVisitante" name="equipoVisitante" aria-label="Floating label select example" disabled>
+                        <option value="{{ partido.equipoVisitante.id }}" selected>{{ partido.equipoVisitante.nombre }}</option>
+                    </select>
+                    <label class="form-label" for="floatingSelectVisitante">Equipo Visitante:</label>
+                </div>
+            </div>
+        </div>
         <div class="row g-2 mb-1">
             <div class="col">
                 <div class="form-floating">
-                    <input type="number" class="form-control" id="floatingInputGridlocalSet1" name="localSet1" placeholder="0" 
+                    <input type="number" class="form-control" id="floatingInputGridlocalSet1" name="puntosLocal[]" placeholder="0" 
                         value="{{ partido.localSet1 ? partido.localSet1  }}" min="0" max="99">
                     <div class="invalid-feedback">Este campo es obligatorio</div>
-                    <label class="form-label" for="floatingInputGridlocalSet1">Puntos Set 1 Local</label>
+                    <label class="form-label" for="floatingInputGridlocalSet1">Puntos Set 1 {{ partido.equipoLocal.nombre }}</label>
                 </div>
             </div>
             
             <div class="col">
                 <div class="form-floating">
-                    <input type="number" class="form-control" id="floatingInputGridvisitanteSet1" name="visitanteSet1" placeholder="0" 
+                    <input type="number" class="form-control" id="floatingInputGridvisitanteSet1" name="puntosVisitante[]" placeholder="0" 
                         value="{{ partido.visitanteSet1 ? partido.visitanteSet1}}" min="0" max="99">
                     <div class="invalid-feedback">Este campo es obligatorio</div>
-                    <label class="form-label" for="floatingInputGridvisitanteSet1">Puntos Set 1 Visitante</label>
+                    <label class="form-label" for="floatingInputGridvisitanteSet1">Puntos Set 1 {{ partido.equipoVisitante.nombre }}</label>
                 </div>
             </div>
         </div>
-        <div class="input-group mb-3">
-            <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 1 {{ partido.equipoLocal.nombre }}" aria-label="Set 1 {{ partido.equipoLocal.nombre }}" min=0 required>
-            <span class="input-group-text">vs</span>
-            <input type="number" class="form-control" name="puntosVisitante[]" placeholder="Set 1 {{ partido.equipoVisitante.nombre }}" aria-label="Set 1 {{ partido.equipoVisitante.nombre }}" min=0 required>
+        <div class="row g-2 mb-1">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingInputGridlocalSet2" name="puntosLocal[]" placeholder="0" 
+                        value="{{ partido.localSet1 ? partido.localSet1  }}" min="0" max="99">
+                    <div class="invalid-feedback">Este campo es obligatorio</div>
+                    <label class="form-label" for="floatingInputGridlocalSet2">Puntos Set 2 {{ partido.equipoLocal.nombre }}</label>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingInputGridvisitanteSet2" name="puntosVisitante[]" placeholder="0" 
+                        value="{{ partido.visitanteSet1 ? partido.visitanteSet1}}" min="0" max="99">
+                    <div class="invalid-feedback">Este campo es obligatorio</div>
+                    <label class="form-label" for="floatingInputGridvisitanteSet2">Puntos Set 2 {{ partido.equipoVisitante.nombre }}</label>
+                </div>
+            </div>
         </div>
-        <div class="input-group mb-3">
-            <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 2 {{ partido.equipoLocal.nombre }}" aria-label="Set 2 {{ partido.equipoLocal.nombre }}" min=0 required>
-            <span class="input-group-text">vs</span>
-            <input type="number" class="form-control" name="puntosVisitante[]" placeholder="Set 2 {{ partido.equipoVisitante.nombre }}" aria-label="Set 2 {{ partido.equipoVisitante.nombre }}" min=0 required>
-        </div>
-        <div class="input-group mb-3">
-            <input type="number" class="form-control" name="puntosLocal[]" placeholder="Set 3 {{ partido.equipoLocal.nombre }}" aria-label="Set 3 {{ partido.equipoLocal.nombre }}" min=0>
-            <span class="input-group-text">vs</span>
-            <input type="number" class="form-control" name="puntosVisitante[]" placeholder="Set 3 {{ partido.equipoVisitante.nombre }}" aria-label="Set 3 {{ partido.equipoVisitante.nombre }}" min=0>
+        <div class="row g-2 mb-1">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingInputGridlocalSet3" name="puntosLocal[]" placeholder="0" 
+                        value="{{ partido.localSet1 ? partido.localSet3  }}" min="0" max="99">
+                    <div class="invalid-feedback">Este campo es obligatorio</div>
+                    <label class="form-label" for="floatingInputGridlocalSet3">Puntos Set 3 {{ partido.equipoLocal.nombre }}</label>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingInputGridvisitanteSet3" name="puntosVisitante[]" placeholder="0" 
+                        value="{{ partido.visitanteSet1 ? partido.visitanteSet3}}" min="0" max="99">
+                    <div class="invalid-feedback">Este campo es obligatorio</div>
+                    <label class="form-label" for="floatingInputGridvisitanteSet3">Puntos Set 3 {{ partido.equipoVisitante.nombre }}</label>
+                </div>
+            </div>
         </div>
         <div class="col-12">
-            <button class="btn btn-primary" type="submit">Guardar</button>
+            <a href="{{ path('app_partido', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
+            <button id="btnEditarPartido" class="btn btn-success">Guardar</button>
         </div>
     </form>
 <script>
-    (() => {
-        'use strict'
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation')
-        // Loop over them and prevent submission
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-    
-                form.classList.add('was-validated')
-            }, false)
+    let inputs = document.querySelectorAll("input[type=number]")
+    for (let i = 0; i < inputs.length; i+=2) {
+        inputs[i].addEventListener("change",function() {
+            inputs[i].required = true;
+            inputs[i+1].required = true;
+            for (let j = i; j >= 0; j--) {
+                inputs[j].required = true;
+            }
         })
-    })()
+    }
+    for (let i = 1; i < inputs.length; i+=2) {
+        inputs[i].addEventListener("change",function() {
+            inputs[i].required = true;
+            for (let j = i; j >= 0; j--) {
+                inputs[j].required = true;
+            }
+        })
+    }
+
+    const btnEditarPartido = document.getElementById('btnEditarPartido')
+
+    btnEditarPartido.addEventListener('click', function(event) {
+        let local = visitante = 0;
+        const form = document.querySelector('.needs-validation')
+        const validadorSet1 = validarSet(0, 1, 1, 25)
+        const validadorSet2 = validarSet(2, 3, 2, 25)
+        const validadorSet3 = validarSet(4, 5, 3, 15)
+        //const validador = true
+        if (inputs[0].value > 0 || inputs[1].value > 0) {
+                if ( inputs[0].value < inputs[1].value) {
+                    visitante++
+                } else {
+                    local++
+                }
+            }
+            if (inputs[2].value > 0 || inputs[3].value > 0) {
+                if ( inputs[2].value < inputs[3].value ) {
+                    visitante++
+                } else {
+                    local++
+                }
+            }
+            if (inputs[4].value > 0 || inputs[5].value > 0) {
+                if ( inputs[4].value < inputs[5].value ) {
+                    visitante++
+                } else {
+                    local++
+                }
+            }
+            /*if (local < 2 && visitante < 2) {
+                alert('El partido es el mejor a 3 sets!')
+                validador = false
+            }*/
+        if (!form.checkValidity() || !validadorSet1 || !validadorSet2 || !validadorSet3 /*|| !validador*/){
+            event.preventDefault()
+            event.stopPropagation()
+        }else{
+            form.classList.add('was-validated')
+            form.action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoId': partido.id}) }}"
+            form.method="POST"
+            form.submit()
+        }
+        
+    })
+
+function validarSet(Poslocal, Posvisitante, set , puntos)
+{
+    if (inputs[Poslocal].required && inputs[Posvisitante].required)
+    {
+        if (inputs[Poslocal].value >= puntos && inputs[Posvisitante].value >= puntos)
+        {
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > 2 || inputs[Poslocal].value - inputs[Posvisitante].value < -2)
+            {
+                alert('La diferencia de puntos entre los equipos debe ser de 2 en set '+set+'!')
+                return false
+            }
+        }
+        if (inputs[Poslocal].value >= puntos || inputs[Posvisitante].value >= puntos)
+        {
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > -2 && inputs[Poslocal].value - inputs[Posvisitante].value < 2)
+            {
+                alert('La diferencia de puntos entre los equipos debe ser mayor o igual a 2 en set '+set+'!')
+                return false
+            }
+        } else {
+            alert('Los puntos de un set deben ser mayor o igual a '+puntos+' en set '+set+'!')
+            return false
+        }
+    }
+    return true
+}
 </script>
 {% endblock %}

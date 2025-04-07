@@ -80,7 +80,7 @@ class GenerarPdf
 
         //Categoria
         $pdf->SetXY(147, 32);
-        $pdf->Write(0, strtoupper($partido->getCategoria()->getNombre()));
+        $pdf->Write(0, strtoupper($partido->getCategoria()->getNombreCorto()));
 
         //Rama
         // $pdf->SetXY(176, 32);
