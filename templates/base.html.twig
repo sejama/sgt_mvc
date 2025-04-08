@@ -13,9 +13,9 @@
             <script src="{{ asset('assets/quill/quill.js')}}"></script>
         {% endblock %}
     </head>
-    <body class="bg-light-subtle">
-        {{ include('header.html.twig') }}
-        <div class="container">
+    <body class="conbg-light-subtle">
+        <div class="container-md">
+            {{ include('header.html.twig') }}
             {% block body %}{% endblock %}
         </div>
         {% block javascripts %}

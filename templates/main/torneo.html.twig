@@ -3,49 +3,50 @@
 {% block title %}SGT - Inicio{% endblock %}
 
 {% block body %}
-<h1>{{ torneo.nombre }}</h1>
-<select class="form-select" aria-label="Default select example">
-    <option selected>Seleccione una categoría</option>
-    {% for categoria in categorias %}
-        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-    {% endfor %}
-</select>
-{% for key, canchas in partidosProgramados %}
-        <h3>{{ key }}</h3>
-        {% for key, fechas in canchas %}
-          <h4>{{ key }}</h4>
-          {% for key, partidos in fechas %}
-            <h5>{{ key }}</h5>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Hora</th>
-                  <th scope="col">Categoría</th>
-                  <th scope="col">Grupo</th>
-                  <th scope="col">Local</th>
-                  <th scope="col">vs</th>
-                  <th scope="col">Visitante</th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-              {% for key, partido in partidos %}
-                <tr>
-                  <th scope="row">{{key+1}}</th>
-                  <td>{{ partido.hora|date('H:i') }}</td>
-                  <td>{{ partido.categoria }}</td>
-                  <td>{{ partido.grupo }}</td>
-                  <td>{{ partido.equipoLocal }}</td>
-                  <td>-</td>
-                  <td>{{ partido.equipoVisitante }}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
+<div class="container-fluid">
+  <h1>{{ torneo.nombre }}</h1>
+  <select class="form-select" aria-label="Default select example">
+      <option selected>Seleccione una categoría</option>
+      {% for categoria in categorias %}
+          <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+      {% endfor %}
+  </select>
+  {% for key, canchas in partidosProgramados %}
+          <h3>{{ key }}</h3>
+          {% for key, fechas in canchas %}
+            <h4>{{ key }}</h4>
+            {% for key, partidos in fechas %}
+              <h5>{{ key }}</h5>
+              <div class="table-responsive-sm">
+              <table class="table table-striped table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Grupo</th>
+                    <th scope="col">Local</th>
+                    <th scope="col">vs</th>
+                    <th scope="col">Visitante</th>
+                  </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {% for key, partido in partidos %}
+                  <tr>
+                    <th scope="row">{{key+1}}</th>
+                    <td>{{ partido.hora|date('H:i') }}</td>
+                    <td>{{ partido.categoria }}</td>
+                    <td>{{ partido.grupo }}</td>
+                    <td>{{ partido.equipoLocal }}</td>
+                    <td>-</td>
+                    <td>{{ partido.equipoVisitante }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              </div>
+            {% endfor %}
           {% endfor %}
         {% endfor %}
-      {% endfor %}
-<script>
-    
-</script>
+  </div>
 {% endblock %}
