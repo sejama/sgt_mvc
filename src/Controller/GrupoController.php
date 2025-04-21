@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\PartidoConfig;
 use App\Enum\EstadoCategoria;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
+use App\Manager\PartidoManager;
 use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
 use PhpParser\Builder\Method;
@@ -25,7 +27,8 @@ class GrupoController extends AbstractController
         int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        TablaManager $tablaManager
+        TablaManager $tablaManager,
+        PartidoManager $partidoManager,
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
@@ -36,11 +39,16 @@ class GrupoController extends AbstractController
             $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
         }
 
+        $partidos = $partidoManager->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria);
+
         return $this->render(
             'grupo/index.html.twig', [
             'torneo' => $torneo,
             'categoria' => $categoria,
             'grupos' => $gruposPosiciones,
+            'partidosOro' => $partidos['oro'],
+            'partidosPlata' => $partidos['plata'] ?? [],
+            'partidosBronce' => $partidos['bronce'] ?? [],
             ]
         );
     }

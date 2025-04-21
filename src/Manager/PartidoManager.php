@@ -226,4 +226,21 @@ class PartidoManager
         $partido->setEstado(\App\Enum\EstadoPartido::FINALIZADO->value);
         $this->partidoRepository->guardar($partido);
     }
+
+    public function obtenerPartidosXCategoriaEliminatoriaPostClasificatorio(Categoria $categoria): array
+    {
+        $todos = $this->partidoRepository->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria->getId());
+        foreach ($todos as $partido) {
+            if (str_contains($partido['nombre'], 'Oro')) {
+                $partidos['oro'][] = $partido;
+            } elseif (str_contains($partido['nombre'], 'Plata')) {
+                $partidos['plata'][] = $partido;
+            } elseif (str_contains($partido['nombre'], 'Bronce')) {
+                $partidos['bronce'][] = $partido;
+            } else {
+                $partidos['general'][] = $partido;
+            }
+        }
+        return $partidos;
+    }
 }

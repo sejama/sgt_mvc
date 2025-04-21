@@ -327,21 +327,119 @@ class PartidoRepository extends ServiceEntityRepository
     public function obtenerPartidosXCategoriaEliminatoriaPostClasificatorio(int $categoriaId): array
     {
         /*
-        SELECT partido.id, equipo_local_id as Local, equipo_visitante_id as Visitante, estado, tipo, partido_config.grupo_equipo1_id as Grupo1, partido_config.posicion_equipo1 as Posicion1, partido_config.grupo_equipo2_id as Grupo2, partido_config.posicion_equipo2 as Posicion2 
-        FROM `partido` 
-        INNER JOIN partido_config ON partido_config.partido_id = partido.id
-        WHERE `categoria_id` = 1 AND `equipo_local_id` IS NULL AND `equipo_visitante_id` IS NULL AND grupo_equipo1_id IS NOT NULL AND grupo_equipo2_id IS NOT NULL
+        SELECT p.id AS partidoID, pc.id AS configID, 
+            (CASE
+                WHEN p.equipo_local_id IS NULL THEN CONCAT(g1.nombre,' ', pc.posicion_equipo1)
+                ELSE e1.nombre
+            END) AS Local,
+            p.local_set1, p.local_set2, p.local_set3,
+            (CASE
+                WHEN p.equipo_visitante_id IS NULL THEN CONCAT(g2.nombre,' ', pc.posicion_equipo2)
+                ELSE e2.nombre
+            END) AS Visitante,
+            p.visitante_set1, p.visitante_set2, p.visitante_set3,
+            pc.nombre
+        FROM partido p 
+        INNER JOIN partido_config pc ON pc.partido_id = p.id  
+        INNER JOIN grupo g1 ON pc.grupo_equipo1_id = g1.id 
+        INNER JOIN grupo g2 ON pc.grupo_equipo2_id = g2.id
+        INNER JOIN equipo e1 ON p.equipo_local_id = e1.id
+        INNER JOIN equipo e2 ON p.equipo_visitante_id = e2.id
+        WHERE p.categoria_id = 1
+
+        SELECT p.id AS partidoID, pc.id AS configID,
+            (CASE 
+                WHEN p.equipo_local_id IS NULL THEN CONCAT('Ganador ',pc1.nombre)
+                ELSE p.equipo_local_id
+            END) AS equipoLocal,
+            (CASE
+                WHEN p.equipo_visitante_id IS NULL THEN CONCAT('Ganador ',pc2.nombre) 
+                ELSE p.equipo_visitante_id
+            END) AS equipoVisitante,
+            p.local_set1, p.local_set2, p.local_set3, p.local_set4, p.local_set5,
+            p.visitante_set1, p.visitante_set2, p.visitante_set3, p.visitante_set4, p.visitante_set5,
+            pc.nombre
+        FROM partido p 
+        INNER JOIN partido_config pc ON pc.partido_id = p.id
+        INNER JOIN partido p1 ON p1.id = pc.ganador_partido1_id
+        INNER JOIN partido_config pc1 ON pc1.partido_id = p1.id
+        INNER JOIN partido p2 ON p2.id = pc.ganador_partido2_id
+        INNER JOIN partido_config pc2 ON pc2.partido_id = p2.id
+        WHERE p.categoria_id = 1
+
+        SELECT 
+    p.id AS partidoID, 
+    pc.id AS configID,
+    (CASE
+        WHEN p.equipo_local_id IS NULL 
+            THEN 
+                (CASE 
+                    WHEN pc.ganador_partido1_id IS NULL 
+                        THEN CONCAT(g1.nombre, ' ', pc.posicion_equipo1)
+                    ELSE CONCAT('Ganador ', pc1.nombre)
+                END)
+        ELSE e1.nombre
+    END) AS equipoLocal,
+    (CASE
+        WHEN p.equipo_visitante_id IS NULL 
+            THEN 
+                (CASE 
+                    WHEN pc.ganador_partido2_id IS NULL 
+                        THEN CONCAT(g2.nombre, ' ', pc.posicion_equipo2)
+                    ELSE CONCAT('Ganador ', pc2.nombre)
+                END)
+        ELSE e2.nombre
+    END) AS equipoVisitante,
+    p.local_set1, p.local_set2, p.local_set3, p.local_set4, p.local_set5,
+    p.visitante_set1, p.visitante_set2, p.visitante_set3, p.visitante_set4, p.visitante_set5,
+    pc.nombre
+    FROM partido p
+    INNER JOIN partido_config pc ON pc.partido_id = p.id
+    LEFT JOIN grupo g1 ON pc.grupo_equipo1_id = g1.id
+    LEFT JOIN grupo g2 ON pc.grupo_equipo2_id = g2.id
+    LEFT JOIN equipo e1 ON p.equipo_local_id = e1.id
+    LEFT JOIN equipo e2 ON p.equipo_visitante_id = e2.id
+    LEFT JOIN partido p1 ON p1.id = pc.ganador_partido1_id
+    LEFT JOIN partido_config pc1 ON pc1.partido_id = p1.id
+    LEFT JOIN partido p2 ON p2.id = pc.ganador_partido2_id
+    LEFT JOIN partido_config pc2 ON pc2.partido_id = p2.id
+    WHERE p.categoria_id = 1;
         */
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.estado, p.tipo, g1.id AS Grupo1, pc.posicionEquipo1 AS Posicion1, g2.id AS Grupo2, pc.posicionEquipo2 AS Posicion2')
+            ->select('p.id AS partidoID, pc.id AS configID, 
+            (CASE
+            WHEN p.equipoLocal IS NULL 
+                THEN 
+                    (CASE 
+                        WHEN pc.ganadorPartido1 IS NULL 
+                            THEN CONCAT(g1.nombre, \' \', pc.posicionEquipo1)
+                        ELSE CONCAT(\'Ganador \', pc1.nombre)
+                    END)
+            ELSE e1.nombre
+            END) AS Local,
+            p.localSet1, p.localSet2, p.localSet3,
+            (CASE
+                WHEN p.equipoVisitante IS NULL 
+                    THEN 
+                        (CASE 
+                            WHEN pc.ganadorPartido2 IS NULL 
+                                THEN CONCAT(g2.nombre, \' \', pc.posicionEquipo2)
+                            ELSE CONCAT(\'Ganador \', pc2.nombre)
+                        END)
+                ELSE e2.nombre
+            END) AS Visitante,
+            p.visitanteSet1, p.visitanteSet2, p.visitanteSet3,
+            pc.nombre')
             ->join('p.partidoConfig', 'pc')
-            ->join('pc.grupoEquipo1', 'g1')
-            ->join('pc.grupoEquipo2', 'g2')
+            ->leftJoin('pc.grupoEquipo1', 'g1')
+            ->leftJoin('pc.grupoEquipo2', 'g2')
+            ->leftJoin('p.equipoLocal', 'e1')
+            ->leftJoin('p.equipoVisitante', 'e2')
+            ->leftJoin('pc.ganadorPartido1', 'p1')
+            ->leftJoin('p1.partidoConfig', 'pc1')
+            ->leftJoin('pc.ganadorPartido2', 'p2')
+            ->leftJoin('p2.partidoConfig', 'pc2')
             ->where('p.categoria = :categoriaId')
-            ->andWhere('p.equipoLocal IS NULL')
-            ->andWhere('p.equipoVisitante IS NULL')
-            ->andWhere('pc.grupoEquipo1 IS NOT NULL')
-            ->andWhere('pc.grupoEquipo2 IS NOT NULL')
             ->setParameter('categoriaId', $categoriaId)
             ->getQuery()
             ->getResult();
