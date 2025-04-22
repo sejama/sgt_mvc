@@ -324,6 +324,29 @@ class PartidoRepository extends ServiceEntityRepository
         return $this->findOneBy(['numero' => $numero]);
     }
 
+    public function obtenerPartidosXCategoriaClasificatorio(int $categoriaId): array
+    {
+        /*
+        SELECT p.id, e1.nombre AS Local, p.local_set1, p.local_set2, p.local_set3, e2.nombre as Visitante, p.visitante_set1, p.visitante_set2, p.visitante_set3, p.tipo AS nombre
+        FROM partido p
+        INNER JOIN equipo e1 ON e1.id = p.equipo_local_id
+        INNER JOIN equipo e2 ON e2.id = p.equipo_visitante_id
+        WHERE p.tipo = 'Clasificatorio' AND p.categoria_id = 1 
+        */
+
+        return $this->createQueryBuilder('p')
+            ->select('p.id, e1.nombre AS Local, p.localSet1, p.localSet2, p.localSet3, e2.nombre AS Visitante, p.visitanteSet1, p.visitanteSet2, p.visitanteSet3, p.tipo AS nombre')
+            ->join('p.equipoLocal', 'e1')
+            ->join('p.equipoVisitante', 'e2')
+            ->where('p.tipo = :tipo')
+            ->andWhere('p.categoria = :categoriaId')
+            ->setParameter('tipo', 'Clasificatorio')
+            ->setParameter('categoriaId', $categoriaId)
+            ->getQuery()
+            ->getResult();
+
+    }
+
     public function obtenerPartidosXCategoriaEliminatoriaPostClasificatorio(int $categoriaId): array
     {
         /*

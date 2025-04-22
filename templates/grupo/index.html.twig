@@ -15,6 +15,7 @@
     </form>
     {% endif %}
 </div>
+Grupos
 <div class="accordion" id="accordionExample">
 {% for key, grupo in grupos %}
 <div class="accordion-item">
@@ -30,15 +31,122 @@
             }) }}
         </div>
     </div>
-  </div>
+</div>
 {% endfor %}
 </div>
-<div>
-    Play Off - ORO
-    {{ dump(partidosOro) }}
+Partidos
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePartidosClasificatorio" aria-expanded="false" aria-controls="collapsePartidosClasificatorio">
+                Partidos Clasificación
+            </button>
+        </h2>
+        <div id="collapsePartidosClasificatorio" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                {# dump(partidosClasificatorios) #}
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Local</th>
+                        <th scope="col">Puntos</th>
+                        <th scope="col">Visitante</th>
+                        <th scope="col">Puntos</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidosClasificatorios %}
+                        <tr>
+                            <th scope="row">{{ partido.id }}</th>
+                            <td>{{ partido.Local }}</td>
+                            <td>{{ partido.localSet1 }} {{ partido.localSet2 }} {{partido.localSet3 }}</td>
+                            <td>{{ partido.Visitante }}</td>
+                            <td>{{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
 </div>
-<div>
-    Play Off - PLATA
-    {{ dump(partidosPlata) }}
+Play Off - ORO
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePartidosPlayOffOro" aria-expanded="false" aria-controls="collapsePartidosPlayOffOro">
+                Partidos Clasificación
+            </button>
+        </h2>
+        <div id="collapsePartidosPlayOffOro" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                {# dump(partidosOro) #}
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Local</th>
+                        <th scope="col">Puntos</th>
+                        <th scope="col">Visitante</th>
+                        <th scope="col">Puntos</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidosOro %}
+                        <tr>
+                            <th scope="row">{{ partido.partidoID }} {{ partido.nombre }}</th>
+                            <td>{{ partido.Local }}</td>
+                            <td>{{ partido.localSet1 }} {{ partido.localSet2 }} {{partido.localSet3 }}</td>
+                            <td>{{ partido.Visitante }}</td>
+                            <td>{{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+Play Off - PLATA
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePartidosPlayOffPlata" aria-expanded="false" aria-controls="collapsePartidosPlayOffPlata">
+                Partidos Clasificación
+            </button>
+        </h2>
+        <div id="collapsePartidosPlayOffPlata" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                {# dump(partidosPlata) #}
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Local</th>
+                        <th scope="col">Puntos</th>
+                        <th scope="col">Visitante</th>
+                        <th scope="col">Puntos</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidosPlata %}
+                        <tr>
+                            <th scope="row">{{ partido.partidoID }} {{ partido.nombre }}</th>
+                            <td>{{ partido.Local }}</td>
+                            <td>{{ partido.localSet1 }} {{ partido.localSet2 }} {{partido.localSet3 }}</td>
+                            <td>{{ partido.Visitante }}</td>
+                            <td>{{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 {% endblock %}  

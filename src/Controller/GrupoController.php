@@ -38,17 +38,19 @@ class GrupoController extends AbstractController
             $gruposPosiciones[$grupo->getId()][] = $grupo;
             $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
         }
-
-        $partidos = $partidoManager->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria);
+    
+        $partidosClasificatorios = $partidoManager->obtenerPartidosXCategoriaClasificatorio($categoria);
+        $partidosPlayOff = $partidoManager->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria);
 
         return $this->render(
             'grupo/index.html.twig', [
             'torneo' => $torneo,
             'categoria' => $categoria,
             'grupos' => $gruposPosiciones,
-            'partidosOro' => $partidos['oro'],
-            'partidosPlata' => $partidos['plata'] ?? [],
-            'partidosBronce' => $partidos['bronce'] ?? [],
+            'partidosClasificatorios' => $partidosClasificatorios,
+            'partidosOro' => $partidosPlayOff['oro'],
+            'partidosPlata' => $partidosPlayOff['plata'] ?? [],
+            'partidosBronce' => $partidosPlayOff['bronce'] ?? [],
             ]
         );
     }

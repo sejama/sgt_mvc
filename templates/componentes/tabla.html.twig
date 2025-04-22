@@ -32,7 +32,7 @@
             <tbody>
                 {% for key, equipo in posiciones %}
                 <tr>
-                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">{{ key }}</th>
+                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">{{ key+1 }}</th>
                     <td style="position: -webkit-sticky; position: sticky; left: 0px; background: white;">{{ equipo.nombre }}</td>
                     <td class="table-active">{{ equipo.partidosJugados }}</td>
                     <td class="table-active">{{ equipo.partidosGanados }}</td>

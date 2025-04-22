@@ -227,6 +227,13 @@ class PartidoManager
         $this->partidoRepository->guardar($partido);
     }
 
+    public function obtenerPartidosXCategoriaClasificatorio(Categoria $categoria): array
+    {
+        $partidos = $this->partidoRepository->obtenerPartidosXCategoriaClasificatorio($categoria->getId());
+        
+        return $partidos;
+    }
+
     public function obtenerPartidosXCategoriaEliminatoriaPostClasificatorio(Categoria $categoria): array
     {
         $todos = $this->partidoRepository->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria->getId());
