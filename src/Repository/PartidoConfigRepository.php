@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Partido;
 use App\Entity\PartidoConfig;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -34,6 +35,16 @@ class PartidoConfigRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function obtenerPartidoConfigXGanadorPartido(Partido $partido): ?PartidoConfig
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.ganadorPartido1 = :partido')
+            ->orWhere('p.ganadorPartido2 = :partido')
+            ->setParameter('partido', $partido)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     //    /**

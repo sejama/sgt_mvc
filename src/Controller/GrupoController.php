@@ -2,15 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\PartidoConfig;
-use App\Enum\EstadoCategoria;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
-use PhpParser\Builder\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

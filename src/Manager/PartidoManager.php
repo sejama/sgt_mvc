@@ -225,6 +225,48 @@ class PartidoManager
         
         $partido->setEstado(\App\Enum\EstadoPartido::FINALIZADO->value);
         $this->partidoRepository->guardar($partido);
+
+        $partidoConfig = $this->partidoConfigRepository->obtenerPartidoConfigXGanadorPartido($partido);
+        $ganador = null; 
+        $local = $visitante = 0;
+
+        if ($partido->getLocalSet1() > $partido->getVisitanteSet1()) {
+            $local++;
+        } else {
+            $visitante++;
+        } 
+
+        if ($partido->getLocalSet2() > $partido->getVisitanteSet2()) {
+            $local++;
+        } else {
+            $visitante++;
+        }
+
+        if ($partido->getLocalSet3() !== null and $partido->getVisitanteSet3() !== null) {
+            if ($partido->getLocalSet3() > $partido->getVisitanteSet3()) {
+                $local++;
+            } else {
+                $visitante++;
+            }
+        }
+
+        if ($local > $visitante) {
+            $ganador = $partido->getEquipoLocal();
+        } else {
+            $ganador = $partido->getEquipoVisitante();
+        }
+        
+
+        if ($partidoConfig) {
+            $partidoSiguiente = $partidoConfig->getPartido();
+            if ($partidoConfig->getGanadorPartido1() === $partido) {
+                $partidoSiguiente->setEquipoLocal($ganador);  
+            } elseif ($partidoConfig->getGanadorPartido2() === $partido) {
+                $partidoSiguiente->setEquipoVisitante($ganador); 
+            }
+        }
+
+        $this->partidoRepository->guardar($partidoSiguiente);
     }
 
     public function obtenerPartidosXCategoriaClasificatorio(Categoria $categoria): array

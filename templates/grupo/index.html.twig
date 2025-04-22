@@ -17,22 +17,22 @@
 </div>
 Grupos
 <div class="accordion" id="accordionExample">
-{% for key, grupo in grupos %}
-<div class="accordion-item">
-    <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{key}}" aria-expanded="false" aria-controls="collapse{{key}}">
-                Grupo {{grupo[0].nombre}}   
-        </button>
-    </h2>
-    <div id="collapse{{key}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-            {{ include("componentes/tabla.html.twig",{
-                'grupo': grupo[0], 'posiciones': grupo[1]
-            }) }}
+    {% for key, grupo in grupos %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{key}}" aria-expanded="false" aria-controls="collapse{{key}}">
+                    Grupo {{grupo[0].nombre}}   
+            </button>
+        </h2>
+        <div id="collapse{{key}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                {{ include("componentes/tabla.html.twig",{
+                    'grupo': grupo[0], 'posiciones': grupo[1]
+                }) }}
+            </div>
         </div>
     </div>
-</div>
-{% endfor %}
+    {% endfor %}
 </div>
 Partidos
 <div class="accordion" id="accordionExample">
@@ -47,14 +47,14 @@ Partidos
                 {# dump(partidosClasificatorios) #}
                 <table class="table table-striped">
                     <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Local</th>
-                        <th scope="col">Puntos</th>
-                        <th scope="col">Visitante</th>
-                        <th scope="col">Puntos</th>
-                        <th scope="col"></th>
-                      </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Local</th>
+                            <th scope="col">Puntos</th>
+                            <th scope="col">Visitante</th>
+                            <th scope="col">Puntos</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
                         {% for partido in partidosClasificatorios %}
@@ -67,9 +67,10 @@ Partidos
                         </tr>
                         {% endfor %}
                     </tbody>
-                  </table>
+                </table>
             </div>
         </div>
+    </div>
 </div>
 Play Off - ORO
 <div class="accordion" id="accordionExample">
@@ -84,14 +85,14 @@ Play Off - ORO
                 {# dump(partidosOro) #}
                 <table class="table table-striped">
                     <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Local</th>
-                        <th scope="col">Puntos</th>
-                        <th scope="col">Visitante</th>
-                        <th scope="col">Puntos</th>
-                        <th scope="col"></th>
-                      </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Local</th>
+                            <th scope="col">Puntos</th>
+                            <th scope="col">Visitante</th>
+                            <th scope="col">Puntos</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
                         {% for partido in partidosOro %}
@@ -104,7 +105,7 @@ Play Off - ORO
                         </tr>
                         {% endfor %}
                     </tbody>
-                  </table>
+                </table>
             </div>
         </div>
     </div>
@@ -122,14 +123,14 @@ Play Off - PLATA
                 {# dump(partidosPlata) #}
                 <table class="table table-striped">
                     <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Local</th>
-                        <th scope="col">Puntos</th>
-                        <th scope="col">Visitante</th>
-                        <th scope="col">Puntos</th>
-                        <th scope="col"></th>
-                      </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Local</th>
+                            <th scope="col">Puntos</th>
+                            <th scope="col">Visitante</th>
+                            <th scope="col">Puntos</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
                         {% for partido in partidosPlata %}
@@ -142,11 +143,9 @@ Play Off - PLATA
                         </tr>
                         {% endfor %}
                     </tbody>
-                  </table>
+                </table>
             </div>
         </div>
     </div>
-</div>
-
 </div>
 {% endblock %}  
