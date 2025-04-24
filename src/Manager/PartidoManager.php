@@ -79,6 +79,19 @@ class PartidoManager
                 $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
             }
         }
+
+        // Ordenar los partidos por fecha y hora
+    foreach ($paritdosOrdenados as $sede => &$canchas) {
+        foreach ($canchas as $cancha => &$fechas) {
+            foreach ($fechas as $fecha => &$partidos) {
+                usort($partidos, function ($a, $b) {
+                    $horaA = strtotime($a['hora']);
+                    $horaB = strtotime($b['hora']);
+                    return $horaA <=> $horaB;
+                });
+            }
+        }
+    }
         
         return $paritdosOrdenados;
     }
