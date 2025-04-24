@@ -209,16 +209,20 @@ class PartidoManager
 
         $this->partidoRepository->guardar($partido);
         
-        $equipoLocal = $partido->getEquipoLocal();
-        if ($equipoLocal->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
-            $equipoLocal->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
-            $this->equipoRepository->guardar($equipoLocal);
+        if ($partido->getEquipoLocal() !== null) {
+            $equipoLocal = $partido->getEquipoLocal();
+            if ($equipoLocal->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+                $equipoLocal->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+                $this->equipoRepository->guardar($equipoLocal);
+            }
         }
-
-        $equipoVisitante = $partido->getEquipoVisitante();
-        if ($equipoVisitante->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
-            $equipoVisitante->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
-            $this->equipoRepository->guardar($equipoVisitante);
+       
+        if ($partido->getEquipoVisitante() !== null) {
+            $equipoVisitante = $partido->getEquipoVisitante();
+            if ($equipoVisitante->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+                $equipoVisitante->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+                $this->equipoRepository->guardar($equipoVisitante);
+            }
         }
 
     }
