@@ -96,7 +96,7 @@ class GenerarPdf
 
         //Categoria
         //$pdf->SetXY(147, 32);
-         $texto = $texto . ' | ' . strtoupper($partido->getCategoria()->getNombreCorto());
+        $texto = $texto . ' | ' . strtoupper($partido->getCategoria()->getNombreCorto());
 
 
         //Rama
@@ -106,15 +106,15 @@ class GenerarPdf
         // Local
         if ($partido->getEquipoLocal() != null) {
             $texto = $texto . ' - ' . strtoupper($partido->getEquipoLocal()->getNombre());
-        } else {
-            $texto = $texto . ' - ' . 'SIN EQUIPO LOCAL';
-        }
+        } 
 
         // Visitante
         if ($partido->getEquipoVisitante() != null) {
             $texto = $texto . ' vs ' . strtoupper($partido->getEquipoVisitante()->getNombre());
-        } else {
-            $texto = $texto . ' vs ' . 'SIN EQUIPO VISITANTE';
+        } 
+
+        if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
+            $texto = $texto . ' - ' . strtoupper($partido->getPartidoConfig()->getNombre()); 
         }
 
         $pdf->Write(0, $texto);
