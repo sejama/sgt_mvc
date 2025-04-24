@@ -53,7 +53,7 @@ Partidos
                             <th scope="col">Puntos</th>
                             <th scope="col">Visitante</th>
                             <th scope="col">Puntos</th>
-                            <th scope="col"></th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,6 +64,8 @@ Partidos
                             <td>{{ partido.localSet1 }} {{ partido.localSet2 }} {{partido.localSet3 }}</td>
                             <td>{{ partido.Visitante }}</td>
                             <td>{{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }}</td>
+                            <td> <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoId': partido.id }) }}" class="btn btn-info">Editar</a> </td>
+                                
                         </tr>
                         {% endfor %}
                     </tbody>

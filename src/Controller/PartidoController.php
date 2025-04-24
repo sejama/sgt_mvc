@@ -129,6 +129,7 @@ class PartidoController extends AbstractController
         PartidoManager $partidoManager,
         TorneoManager $torneoManager,
     ): Response {
+        
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $partidosSinAsignar = $partidoManager->obtenerPartidosSinAsignarXTorneo($ruta);
         $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);

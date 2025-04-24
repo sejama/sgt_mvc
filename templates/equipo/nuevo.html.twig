@@ -33,21 +33,21 @@
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="pais" class="form-label">Pais</label>
-                <input type="text" class="form-control" id="pais" name="pais" placeholder="Argentina">
+                <input type="text" class="form-control" id="pais" name="pais" placeholder="Argentina" value="Argentina">
                 <div id="paisFeedback" class="invalid-feedback">
                     Nombre no es valido
                 </div>
             </div>
             <div class="col-md">
                 <label for="provincia" class="form-label">Provincia</label>
-                <input type="text" class="form-control" id="provincia" name="provincia" placeholder="Santa Fe">
+                <input type="text" class="form-control" id="provincia" name="provincia" placeholder="Santa Fe" value="Santa Fe">
                 <div id="provinciaFeedback" class="invalid-feedback">
                     Provincia no es valido
                 </div>
             </div>
             <div class="col-md">
                 <label for="localidad" class="form-label">Localidad</label>
-                <input type="text" class="form-control" id="localidad" name="localidad" placeholder="Santa Fe">
+                <input type="text" class="form-control" id="localidad" name="localidad" placeholder="Santa Fe" value="Santa Fe">
                 <div id="localidadFeedback" class="invalid-feedback">
                     Localidad no es valido
                 </div>
@@ -62,35 +62,35 @@
                     <div class="row">
                         <div class="col-md-2">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name='delegado[0][nombre]' required>
+                            <input type="text" class="form-control" id="nombre" name='delegado[0][nombre]' value="Nombre" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Nombre no es valido
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label for="apellido0" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellido0" name='delegado[0][apellido]' required>
+                            <input type="text" class="form-control" id="apellido0" name='delegado[0][apellido]' value="Apellido" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Apellido no es valido
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label for="email" class="form-label">Correo</label>
-                            <input type="email" id="email" class="form-control" name='delegado[0][email]' required>
+                            <input type="email" id="email" class="form-control" name='delegado[0][email]' value="delegado@correo.com" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Correo no es valido
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label for="celular" class="form-label">Celular</label>
-                            <input type="number" id="celular" class="form-control" name='delegado[0][celular]' required>
+                            <input type="number" id="celular" class="form-control" name='delegado[0][celular]' value="123456789" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Celular no es valido
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label for="tipoDoc0" class="form-label">Tipo Documento</label>
-                            <select id="tipoDoc0" class="form-select" name='delegado[0][tipoDocumento]' required>
+                            <select id="tipoDoc0" class="form-select" name='delegado[0][tipoDocumento]'  required>
                                 <option selected disabled value="">Seleccionar</option>
                                 {% for tipoDocumento in tipoDocumentos %}
                                 <option value={{ tipoDocumento }}>{{ tipoDocumento }}</option>
@@ -102,7 +102,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="numDoc0" class="form-label">Número Documento</label>
-                            <input type="number" id="numDoc0" class="form-control" name='delegado[0][numeroDocumento]' required>
+                            <input type="number" id="numDoc0" class="form-control" name='delegado[0][numeroDocumento]' value="12345678" required>
                             <div id="nombreFeedback" class="invalid-feedback">
                                 Debe seleccionar un Genero
                             </div>

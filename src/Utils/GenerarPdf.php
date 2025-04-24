@@ -60,39 +60,64 @@ class GenerarPdf
         $pdf->SetAutoPageBreak(false, 0);
         $pdf->Image('./assets/img/planilla.png', 0, 0, 310, 215, '', '', '', true, 300, '', false, false, 0);
         $pdf->Image($pathQr . 'partido-' . $partido->getNumero() . '.png', 260, 4, 29, 29, '', '', '', true, 300, '', false, false, 0);
-        $pdf->SetFont('helvetica', 'B', 10);
+        
 
+        $pdf->SetFont('helvetica', 'B', 20);
+        $pdf->SetXY(75, 15);
+        $pdf->Write(0, $partido->getCategoria()->getTorneo()->getNombre());
+
+        $pdf->SetFont('helvetica', 'B', 10);
+        $texto = '';
         //Sede
-        $pdf->SetXY(30.5, 32);
+        $pdf->SetXY(35, 32);
         if ($partido->getCancha() != null) {
-            $pdf->Write(0, strtoupper($partido->getCancha()->getSede()->getNombre()));
+            $texto = strtoupper($partido->getCancha()->getSede()->getNombre());
         } else {
-            $pdf->Write(0, 'SIN SEDE');
+            $texto = 'SIN SEDE';
         }
 
         //Cancha
-        $pdf->SetXY(98, 32);
+        //$pdf->SetXY(98, 32);
         if ($partido->getCancha() != null) {
-            $pdf->Write(0, strtoupper($partido->getCancha()->getNombre()));
+            $texto = $texto . ' - ' . strtoupper($partido->getCancha()->getNombre());
         } else {
-            $pdf->Write(0, 'SIN CANCHA');
+            $texto = $texto . ' - ' . 'SIN CANCHA';
         }
 
+        //Fecha y Hora
+        //$pdf->SetXY(236, 32);
+        if ($partido->getHorario() != null) {
+            $texto = $texto . ' - ' . $partido->getHorario()->format('d/m/Y H:i');
+        } else {
+            $texto = $texto . ' - ' . 'SIN HORARIO';
+        }
+
+        
+
         //Categoria
-        $pdf->SetXY(147, 32);
-        $pdf->Write(0, strtoupper($partido->getCategoria()->getNombreCorto()));
+        //$pdf->SetXY(147, 32);
+         $texto = $texto . ' | ' . strtoupper($partido->getCategoria()->getNombreCorto());
+
 
         //Rama
         // $pdf->SetXY(176, 32);
         // $pdf->Write(0, strtoupper($partido->getEquipoLocal()->getTorneoGeneroCategoria()->getGenero()->getNombre()));
 
-        //Fecha y Hora
-        $pdf->SetXY(236, 32);
-        if ($partido->getHorario() != null) {
-            $pdf->Write(0, $partido->getHorario()->format('d/m/Y H:i'));
+        // Local
+        if ($partido->getEquipoLocal() != null) {
+            $texto = $texto . ' - ' . strtoupper($partido->getEquipoLocal()->getNombre());
         } else {
-            $pdf->Write(0, 'SIN HORARIO');
+            $texto = $texto . ' - ' . 'SIN EQUIPO LOCAL';
         }
+
+        // Visitante
+        if ($partido->getEquipoVisitante() != null) {
+            $texto = $texto . ' vs ' . strtoupper($partido->getEquipoVisitante()->getNombre());
+        } else {
+            $texto = $texto . ' vs ' . 'SIN EQUIPO VISITANTE';
+        }
+
+        $pdf->Write(0, $texto);
 
         // Partido N° XX
         $pdf->setXY(262, 35);

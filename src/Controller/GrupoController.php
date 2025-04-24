@@ -80,27 +80,6 @@ class GrupoController extends AbstractController
         return $this->redirectToRoute('app_grupos', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
 
-    #[Route('/grupo/{grupoId}', name: 'app_grupo')]
-    public function index(
-        string $ruta,
-        int $categoriaId,
-        int $grupoId,
-        TorneoManager $torneoManager,
-        GrupoManager $grupoManager,
-        TablaManager $tablaManager  
-    ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
-        $grupo = $grupoManager->obtenerGrupo($grupoId);
-        $posiciones = $tablaManager->calcularPosiciones($grupo);
-        return $this->render(
-            'grupo/index.html.twig', [
-            'torneo' => $torneo,
-            'grupos' => $grupo,
-            'posiciones' => $posiciones,
-            ]
-        );
-    }
-
     #[Route('/grupo/crear', name: 'app_grupo_crear', methods: ['GET', 'POST'])]
     public function crearGrupo(
         Request $request,
@@ -150,4 +129,27 @@ class GrupoController extends AbstractController
             ]
         );
     }
+
+    #[Route('/grupo/{grupoId}', name: 'app_grupo')]
+    public function index(
+        string $ruta,
+        int $categoriaId,
+        int $grupoId,
+        TorneoManager $torneoManager,
+        GrupoManager $grupoManager,
+        TablaManager $tablaManager  
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        $grupo = $grupoManager->obtenerGrupo($grupoId);
+        $posiciones = $tablaManager->calcularPosiciones($grupo);
+        return $this->render(
+            'grupo/index.html.twig', [
+            'torneo' => $torneo,
+            'grupos' => $grupo,
+            'posiciones' => $posiciones,
+            ]
+        );
+    }
+
+   
 }
