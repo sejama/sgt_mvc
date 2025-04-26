@@ -216,6 +216,8 @@
             inputCategoria.id = 'categoria' + cantidadCategoria
             inputCategoria.name = 'categorias[' + cantidadCategoria + '][categoriaNombre]'
             inputCategoria.placeholder = 'Nombre de categoría'
+            inputCategoria.minLength = 3
+            inputCategoria.maxLength = 128
             inputCategoria.required = true
             divValidationInput = document.createElement('div')
             divValidationInput.id = 'nombreFeedback'
@@ -235,7 +237,8 @@
             inputNombreCorto.id = 'nombreCorto' + cantidadCategoria
             inputNombreCorto.name = 'categorias[' + cantidadCategoria + '][categoriaNombreCorto]'
             inputNombreCorto.placeholder = 'Nombre de categoría'
-            inputNombreCorto.maxLength = 8
+            inputNombreCorto.minLength = 3
+            inputNombreCorto.maxLength = 32
             inputNombreCorto.required = true
             divValidationInput = document.createElement('div')
             divValidationInput.id = 'nombreFeedback'

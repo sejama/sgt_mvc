@@ -19,7 +19,7 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class CategoriaController extends AbstractController
 {
-    #[Route('/{categoriaId}', name: 'app_torneo_categoria', methods: ['GET'])]
+    #[Route('/{categoriaId<\d+>}', name: 'app_torneo_categoria', methods: ['GET'])]
     public function verCategoria(
         string $ruta,
         int $categoriaId,
