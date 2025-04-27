@@ -31,9 +31,12 @@ class PartidoManager
         return $this->partidoRepository->findBy(['grupo' => $grupoId]);
     }
 
-    public function obtenerPartido(int $partidoId): Partido
+    public function obtenerPartido(int $partidoNumero, string $ruta): Partido
     {
-        return $this->partidoRepository->findOneBy(['id' => $partidoId]);
+        return $this->partidoRepository->obternerPartidoxRutaNumero(
+            $ruta,
+            $partidoNumero
+        );
     }
 
     public function obtenerPartidosXTorneo(string $ruta): array
@@ -227,10 +230,8 @@ class PartidoManager
 
     }
 
-    public function cargarResultado(int $partidoId, array $resultadoLocal, array $resultadoVisitante): void
-    {
-        $partido = $this->obtenerPartido($partidoId);
-        
+    public function cargarResultado(Partido $partido, array $resultadoLocal, array $resultadoVisitante): void
+    {   
         $partido->setLocalSet1($resultadoLocal[0] ? (int)$resultadoLocal[0] : null);
         $partido->setLocalSet2($resultadoLocal[1] ? (int)$resultadoLocal[1] : null);
         $partido->setLocalSet3($resultadoLocal[2] ? (int)$resultadoLocal[2] : null);

@@ -19,7 +19,7 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class CategoriaController extends AbstractController
 {
-    #[Route('/{categoriaId<\d+>}', name: 'app_torneo_categoria', methods: ['GET'])]
+    #[Route('/{categoriaId<\d+>}/', name: 'app_torneo_categoria', methods: ['GET'])]
     public function verCategoria(
         string $ruta,
         int $categoriaId,
@@ -85,7 +85,7 @@ class CategoriaController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/{categoriaId}/editar', name: 'app_torneo_categoria_editar', methods: ['GET', 'POST'])]
+    #[Route('/{categoriaId}/editar/', name: 'app_torneo_categoria_editar', methods: ['GET', 'POST'])]
     public function editarCategoria(
         string $ruta,
         int $categoriaId,
@@ -136,7 +136,7 @@ class CategoriaController extends AbstractController
     }
 
     #[Route(
-        '/{categoriaId}/editar/disputa',
+        '/{categoriaId}/editar/disputa/',
         name: 'app_torneo_categoria_editar_disputa',
         methods: ['GET', 'POST']
     )]

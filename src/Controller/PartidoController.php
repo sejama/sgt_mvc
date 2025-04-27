@@ -184,22 +184,21 @@ class PartidoController extends AbstractController
         }
     }
 
-    #[Route('/partido/{partidoId}/cargar_resultado', name: 'app_partido_cargar_resultado', methods: ['GET', 'POST'])]
+    #[Route('/partido/{partidoNumero}/cargar_resultado', name: 'app_partido_cargar_resultado', methods: ['GET', 'POST'])]
     public function cargarResultado(
         string $ruta,
-        int $partidoId,
+        int $partidoNumero,
         Request $request,
         PartidoManager $partidoManager
     ): Response {
         try {
+            $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
             if($request->isMethod('POST')) {
-                
                 $resultadoLocal = $request->request->all('puntosLocal');
                 $resultadoVisitante = $request->request->all('puntosVisitante');
-                $partidoManager->cargarResultado($partidoId, $resultadoLocal, $resultadoVisitante);
+                $partidoManager->cargarResultado($partido, $resultadoLocal, $resultadoVisitante);
                 return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
             }
-            $partido = $partidoManager->obtenerPartido($partidoId);
 
             return $this->render(
                 'partido/cargarResultado.html.twig', [

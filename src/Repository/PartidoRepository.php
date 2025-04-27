@@ -16,6 +16,19 @@ class PartidoRepository extends ServiceEntityRepository
         parent::__construct($registry, Partido::class);
     }
 
+    public function obternerPartidoxRutaNumero(string $ruta, int $numero): ?Partido
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->where('t.ruta = :ruta')
+            ->andWhere('p.numero = :numero')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('numero', $numero)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function guardar(Partido $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
