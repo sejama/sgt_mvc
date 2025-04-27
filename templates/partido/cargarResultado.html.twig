@@ -7,7 +7,7 @@
     {% for flash_success in app.flashes('success') %}
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
-    <h1>{% block title %}SGT- Cargar resultado del partido {{ partido.id }} - {{ partido.numero }}{% endblock %}</h1>
+    <h1>{% block title %}SGT- Cargar resultado del partido {{ partido.numero }}{% endblock %}</h1>
     <a href="{{ path('app_partido', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
     <form class="row g-3 needs-validation" novalidate>
         <div class="row g-2">
@@ -149,7 +149,7 @@
             event.stopPropagation()
         }else{
             form.classList.add('was-validated')
-            form.action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoId': partido.id}) }}"
+            form.action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoNumero': partido.numero}) }}"
             form.method="POST"
             form.submit()
         }

@@ -36,7 +36,7 @@ class PartidoManager
         return $this->partidoRepository->find($partidoId);
     }
 
-    public function obtenerPartido(int $partidoNumero, string $ruta): Partido
+    public function obtenerPartido(string $ruta, int $partidoNumero,): Partido
     {
         return $this->partidoRepository->obternerPartidoxRutaNumero(
             $ruta,
