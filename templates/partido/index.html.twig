@@ -233,7 +233,7 @@
                 <td>{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</td>
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
-                    <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoId': partido.id }) }}" class="btn btn-info">Cargar Resultado</a>
+                    <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
                   {% endif %}
                 </td>
               </tr>

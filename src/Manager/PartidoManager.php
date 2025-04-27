@@ -31,6 +31,11 @@ class PartidoManager
         return $this->partidoRepository->findBy(['grupo' => $grupoId]);
     }
 
+    public function obtenerPartidoxId(int $partidoId): Partido
+    {
+        return $this->partidoRepository->find($partidoId);
+    }
+
     public function obtenerPartido(int $partidoNumero, string $ruta): Partido
     {
         return $this->partidoRepository->obternerPartidoxRutaNumero(
@@ -202,7 +207,8 @@ class PartidoManager
         if ($this->partidoRepository->buscarPartidoXCanchaHorario($canchaId, $horario)) {
             throw new AppException('Ya existe un partido programado en esa cancha y horario');
         }
-        $partido = $this->obtenerPartido($partidoId);
+
+        $partido = $this->obtenerPartidoxId($partidoId);
         $partido->setCancha($this->canchaManager->obtenerCancha($canchaId));
         $partido->setHorario($horario);
         $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);
