@@ -185,6 +185,7 @@ class PartidoController extends AbstractController
     }
 
     #[Route('/partido/{partidoNumero}/cargar_resultado', name: 'app_partido_cargar_resultado', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_PLANILLERO')]
     public function cargarResultado(
         string $ruta,
         int $partidoNumero,
@@ -193,6 +194,15 @@ class PartidoController extends AbstractController
     ): Response {
         try {
             $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
+
+            // Validar si el usuario tiene el rol ROLE_PLANILLERO
+            if ($this->isGranted('ROLE_PLANILLERO')) {
+                // Verificar si el partido ya tiene un resultado cargado
+                if ($partido->getEstado() === \App\Enum\EstadoPartido::FINALIZADO->value ) { // Asumiendo que el método isFinalizado() verifica si el partido fue finalizado
+                    $this->addFlash('error', 'No puedes cargar el resultado porque el partido ya ha sido finalizado.');
+                    return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
+                }
+            }
             if($request->isMethod('POST')) {
                 $resultadoLocal = $request->request->all('puntosLocal');
                 $resultadoVisitante = $request->request->all('puntosVisitante');
