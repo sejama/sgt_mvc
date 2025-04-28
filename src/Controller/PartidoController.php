@@ -7,18 +7,20 @@ use App\Manager\CategoriaManager;
 use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
+use App\Security\Voter\PartidoVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
 #[Route('/admin/torneo/{ruta}')]
-#[IsGranted('ROLE_ADMIN')]
 class PartidoController extends AbstractController
 {
     #[Route('/categoria/{categoriaId}/partido/crear', name: 'app_partido_crear', methods: ['GET','POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function crearPartidoClasificatorio(
     string $ruta,
     int $categoriaId,
@@ -124,6 +126,7 @@ class PartidoController extends AbstractController
 }
 
     #[Route('/partido', name: 'app_partido')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(
         string $ruta,
         PartidoManager $partidoManager,
@@ -160,6 +163,7 @@ class PartidoController extends AbstractController
     }
 
     #[Route('/partido/editar', name: 'app_partido_editar', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function editarPartido(
         string $ruta,
         Request $request,
@@ -185,7 +189,6 @@ class PartidoController extends AbstractController
     }
 
     #[Route('/partido/{partidoNumero}/cargar_resultado', name: 'app_partido_cargar_resultado', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_PLANILLERO')]
     public function cargarResultado(
         string $ruta,
         int $partidoNumero,
@@ -195,19 +198,19 @@ class PartidoController extends AbstractController
         try {
             $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
 
-            // Validar si el usuario tiene el rol ROLE_PLANILLERO
-            if ($this->isGranted('ROLE_PLANILLERO')) {
-                // Verificar si el partido ya tiene un resultado cargado
-                if ($partido->getEstado() === \App\Enum\EstadoPartido::FINALIZADO->value ) { // Asumiendo que el método isFinalizado() verifica si el partido fue finalizado
-                    $this->addFlash('error', 'No puedes cargar el resultado porque el partido ya ha sido finalizado.');
-                    return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
-                }
-            }
+            // Verificar permisos usando el voter
+            $this->denyAccessUnlessGranted(PartidoVoter::CARGAR_RESULTADO, $partido);
+
             if($request->isMethod('POST')) {
                 $resultadoLocal = $request->request->all('puntosLocal');
                 $resultadoVisitante = $request->request->all('puntosVisitante');
                 $partidoManager->cargarResultado($partido, $resultadoLocal, $resultadoVisitante);
-                return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+                $this->addFlash('success', 'Resultado cargado correctamente.');
+                if ($this->isGranted('ROLE_PLANILLERO')) {
+                    return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
+                } else {
+                    return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+                }
             }
 
             return $this->render(
@@ -216,14 +219,18 @@ class PartidoController extends AbstractController
                 'ruta' => $ruta,
                 ]
             );
+        } catch (AccessDeniedException $e) {
+            // Redirigir al app_main_torneo con un mensaje de error
+            $this->addFlash('error', 'No tienes permiso para cargar el resultado de este partido.');
+            return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         } catch (Throwable $e) {
             // Handle the exception
             $this->addFlash('error', 'Ocurrió un error al cargar el resultado ' . $e);
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         }
     }
 }

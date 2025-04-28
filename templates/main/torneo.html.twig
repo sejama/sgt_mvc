@@ -3,6 +3,12 @@
 {% block title %}SGT - Inicio{% endblock %}
 
 {% block body %}
+{% for flash_error in app.flashes('error') %}
+    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+    <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
 <div class="container-fluid">
   <h1>{{ torneo.nombre }}</h1>
   <select class="form-select" aria-label="Default select example">

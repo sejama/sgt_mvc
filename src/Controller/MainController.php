@@ -28,7 +28,7 @@ class MainController extends AbstractController
         );
     }
 
-    #[Route('/torneo/{ruta}', name: '_torneo')]
+    #[Route('/torneo/{ruta}', name: 'app_main_torneo')]
     public function torneo(
         TorneoManager $torneoManager,
         PartidoManager $partidoManager,
