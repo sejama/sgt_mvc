@@ -10,7 +10,6 @@
     <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
     <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }} con {{ categoria.getEquipos|length }} Equipos </h2></h3>
     <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
-    {{ dump(equipos) }}
     {% if equipos|length == 0 or (equipos|length > 0 and equipos[0].grupo == null) %}
         <a href="{{ path('app_equipo_nuevo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
         <a href="{{ path('app_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
