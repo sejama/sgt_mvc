@@ -86,7 +86,7 @@
                     </div>
                     <div class="col-md">
                         <label for="cantidadEquipo${i}" class="form-label">Cantidad de Equipos</label>
-                        <input type="number" class="form-control" id="cantidadEquipo${i}" name='grupos[${i}][cantidadEquipo]' min="1" max="{{ categoria.equipos | length/2 }}" value="1" required>
+                        <input type="number" class="form-control" id="cantidadEquipo${i}" name='grupos[${i}][cantidadEquipo]' min="1" max="{{ categoria.equipos | length/2 + 1 }}" value="1" required>
                         <div id="nombreFeedback" class="invalid-feedback">
                             Cantidad de Equipos no valido
                         </div>

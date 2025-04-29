@@ -1,0 +1,6 @@
+INSERT INTO partido(categoria_id, estado, tipo, created_at, updated_at, numero) VALUES (1, "Borrador","Clasificatorio",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 90);
+INSERT INTO partido(categoria_id, estado, tipo, created_at, updated_at, numero) VALUES (1, "Borrador","Clasificatorio",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 91);
+INSERT INTO partido(categoria_id, estado, tipo, created_at, updated_at, numero) VALUES (1, "Borrador","Clasificatorio",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 92);
+INSERT INTO partido_config (partido_id, grupo_equipo1_id, grupo_equipo2_id, posicion_equipo1, posicion_equipo2, nombre, created_at, updated_at)VALUES (90,1,3,1,2,"Triangular 1 Oro 1", CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO partido_config (partido_id, grupo_equipo1_id, grupo_equipo2_id, posicion_equipo1, posicion_equipo2, nombre, created_at, updated_at)VALUES (91,1,2,1,2,"Triangular 1 Oro 2", CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO partido_config (partido_id, grupo_equipo1_id, grupo_equipo2_id, posicion_equipo1, posicion_equipo2, nombre, created_at, updated_at)VALUES (92,2,3,2,2,"Triangular 1 Oro 3", CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
