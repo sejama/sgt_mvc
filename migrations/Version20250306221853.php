@@ -48,6 +48,13 @@ final class Version20250306221853 extends AbstractMigration
         $this->addSql('ALTER TABLE partido_config ADD CONSTRAINT FK_FB58ADC71A8B6198 FOREIGN KEY (grupo_equipo2_id) REFERENCES grupo (id)');
         $this->addSql('ALTER TABLE partido_config ADD CONSTRAINT FK_FB58ADC7A1716C4E FOREIGN KEY (ganador_partido1_id) REFERENCES partido (id)');
         $this->addSql('ALTER TABLE partido_config ADD CONSTRAINT FK_FB58ADC7B3C4C3A0 FOREIGN KEY (ganador_partido2_id) REFERENCES partido (id)');
+        $this->addSql('CREATE UNIQUE INDEX partido_config_grupo_posicion_1 ON partido_config (grupo_equipo1_id, posicion_equipo1)');
+        $this->addSql('CREATE UNIQUE INDEX partido_config_grupo_posicion_2 ON partido_config (grupo_equipo2_id, posicion_equipo2)');
+        $this->addSql('ALTER TABLE partido_config ADD perdedor_partido1_id INT DEFAULT NULL, ADD perdedor_partido2_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE partido_config ADD CONSTRAINT FK_FB58ADC7EDE271C1 FOREIGN KEY (perdedor_partido1_id) REFERENCES partido (id)');
+        $this->addSql('ALTER TABLE partido_config ADD CONSTRAINT FK_FB58ADC7FF57DE2F FOREIGN KEY (perdedor_partido2_id) REFERENCES partido (id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_FB58ADC7EDE271C1 ON partido_config (perdedor_partido1_id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_FB58ADC7FF57DE2F ON partido_config (perdedor_partido2_id)');
         $this->addSql('ALTER TABLE sede ADD CONSTRAINT FK_2A9BE2D1A0139802 FOREIGN KEY (torneo_id) REFERENCES torneo (id)');
         $this->addSql('ALTER TABLE torneo ADD CONSTRAINT FK_7CEB63FE62F40C3D FOREIGN KEY (creador_id) REFERENCES usuario (id)');
         $this->addSql('ALTER TABLE torneo_usuario ADD CONSTRAINT FK_4633E7AFA0139802 FOREIGN KEY (torneo_id) REFERENCES torneo (id) ON DELETE CASCADE');

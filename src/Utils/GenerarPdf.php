@@ -63,7 +63,7 @@ class GenerarPdf
         
 
         $pdf->SetFont('helvetica', 'B', 20);
-        $pdf->SetXY(75, 15);
+        $pdf->SetXY(60, 15);
         $pdf->Write(0, $partido->getCategoria()->getTorneo()->getNombre());
 
         $pdf->SetFont('helvetica', 'B', 10);

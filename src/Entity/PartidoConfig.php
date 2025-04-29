@@ -56,6 +56,12 @@ class PartidoConfig
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Partido $perdedorPartido1 = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Partido $perdedorPartido2 = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +186,30 @@ class PartidoConfig
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+
+        return $this;
+    }
+
+    public function getPerdedorPartido1(): ?Partido
+    {
+        return $this->perdedorPartido1;
+    }
+
+    public function setPerdedorPartido1(?Partido $perdedorPartido1): static
+    {
+        $this->perdedorPartido1 = $perdedorPartido1;
+
+        return $this;
+    }
+
+    public function getPerdedorPartido2(): ?Partido
+    {
+        return $this->perdedorPartido2;
+    }
+
+    public function setPerdedorPartido2(?Partido $perdedorPartido2): static
+    {
+        $this->perdedorPartido2 = $perdedorPartido2;
 
         return $this;
     }

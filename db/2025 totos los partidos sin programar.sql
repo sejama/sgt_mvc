@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: server-mysql
--- Tiempo de generación: 29-04-2025 a las 12:11:25
+-- Tiempo de generación: 29-04-2025 a las 13:36:23
 -- Versión del servidor: 8.0.40
 -- Versión de PHP: 8.2.28
 
@@ -77,8 +77,8 @@ INSERT INTO `categoria` (`id`, `torneo_id`, `nombre`, `genero`, `disputa`, `esta
 (2, 1, '+40', 'Femenino', NULL, 'Zonas_creadas', '2025-04-28 20:27:28', '2025-04-28 21:00:46', 'F+40'),
 (3, 1, '+45', 'Femenino', NULL, 'Zonas_creadas', '2025-04-28 20:34:08', '2025-04-28 22:09:58', 'F+45'),
 (4, 1, '+50', 'Femenino', NULL, 'Zonas_creadas', '2025-04-28 20:36:18', '2025-04-28 21:05:34', 'F+50'),
-(5, 1, '+42', 'Masculino', NULL, 'Borrador', '2025-04-28 20:42:26', '2025-04-28 20:42:26', 'm+42'),
-(6, 1, '+50', 'Masculino', NULL, 'Borrador', '2025-04-28 20:46:44', '2025-04-28 20:46:44', 'M+50');
+(5, 1, '+42', 'Masculino', NULL, 'Zonas_creadas', '2025-04-28 20:42:26', '2025-04-29 09:34:22', 'm+42'),
+(6, 1, '+50', 'Masculino', NULL, 'Zonas_creadas', '2025-04-28 20:46:44', '2025-04-29 09:40:00', 'M+50');
 
 -- --------------------------------------------------------
 
@@ -140,45 +140,45 @@ INSERT INTO `equipo` (`id`, `categoria_id`, `grupo_id`, `nombre`, `nombre_corto`
 (13, 1, 3, 'Club Barrio Norte Avellaneda', 'Barrio Norte', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:22:26', '2025-04-28 23:49:22', 'Activo', 13),
 (14, 1, 3, 'Las Cuervas', 'Las Cuervas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:23:19', '2025-04-28 23:49:22', 'Activo', 14),
 (15, 1, 3, 'Club Junin', 'Club Junin', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:23:47', '2025-04-28 23:49:22', 'Activo', 15),
-(16, 2, NULL, 'Mala Mia', 'Mala Mia', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:28:45', '2025-04-28 22:17:48', 'Borrador', 16),
-(17, 2, NULL, 'Cett', 'Cett', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:29:35', '2025-04-28 22:17:48', 'Borrador', 17),
-(18, 2, NULL, 'Las Vascas', 'Las Vascas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:29:55', '2025-04-28 22:17:48', 'Borrador', 18),
-(19, 2, NULL, 'Las Patos', 'Las Patos', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:30:14', '2025-04-28 22:17:48', 'Borrador', 19),
-(20, 2, NULL, 'Club Atletico Alumni Casilda', 'CA Alumni C', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:31:12', '2025-04-28 22:17:48', 'Borrador', 20),
-(21, 2, NULL, 'Infinito', 'Infinito', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:31:32', '2025-04-28 22:17:48', 'Borrador', 21),
-(22, 2, NULL, 'La 18', 'La 18', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:31:50', '2025-04-28 22:17:48', 'Borrador', 22),
-(23, 2, NULL, 'Villa Dora', 'Villa Dora', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:32:10', '2025-04-28 22:17:48', 'Borrador', 23),
-(24, 2, NULL, 'Costa Canelones', 'Costa Canelones', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:32:31', '2025-04-28 22:17:48', 'Borrador', 24),
-(25, 2, NULL, 'Maxi Lanus', 'Maxi Lanus', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:32:54', '2025-04-28 22:17:48', 'Borrador', 25),
-(26, 2, NULL, 'Vamos el apoyo', 'Vamos el apoyo', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:33:11', '2025-04-28 22:17:48', 'Borrador', 26),
-(27, 2, NULL, 'Trede Birra', 'Trede Birra', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:33:31', '2025-04-28 22:17:48', 'Borrador', 27),
-(28, 2, NULL, 'ATR', 'ATR', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:33:46', '2025-04-28 22:17:48', 'Borrador', 28),
-(29, 3, NULL, 'NNV', 'NNV', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:34:52', '2025-04-28 22:13:53', 'Borrador', 29),
-(30, 3, NULL, 'E.L.V.', 'E.L.V.', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:35:06', '2025-04-28 22:13:53', 'Borrador', 30),
-(31, 3, NULL, 'Costa mix ', 'Costa mix ', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:35:36', '2025-04-28 22:13:53', 'Borrador', 31),
-(32, 3, NULL, 'Las Inter', 'Las Inter', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:35:48', '2025-04-28 22:13:53', 'Borrador', 32),
-(33, 3, NULL, 'UNI', 'UNI', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:36:01', '2025-04-28 22:13:53', 'Borrador', 33),
-(34, 3, NULL, 'Banco SF', 'Banco SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 21:44:02', '2025-04-28 22:13:53', 'Borrador', 34),
-(35, 4, NULL, 'Recalculando', 'Recalculando', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:38:51', '2025-04-28 21:05:34', 'Borrador', 35),
-(36, 4, NULL, 'Infinito', 'Infinito', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:39:09', '2025-04-28 21:05:34', 'Borrador', 36),
-(37, 4, NULL, 'Guemes Salta', 'Guemes Salta', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:39:30', '2025-04-28 21:05:34', 'Borrador', 37),
-(38, 4, NULL, 'Somos 8 reinas', 'Somos 8 reinas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:39:56', '2025-04-28 21:05:34', 'Borrador', 38),
-(39, 4, NULL, 'Nautico Zárate', 'Nautico Zárate', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:40:10', '2025-04-28 21:05:34', 'Borrador', 39),
-(40, 4, NULL, 'GyE Concepción del Uruguay', 'GyE C Uruguay', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:41:04', '2025-04-28 21:05:34', 'Borrador', 40),
-(41, 4, NULL, 'Las Leonesas', 'Las Leonesas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:41:20', '2025-04-28 21:05:34', 'Borrador', 41),
-(42, 5, NULL, 'Ferrocarril de Vera', 'Ferrocarril Vera', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:42:57', '2025-04-28 20:42:57', 'Borrador', 42),
-(43, 5, NULL, 'No Pasa Naranja (NPN)', 'NPN', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:43:28', '2025-04-28 20:43:28', 'Borrador', 43),
-(44, 5, NULL, 'Amigos del Bosque', 'Amigos Bosque', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:43:52', '2025-04-28 20:43:52', 'Borrador', 44),
-(45, 5, NULL, 'Romang FC', 'Romang FC', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:44:19', '2025-04-28 20:44:19', 'Borrador', 45),
-(46, 5, NULL, 'Maxi SF', 'Maxi SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:44:38', '2025-04-28 20:44:38', 'Borrador', 46),
-(47, 6, NULL, 'Maxi SF', 'Maxi SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:47:07', '2025-04-28 20:47:07', 'Borrador', 47),
-(48, 6, NULL, 'La Tribu', 'La Tribu', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:47:28', '2025-04-28 20:47:28', 'Borrador', 48),
-(49, 6, NULL, 'CTGUSJ', 'CTGUSJ', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:47:44', '2025-04-28 20:47:44', 'Borrador', 49),
-(50, 6, NULL, 'Las Flores', 'Las Flores', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:48:03', '2025-04-28 20:48:03', 'Borrador', 50),
-(51, 6, NULL, 'Los Perkin', 'Los Perkin', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:48:19', '2025-04-28 20:48:19', 'Borrador', 51),
-(52, 6, NULL, 'Defensores de Moreno', 'Def Moreno', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:48:46', '2025-04-28 20:48:46', 'Borrador', 52),
-(53, 6, NULL, 'Rosario Voley', 'Rosario Voley', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:49:01', '2025-04-28 20:49:01', 'Borrador', 53),
-(54, 6, NULL, 'Vintage', 'Vintage', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:49:16', '2025-04-28 20:49:16', 'Borrador', 54);
+(16, 2, 4, 'Mala Mia', 'Mala Mia', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:28:45', '2025-04-29 09:12:35', 'Activo', 16),
+(17, 2, 4, 'Cett', 'Cett', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:29:35', '2025-04-29 09:12:35', 'Activo', 17),
+(18, 2, 4, 'Las Vascas', 'Las Vascas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:29:55', '2025-04-29 09:12:35', 'Activo', 18),
+(19, 2, 4, 'Las Patos', 'Las Patos', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:30:14', '2025-04-29 09:12:35', 'Activo', 19),
+(20, 2, 4, 'Club Atletico Alumni Casilda', 'CA Alumni C', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:31:12', '2025-04-29 09:12:35', 'Activo', 20),
+(21, 2, 4, 'Infinito', 'Infinito', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:31:32', '2025-04-29 09:12:35', 'Activo', 21),
+(22, 2, 4, 'La 18', 'La 18', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:31:50', '2025-04-29 09:12:35', 'Activo', 22),
+(23, 2, 5, 'Villa Dora', 'Villa Dora', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:32:10', '2025-04-29 09:12:36', 'Activo', 23),
+(24, 2, 5, 'Costa Canelones', 'Costa Canelones', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:32:31', '2025-04-29 09:12:36', 'Activo', 24),
+(25, 2, 5, 'Maxi Lanus', 'Maxi Lanus', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:32:54', '2025-04-29 09:12:36', 'Activo', 25),
+(26, 2, 5, 'Vamos el apoyo', 'Vamos el apoyo', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:33:11', '2025-04-29 09:12:36', 'Activo', 26),
+(27, 2, 5, 'Trede Birra', 'Trede Birra', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:33:31', '2025-04-29 09:12:36', 'Activo', 27),
+(28, 2, 5, 'ATR', 'ATR', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:33:46', '2025-04-29 09:12:36', 'Activo', 28),
+(29, 3, 6, 'NNV', 'NNV', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:34:52', '2025-04-29 09:22:30', 'Activo', 29),
+(30, 3, 6, 'E.L.V.', 'E.L.V.', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:35:06', '2025-04-29 09:22:30', 'Activo', 30),
+(31, 3, 6, 'Costa mix ', 'Costa mix ', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:35:36', '2025-04-29 09:22:30', 'Activo', 31),
+(32, 3, 6, 'Las Inter', 'Las Inter', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:35:48', '2025-04-29 09:22:30', 'Activo', 32),
+(33, 3, 6, 'UNI', 'UNI', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:36:01', '2025-04-29 09:22:30', 'Activo', 33),
+(34, 3, 6, 'Banco SF', 'Banco SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 21:44:02', '2025-04-29 09:22:30', 'Activo', 34),
+(35, 4, 7, 'Recalculando', 'Recalculando', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:38:51', '2025-04-29 09:27:38', 'Activo', 35),
+(36, 4, 7, 'Infinito', 'Infinito', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:39:09', '2025-04-29 09:27:38', 'Activo', 36),
+(37, 4, 7, 'Guemes Salta', 'Guemes Salta', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:39:30', '2025-04-29 09:27:38', 'Activo', 37),
+(38, 4, 7, 'Somos 8 reinas', 'Somos 8 reinas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:39:56', '2025-04-29 09:27:38', 'Activo', 38),
+(39, 4, 7, 'Nautico Zárate', 'Nautico Zárate', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:40:10', '2025-04-29 09:27:38', 'Activo', 39),
+(40, 4, 7, 'GyE Concepción del Uruguay', 'GyE C Uruguay', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:41:04', '2025-04-29 09:27:38', 'Activo', 40),
+(41, 4, 7, 'Las Leonesas', 'Las Leonesas', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:41:20', '2025-04-29 09:27:38', 'Activo', 41),
+(42, 5, 8, 'Ferrocarril de Vera', 'Ferrocarril Vera', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:42:57', '2025-04-29 09:35:26', 'Activo', 42),
+(43, 5, 8, 'No Pasa Naranja (NPN)', 'NPN', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:43:28', '2025-04-29 09:35:26', 'Activo', 43),
+(44, 5, 8, 'Amigos del Bosque', 'Amigos Bosque', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:43:52', '2025-04-29 09:35:26', 'Activo', 44),
+(45, 5, 8, 'Romang FC', 'Romang FC', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:44:19', '2025-04-29 09:35:26', 'Activo', 45),
+(46, 5, 8, 'Maxi SF', 'Maxi SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:44:38', '2025-04-29 09:35:26', 'Activo', 46),
+(47, 6, 9, 'Maxi SF', 'Maxi SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:47:07', '2025-04-29 09:44:16', 'Activo', 47),
+(48, 6, 9, 'La Tribu', 'La Tribu', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:47:28', '2025-04-29 09:44:16', 'Activo', 48),
+(49, 6, 9, 'CTGUSJ', 'CTGUSJ', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:47:44', '2025-04-29 09:44:16', 'Activo', 49),
+(50, 6, 9, 'Las Flores', 'Las Flores', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:48:03', '2025-04-29 09:44:16', 'Activo', 50),
+(51, 6, 10, 'Los Perkin', 'Los Perkin', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:48:19', '2025-04-29 09:44:16', 'Activo', 51),
+(52, 6, 10, 'Defensores de Moreno', 'Def Moreno', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:48:46', '2025-04-29 09:44:16', 'Activo', 52),
+(53, 6, 10, 'Rosario Voley', 'Rosario Voley', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:49:01', '2025-04-29 09:44:16', 'Activo', 53),
+(54, 6, 10, 'Vintage', 'Vintage', 'Argentina', 'Santa Fe', 'Santa Fe', '2025-04-28 20:49:16', '2025-04-29 09:44:16', 'Activo', 54);
 
 -- --------------------------------------------------------
 
@@ -205,7 +205,14 @@ CREATE TABLE `grupo` (
 INSERT INTO `grupo` (`id`, `categoria_id`, `nombre`, `clasifica_oro`, `clasifica_plata`, `clasifica_bronce`, `created_at`, `updated_at`, `estado`) VALUES
 (1, 1, 'A', 2, 2, 1, '2025-04-28 23:49:07', '2025-04-28 23:49:07', 'Borrador'),
 (2, 1, 'B', 2, 2, 1, '2025-04-28 23:49:07', '2025-04-28 23:49:07', 'Borrador'),
-(3, 1, 'C', 2, 2, 1, '2025-04-28 23:49:07', '2025-04-28 23:49:07', 'Borrador');
+(3, 1, 'C', 2, 2, 1, '2025-04-28 23:49:07', '2025-04-28 23:49:07', 'Borrador'),
+(4, 2, 'D', 1, 1, NULL, '2025-04-29 09:12:02', '2025-04-29 09:12:02', 'Borrador'),
+(5, 2, 'E', 1, 1, NULL, '2025-04-29 09:12:02', '2025-04-29 09:12:02', 'Borrador'),
+(6, 3, 'F', 4, 2, NULL, '2025-04-29 09:21:57', '2025-04-29 09:21:57', 'Borrador'),
+(7, 4, 'G', 2, 2, NULL, '2025-04-29 09:26:15', '2025-04-29 09:26:15', 'Borrador'),
+(8, 5, '1', 4, NULL, NULL, '2025-04-29 09:34:22', '2025-04-29 09:34:25', 'Finalizado'),
+(9, 6, '2', 4, NULL, NULL, '2025-04-29 09:40:00', '2025-04-29 09:40:00', 'Borrador'),
+(10, 6, '3', 4, NULL, NULL, '2025-04-29 09:40:00', '2025-04-29 09:40:00', 'Borrador');
 
 -- --------------------------------------------------------
 
@@ -387,7 +394,124 @@ INSERT INTO `partido` (`id`, `cancha_id`, `categoria_id`, `grupo_id`, `equipo_lo
 (44, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 00:04:32', '2025-04-29 00:04:32', 44),
 (45, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 00:04:32', '2025-04-29 00:04:32', 45),
 (46, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 00:13:00', '2025-04-29 00:13:00', 46),
-(47, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 00:13:00', '2025-04-29 00:13:00', 47);
+(47, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 00:13:00', '2025-04-29 00:13:00', 47),
+(48, NULL, 2, 4, 16, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 48),
+(49, NULL, 2, 4, 16, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 49),
+(50, NULL, 2, 4, 16, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 50),
+(51, NULL, 2, 4, 16, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 51),
+(52, NULL, 2, 4, 16, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 52),
+(53, NULL, 2, 4, 16, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 53),
+(54, NULL, 2, 4, 17, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 54),
+(55, NULL, 2, 4, 17, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 55),
+(56, NULL, 2, 4, 17, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 56),
+(57, NULL, 2, 4, 17, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:35', '2025-04-29 09:12:35', 57),
+(58, NULL, 2, 4, 17, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 58),
+(59, NULL, 2, 4, 18, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 59),
+(60, NULL, 2, 4, 18, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 60),
+(61, NULL, 2, 4, 18, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 61),
+(62, NULL, 2, 4, 18, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 62),
+(63, NULL, 2, 4, 19, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 63),
+(64, NULL, 2, 4, 19, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 64),
+(65, NULL, 2, 4, 19, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 65),
+(66, NULL, 2, 4, 20, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 66),
+(67, NULL, 2, 4, 20, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 67),
+(68, NULL, 2, 4, 21, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 68),
+(69, NULL, 2, 5, 23, 24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 69),
+(70, NULL, 2, 5, 23, 25, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 70),
+(71, NULL, 2, 5, 23, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 71),
+(72, NULL, 2, 5, 23, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 72),
+(73, NULL, 2, 5, 23, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 73),
+(74, NULL, 2, 5, 24, 25, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 74),
+(75, NULL, 2, 5, 24, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 75),
+(76, NULL, 2, 5, 24, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 76),
+(77, NULL, 2, 5, 24, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 77),
+(78, NULL, 2, 5, 25, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 78),
+(79, NULL, 2, 5, 25, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 79),
+(80, NULL, 2, 5, 25, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 80),
+(81, NULL, 2, 5, 26, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 81),
+(82, NULL, 2, 5, 26, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 82),
+(83, NULL, 2, 5, 27, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 83),
+(84, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 84),
+(85, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:12:36', '2025-04-29 09:12:36', 85),
+(86, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 12:14:13', '2025-04-29 12:14:13', 86),
+(87, NULL, 3, 6, 29, 30, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 87),
+(88, NULL, 3, 6, 29, 31, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 88),
+(89, NULL, 3, 6, 29, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 89),
+(90, NULL, 3, 6, 29, 33, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 90),
+(91, NULL, 3, 6, 29, 34, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 91),
+(92, NULL, 3, 6, 30, 31, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 92),
+(93, NULL, 3, 6, 30, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 93),
+(94, NULL, 3, 6, 30, 33, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 94),
+(95, NULL, 3, 6, 30, 34, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 95),
+(96, NULL, 3, 6, 31, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 96),
+(97, NULL, 3, 6, 31, 33, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 97),
+(98, NULL, 3, 6, 31, 34, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 98),
+(99, NULL, 3, 6, 32, 33, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 99),
+(100, NULL, 3, 6, 32, 34, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 100),
+(101, NULL, 3, 6, 33, 34, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 101),
+(102, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 102),
+(103, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 103),
+(104, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 104),
+(105, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:22:30', '2025-04-29 09:22:30', 105),
+(106, NULL, 4, 7, 35, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 106),
+(107, NULL, 4, 7, 35, 37, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 107),
+(108, NULL, 4, 7, 35, 38, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 108),
+(109, NULL, 4, 7, 35, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 109),
+(110, NULL, 4, 7, 35, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 110),
+(111, NULL, 4, 7, 35, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 111),
+(112, NULL, 4, 7, 36, 37, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 112),
+(113, NULL, 4, 7, 36, 38, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 113),
+(114, NULL, 4, 7, 36, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 114),
+(115, NULL, 4, 7, 36, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 115),
+(116, NULL, 4, 7, 36, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 116),
+(117, NULL, 4, 7, 37, 38, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 117),
+(118, NULL, 4, 7, 37, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 118),
+(119, NULL, 4, 7, 37, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 119),
+(120, NULL, 4, 7, 37, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 120),
+(121, NULL, 4, 7, 38, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 121),
+(122, NULL, 4, 7, 38, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 122),
+(123, NULL, 4, 7, 38, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 123),
+(124, NULL, 4, 7, 39, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 124),
+(125, NULL, 4, 7, 39, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 125),
+(126, NULL, 4, 7, 40, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 126),
+(127, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 127),
+(128, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:27:38', '2025-04-29 09:27:38', 128),
+(129, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 12:28:31', '2025-04-29 12:28:31', 129),
+(130, NULL, 5, 8, 42, 43, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 130),
+(131, NULL, 5, 8, 42, 44, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 131),
+(132, NULL, 5, 8, 42, 45, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 132),
+(133, NULL, 5, 8, 42, 46, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 133),
+(134, NULL, 5, 8, 43, 44, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 134),
+(135, NULL, 5, 8, 43, 45, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 135),
+(136, NULL, 5, 8, 43, 46, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 136),
+(137, NULL, 5, 8, 44, 45, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 137),
+(138, NULL, 5, 8, 44, 46, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 138),
+(139, NULL, 5, 8, 45, 46, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 139),
+(140, NULL, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 140),
+(141, NULL, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 141),
+(142, NULL, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:35:26', '2025-04-29 09:35:26', 142),
+(143, NULL, 6, 9, 47, 48, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 143),
+(144, NULL, 6, 9, 47, 49, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 144),
+(145, NULL, 6, 9, 47, 50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 145),
+(146, NULL, 6, 9, 48, 49, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 146),
+(147, NULL, 6, 9, 48, 50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 147),
+(148, NULL, 6, 9, 49, 50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 148),
+(149, NULL, 6, 10, 51, 52, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 149),
+(150, NULL, 6, 10, 51, 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 150),
+(151, NULL, 6, 10, 51, 54, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 151),
+(152, NULL, 6, 10, 52, 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 152),
+(153, NULL, 6, 10, 52, 54, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 153),
+(154, NULL, 6, 10, 53, 54, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Clasificatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 154),
+(155, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 155),
+(156, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 156),
+(157, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 157),
+(158, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 158),
+(159, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 159),
+(160, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 160),
+(161, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 09:44:16', '2025-04-29 09:44:16', 161),
+(162, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 12:47:31', '2025-04-29 12:47:31', 162),
+(163, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 12:47:31', '2025-04-29 12:47:31', 163),
+(164, NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Borrador', 'Eliminatorio', '2025-04-29 12:47:31', '2025-04-29 12:47:31', 164);
 
 -- --------------------------------------------------------
 
@@ -406,31 +530,56 @@ CREATE TABLE `partido_config` (
   `posicion_equipo2` smallint DEFAULT NULL,
   `nombre` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
+  `updated_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `perdedor_partido1_id` int DEFAULT NULL,
+  `perdedor_partido2_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `partido_config`
 --
 
-INSERT INTO `partido_config` (`id`, `partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id`, `ganador_partido1_id`, `ganador_partido2_id`, `posicion_equipo1`, `posicion_equipo2`, `nombre`, `created_at`, `updated_at`) VALUES
-(1, 31, 1, 3, NULL, NULL, 1, 2, 'Triangular 1 Oro 1', '2025-04-28 23:57:20', '2025-04-28 23:57:20'),
-(2, 32, 2, 1, NULL, NULL, 2, 1, 'Triangular 1 Oro 2', '2025-04-28 23:57:20', '2025-04-28 23:57:20'),
-(3, 33, 3, 2, NULL, NULL, 2, 2, 'Triangular 1 Oro 3', '2025-04-28 23:57:20', '2025-04-28 23:57:20'),
-(4, 34, 2, 3, NULL, NULL, 1, 1, 'Triangular 2 Oro 1', '2025-04-28 23:57:20', '2025-04-28 23:57:20'),
-(5, 35, 1, 2, NULL, NULL, 2, 1, 'Triangular 2 Oro 2', '2025-04-28 23:57:20', '2025-04-28 23:57:20'),
-(6, 36, 3, 1, NULL, NULL, 1, 2, 'Triangular 2 Oro 3', '2025-04-28 23:57:20', '2025-04-28 23:57:20'),
-(7, 37, 1, 3, NULL, NULL, 3, 4, 'Triangular 1 Plata 1', '2025-04-29 00:01:43', '2025-04-29 00:01:43'),
-(8, 38, 2, 1, NULL, NULL, 4, 3, 'Triangular 1 Plata 2', '2025-04-29 00:01:43', '2025-04-29 00:01:43'),
-(9, 39, 3, 2, NULL, NULL, 4, 4, 'Triangular 1 Plata 3', '2025-04-29 00:01:43', '2025-04-29 00:01:43'),
-(10, 40, 2, 3, NULL, NULL, 3, 3, 'Triangular 2 Plata 1', '2025-04-29 00:01:43', '2025-04-29 00:01:43'),
-(11, 41, 1, 2, NULL, NULL, 4, 3, 'Triangular 2 Plata 2', '2025-04-29 00:01:43', '2025-04-29 00:01:43'),
-(12, 42, 3, 1, NULL, NULL, 3, 4, 'Triangular 2 Plata 3', '2025-04-29 00:01:43', '2025-04-29 00:01:43'),
-(13, 43, 1, 2, NULL, NULL, 5, 5, 'Triangular 1 Bronce 1', '2025-04-29 00:04:32', '2025-04-29 00:04:32'),
-(14, 44, 3, 1, NULL, NULL, 5, 5, 'Triangular 1 Bronce 2', '2025-04-29 00:04:32', '2025-04-29 00:04:32'),
-(15, 45, 2, 3, NULL, NULL, 5, 5, 'Triangular 1 Bronce 3', '2025-04-29 00:04:32', '2025-04-29 00:04:32'),
-(16, 46, NULL, NULL, 31, 34, NULL, NULL, 'Final Oro', '2025-04-29 11:45:16', '2025-04-29 11:45:16'),
-(17, 47, NULL, NULL, 37, 40, NULL, NULL, 'Final Plata', '2025-04-29 11:45:16', '2025-04-29 11:45:16');
+INSERT INTO `partido_config` (`id`, `partido_id`, `grupo_equipo1_id`, `grupo_equipo2_id`, `ganador_partido1_id`, `ganador_partido2_id`, `posicion_equipo1`, `posicion_equipo2`, `nombre`, `created_at`, `updated_at`, `perdedor_partido1_id`, `perdedor_partido2_id`) VALUES
+(1, 31, 1, 3, NULL, NULL, 1, 2, 'Triangular 1 Oro 1', '2025-04-28 23:57:20', '2025-04-28 23:57:20', NULL, NULL),
+(2, 32, 2, 1, NULL, NULL, 2, 1, 'Triangular 1 Oro 2', '2025-04-28 23:57:20', '2025-04-28 23:57:20', NULL, NULL),
+(3, 33, 3, 2, NULL, NULL, 2, 2, 'Triangular 1 Oro 3', '2025-04-28 23:57:20', '2025-04-28 23:57:20', NULL, NULL),
+(4, 34, 2, 3, NULL, NULL, 1, 1, 'Triangular 2 Oro 1', '2025-04-28 23:57:20', '2025-04-28 23:57:20', NULL, NULL),
+(5, 35, 1, 2, NULL, NULL, 2, 1, 'Triangular 2 Oro 2', '2025-04-28 23:57:20', '2025-04-28 23:57:20', NULL, NULL),
+(6, 36, 3, 1, NULL, NULL, 1, 2, 'Triangular 2 Oro 3', '2025-04-28 23:57:20', '2025-04-28 23:57:20', NULL, NULL),
+(7, 37, 1, 3, NULL, NULL, 3, 4, 'Triangular 1 Plata 1', '2025-04-29 00:01:43', '2025-04-29 00:01:43', NULL, NULL),
+(8, 38, 2, 1, NULL, NULL, 4, 3, 'Triangular 1 Plata 2', '2025-04-29 00:01:43', '2025-04-29 00:01:43', NULL, NULL),
+(9, 39, 3, 2, NULL, NULL, 4, 4, 'Triangular 1 Plata 3', '2025-04-29 00:01:43', '2025-04-29 00:01:43', NULL, NULL),
+(10, 40, 2, 3, NULL, NULL, 3, 3, 'Triangular 2 Plata 1', '2025-04-29 00:01:43', '2025-04-29 00:01:43', NULL, NULL),
+(11, 41, 1, 2, NULL, NULL, 4, 3, 'Triangular 2 Plata 2', '2025-04-29 00:01:43', '2025-04-29 00:01:43', NULL, NULL),
+(12, 42, 3, 1, NULL, NULL, 3, 4, 'Triangular 2 Plata 3', '2025-04-29 00:01:43', '2025-04-29 00:01:43', NULL, NULL),
+(13, 43, 1, 2, NULL, NULL, 5, 5, 'Triangular 1 Bronce 1', '2025-04-29 00:04:32', '2025-04-29 00:04:32', NULL, NULL),
+(14, 44, 3, 1, NULL, NULL, 5, 5, 'Triangular 1 Bronce 2', '2025-04-29 00:04:32', '2025-04-29 00:04:32', NULL, NULL),
+(15, 45, 2, 3, NULL, NULL, 5, 5, 'Triangular 1 Bronce 3', '2025-04-29 00:04:32', '2025-04-29 00:04:32', NULL, NULL),
+(16, 46, NULL, NULL, 31, 34, NULL, NULL, 'Final Oro', '2025-04-29 11:45:16', '2025-04-29 11:45:16', NULL, NULL),
+(17, 47, NULL, NULL, 37, 40, NULL, NULL, 'Final Plata', '2025-04-29 11:45:16', '2025-04-29 11:45:16', NULL, NULL),
+(18, 84, 4, 5, NULL, NULL, 1, 1, 'Final Oro 1', '2025-04-29 09:12:36', '2025-04-29 09:12:36', NULL, NULL),
+(19, 85, 4, 5, NULL, NULL, 3, 3, 'Final Plata 1', '2025-04-29 09:12:36', '2025-04-29 09:12:36', NULL, NULL),
+(20, 86, 4, 5, NULL, NULL, 2, 2, '3y4to Final Oro', '2025-04-29 12:15:45', '2025-04-29 12:15:45', NULL, NULL),
+(22, 102, 6, 6, NULL, NULL, 1, 4, 'Semi Final Oro 1', '2025-04-29 09:22:30', '2025-04-29 09:22:30', NULL, NULL),
+(23, 103, 6, 6, NULL, NULL, 2, 3, 'Semi Final Oro 2', '2025-04-29 09:22:30', '2025-04-29 09:22:30', NULL, NULL),
+(24, 104, NULL, NULL, 102, 103, NULL, NULL, 'Final Oro 1', '2025-04-29 09:22:30', '2025-04-29 09:22:30', NULL, NULL),
+(25, 105, 6, 6, NULL, NULL, 5, 6, 'Final Plata 1', '2025-04-29 09:22:30', '2025-04-29 09:22:30', NULL, NULL),
+(26, 127, 7, 7, NULL, NULL, 1, 2, 'Final Oro 1', '2025-04-29 09:27:38', '2025-04-29 09:27:38', NULL, NULL),
+(27, 128, 7, 7, NULL, NULL, 5, 6, 'Final Plata 1', '2025-04-29 09:27:38', '2025-04-29 09:27:38', NULL, NULL),
+(28, 129, 7, 7, NULL, NULL, 3, 4, '3y4to Final Oro', '2025-04-29 12:29:43', '2025-04-29 12:29:43', NULL, NULL),
+(29, 140, 8, 8, NULL, NULL, 1, 4, 'Semi Final Oro 1', '2025-04-29 09:35:26', '2025-04-29 09:35:26', NULL, NULL),
+(30, 141, 8, 8, NULL, NULL, 2, 3, 'Semi Final Oro 2', '2025-04-29 09:35:26', '2025-04-29 09:35:26', NULL, NULL),
+(31, 142, NULL, NULL, 140, 141, NULL, NULL, 'Final Oro 1', '2025-04-29 09:35:26', '2025-04-29 09:35:26', NULL, NULL),
+(32, 155, 9, 10, NULL, NULL, 1, 4, 'Cuartos de Final Oro 1', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(33, 156, 9, 10, NULL, NULL, 2, 3, 'Cuartos de Final Oro 2', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(34, 157, 10, 9, NULL, NULL, 1, 4, 'Cuartos de Final Oro 3', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(35, 158, 10, 9, NULL, NULL, 2, 3, 'Cuartos de Final Oro 4', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(36, 159, NULL, NULL, 155, 158, NULL, NULL, 'Semi Final Oro 1', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(37, 160, NULL, NULL, 156, 157, NULL, NULL, 'Semi Final Oro 2', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(38, 161, NULL, NULL, 159, 160, NULL, NULL, 'Final Oro 1', '2025-04-29 09:44:16', '2025-04-29 09:44:16', NULL, NULL),
+(48, 162, NULL, NULL, NULL, NULL, NULL, NULL, 'Semi Final Plata 1', '2025-04-29 13:13:02', '2025-04-29 13:13:02', 155, 158),
+(49, 163, NULL, NULL, NULL, NULL, NULL, NULL, 'Semi Final Plata 2', '2025-04-29 13:13:02', '2025-04-29 13:13:02', 156, 157),
+(50, 164, NULL, NULL, 162, 163, NULL, NULL, 'Final Plata 1', '2025-04-29 13:13:02', '2025-04-29 13:13:02', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -483,7 +632,7 @@ CREATE TABLE `torneo` (
 --
 
 INSERT INTO `torneo` (`id`, `creador_id`, `nombre`, `ruta`, `descripcion`, `fecha_inicio_inscripcion`, `fecha_fin_inscripcion`, `fecha_inicio_torneo`, `fecha_fin_torneo`, `reglamento`, `created_at`, `updated_at`, `estado`) VALUES
-(1, 1, 'XV Torneo Abierto Sudamericano de Mastervoley en Santa Fe', 'xv_master_voley', '', '2025-04-28 20:05:00', '2025-04-28 20:06:00', '2025-05-01 11:00:00', '2025-05-03 23:59:00', NULL, '2025-04-28 20:06:06', '2025-04-28 20:06:06', 'Borrador');
+(1, 1, 'XV Torneo Abierto Sudamericano de Mastervoley Sta Fe', 'xv_master_voley', '', '2025-04-28 20:05:00', '2025-04-28 20:06:00', '2025-05-01 11:00:00', '2025-05-03 23:59:00', NULL, '2025-04-28 20:06:06', '2025-04-28 20:06:06', 'Borrador');
 
 -- --------------------------------------------------------
 
@@ -596,7 +745,9 @@ ALTER TABLE `partido_config`
   ADD UNIQUE KEY `UNIQ_FB58ADC783ECE76` (`grupo_equipo1_id`,`posicion_equipo1`),
   ADD UNIQUE KEY `UNIQ_FB58ADC71A8B6198` (`grupo_equipo2_id`,`posicion_equipo2`),
   ADD UNIQUE KEY `UNIQ_FB58ADC7A1716C4E` (`ganador_partido1_id`),
-  ADD UNIQUE KEY `UNIQ_FB58ADC7B3C4C3A0` (`ganador_partido2_id`);
+  ADD UNIQUE KEY `UNIQ_FB58ADC7B3C4C3A0` (`ganador_partido2_id`),
+  ADD UNIQUE KEY `UNIQ_FB58ADC7EDE271C1` (`perdedor_partido1_id`),
+  ADD UNIQUE KEY `UNIQ_FB58ADC7FF57DE2F` (`perdedor_partido2_id`);
 
 --
 -- Indices de la tabla `sede`
@@ -655,7 +806,7 @@ ALTER TABLE `equipo`
 -- AUTO_INCREMENT de la tabla `grupo`
 --
 ALTER TABLE `grupo`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `jugador`
@@ -673,13 +824,13 @@ ALTER TABLE `messenger_messages`
 -- AUTO_INCREMENT de la tabla `partido`
 --
 ALTER TABLE `partido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
 
 --
 -- AUTO_INCREMENT de la tabla `partido_config`
 --
 ALTER TABLE `partido_config`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `sede`
