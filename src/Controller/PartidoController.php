@@ -247,6 +247,9 @@ class PartidoController extends AbstractController
         } catch (AccessDeniedException $e) {
              // Verificar si el usuario está autenticado
             if (!$this->getUser()) {
+                // Guardar la URL actual en la sesión para redirigir después del login
+                $request->getSession()->set('_security.main.target_path', $request->getUri());
+
                 // Redirigir al login si no está autenticado
                 return $this->redirectToRoute('app_login');
             }
