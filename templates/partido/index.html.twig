@@ -234,6 +234,8 @@
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
                     <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
+                    <a href="{{ path('app_partido_pdf', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">PDF</a>
+                    
                   {% endif %}
                 </td>
               </tr>

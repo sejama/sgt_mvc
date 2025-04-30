@@ -8,6 +8,7 @@ use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
 use App\Security\Voter\PartidoVoter;
+use App\Utils\GenerarPdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -188,6 +189,30 @@ class PartidoController extends AbstractController
         }
     }
 
+    #[Route('/partido/{partidoNumero}/pdf', name: 'app_partido_pdf', methods: ['GET'])]
+    public function generarPDF(
+        string $ruta,
+        int $partidoNumero,
+        PartidoManager $partidoManager
+    ): Response {
+        try {
+            $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
+
+            $pdf = new GenerarPdf();
+            $pdf->generarPdf($partido, $ruta);
+            $this->addFlash('success', 'PDF generado correctamente.');
+            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        } catch (AppException $ae) {
+            // Handle the exception
+            $this->addFlash('error', $ae->getMessage());
+            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        } catch (Throwable $e) {
+            // Handle the exception
+            $this->addFlash('error', 'Ocurrió un error al cargar el partido ' . $e);
+            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        }
+    }
+
     #[Route('/partido/{partidoNumero}/cargar_resultado', name: 'app_partido_cargar_resultado', methods: ['GET', 'POST'])]
     public function cargarResultado(
         string $ruta,
@@ -220,6 +245,12 @@ class PartidoController extends AbstractController
                 ]
             );
         } catch (AccessDeniedException $e) {
+             // Verificar si el usuario está autenticado
+            if (!$this->getUser()) {
+                // Redirigir al login si no está autenticado
+                return $this->redirectToRoute('app_login');
+            }
+
             // Redirigir al app_main_torneo con un mensaje de error
             $this->addFlash('error', 'No tienes permiso para cargar el resultado de este partido.');
             return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
