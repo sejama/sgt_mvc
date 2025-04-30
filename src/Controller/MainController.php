@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Manager\CategoriaManager;
 use App\Manager\PartidoManager;
+use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +46,31 @@ class MainController extends AbstractController
             'torneo' => $torneo,
             'categorias' => $categorias,
             'partidosProgramados' => $partidosProgramados,
+            ]
+        );
+    }
+
+    #[Route('/torneo/{ruta}/categoria/{categoriaId}', name: 'app_main_categoria')]
+    public function categoria(
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        TablaManager $tablaManager,
+        string $ruta,
+        int $categoriaId
+    ): Response {
+        
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        $grupos = $categoria->getGrupos();
+        $gruposPosiciones = [];
+        foreach ($grupos as $grupo) {
+            $gruposPosiciones[$grupo->getId()][] = $grupo;
+            $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
+        }
+        return $this->render(
+            'main/categoria.html.twig',
+            [
+                'ruta' => $ruta,
+                'grupos' => $gruposPosiciones
             ]
         );
     }
