@@ -179,9 +179,9 @@
         </td>
         <td>{{ partido.categoria }}</td>
         <td>{{ partido.nombre }}</td>
-        <td>{{ partido.equipoPartidoLocal }}</td>
+        <td>{{ partido.equipoPartidoLocalGanador ?? partido.equipoPartidoLocalPerdedor}} </td>
         <td>-</td>
-        <td>{{ partido.equipoPartidoVisitante }}</td>
+        <td>{{ partido.equipoPartidoVisitanteGanador ?? partido.equipoPartidoVisitantePerdedor}}</td>
         <td>
           <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
             <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>

@@ -124,30 +124,42 @@ class PartidoRepository extends ServiceEntityRepository
     public function buscarPartidosPlayOffFinalesXTorneo(string $ruta): array
     {
         /*
-        SELECT p.id AS id, p.numero, pc.nombre AS nombre, pc1.nombre AS equipoPartidoLocal, pc2.nombre AS equipoPartidoVisitante,
-        c.nombre AS categoria, t.fecha_inicio_torneo AS fechaInicioTorneo, t.fecha_fin_torneo AS fechaFinTorneo
+        SELECT p.id AS id, p.numero, pc.nombre AS nombre, CONCAT('Ganador ', pc1.nombre) AS equipoPartidoLocalGanador, CONCAT('Ganador ', pc2.nombre) AS equipoPartidoVisitanteGanador, CONCAT('Perdedor ', pc3.nombre) AS equipoPartidoLocalPerdedor, CONCAT('Perdedor ', pc4.nombre) AS equipoPartidoVisitantePerdedor,
+            c.nombre AS categoria, t.fecha_inicio_torneo AS fechaInicioTorneo, t.fecha_fin_torneo AS fechaFinTorneo
         FROM partido p 
         JOIN partido_config pc ON pc.partido_id = p.id
-        JOIN partido_config pc1 ON pc.ganador_partido1_id = pc1.partido_id
-        JOIN partido_config pc2 ON pc.ganador_partido2_id = pc2.partido_id
+        LEFT JOIN partido_config pc1 ON pc.ganador_partido1_id = pc1.partido_id
+        LEFT JOIN partido_config pc2 ON pc.ganador_partido2_id = pc2.partido_id
+        LEFT JOIN partido_config pc3 ON pc.perdedor_partido1_id = pc3.partido_id
+        LEFT JOIN partido_config pc4 ON pc.perdedor_partido2_id = pc4.partido_id
         JOIN categoria c ON c.id = p.categoria_id
         JOIN torneo t ON c.torneo_id = t.id
-        WHERE t.ruta = 'xiv-sudamericano-master-voley-sf' AND p.cancha_id IS NULL AND pc.ganador_partido1_id IS NOT NULL AND pc.ganador_partido2_id IS NOT NULL
-        ORDER BY p.id ASC
+        WHERE t.ruta = 'xv_master_voley' 
+        AND p.cancha_id IS NULL 
+        AND (pc.ganador_partido1_id IS NOT NULL OR pc.perdedor_partido1_id IS NOT NULL)
+        AND (pc.ganador_partido2_id IS NOT NULL OR pc.perdedor_partido2_id IS NOT NULL)
+        ORDER BY p.id ASC;
         */
         return $this->createQueryBuilder('p')
-            ->select('p.id AS id, p.numero, pc.nombre AS nombre, pc1.nombre AS equipoPartidoLocal, pc2.nombre AS equipoPartidoVisitante, c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
+            ->select('p.id AS id, p.numero, pc.nombre AS nombre, 
+                CONCAT(\'Ganador \', pc1.nombre) AS equipoPartidoLocalGanador, CONCAT(\'Ganador \', pc2.nombre) AS equipoPartidoVisitanteGanador,
+                CONCAT(\'Perdedor \', pc3.nombre) AS equipoPartidoLocalPerdedor, CONCAT(\'Perdedor \', pc4.nombre) AS equipoPartidoVisitantePerdedor,
+                c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
             ->join('p.partidoConfig', 'pc')
-            ->join('pc.ganadorPartido1', 'p1')
-            ->join('pc.ganadorPartido2', 'p2')
-            ->join('p1.partidoConfig', 'pc1')
-            ->join('p2.partidoConfig', 'pc2')
+            ->leftJoin('pc.ganadorPartido1', 'p1')
+            ->leftJoin('p1.partidoConfig', 'pc1')
+            ->leftJoin('pc.ganadorPartido2', 'p2')
+            ->leftJoin('p2.partidoConfig', 'pc2')
+            ->leftJoin('pc.perdedorPartido1', 'p3')
+            ->leftJoin('p3.partidoConfig', 'pc3')
+            ->leftJoin('pc.perdedorPartido2', 'p4')
+            ->leftJoin('p4.partidoConfig', 'pc4')
             ->join('p.categoria', 'c')
             ->join('c.torneo', 't')
             ->where('t.ruta = :ruta')
             ->andWhere('p.cancha IS NULL')
-            ->andWhere('pc.ganadorPartido1 IS NOT NULL')
-            ->andWhere('pc.ganadorPartido2 IS NOT NULL')
+            ->andWhere('(pc.ganadorPartido1 IS NOT NULL OR pc.perdedorPartido1 IS NOT NULL)')
+            ->andWhere('(pc.ganadorPartido2 IS NOT NULL OR pc.perdedorPartido2 IS NOT NULL)')
             ->setParameter('ruta', $ruta)
             ->addOrderBy('p.id', 'ASC')
             ->getQuery()
