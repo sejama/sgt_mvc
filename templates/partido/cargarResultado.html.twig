@@ -154,7 +154,7 @@
             form.classList.add('was-validated')
             form.action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoNumero': partido.numero}) }}"
             form.method="POST"
-            form.submit()http://localhost:8080/sgt/public/admin/torneo/xv_master_voley/partido/57/cargar_resultado
+            form.submit()
         }
         
     })
@@ -165,17 +165,17 @@ function validarSet(Poslocal, Posvisitante, set , puntos)
     {
         if (inputs[Poslocal].value >= puntos && inputs[Posvisitante].value >= puntos)
         {
-            if (inputs[Poslocal].value - inputs[Posvisitante].value > 2 || inputs[Poslocal].value - inputs[Posvisitante].value < -2)
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > 1 || inputs[Poslocal].value - inputs[Posvisitante].value < -1)
             {
-                alert('La diferencia de puntos entre los equipos debe ser de 2 en set '+set+'!')
+                alert('La diferencia de puntos entre los equipos debe ser de 1 en set '+set+'!')
                 return false
             }
         }
         if (inputs[Poslocal].value >= puntos || inputs[Posvisitante].value >= puntos)
         {
-            if (inputs[Poslocal].value - inputs[Posvisitante].value > -2 && inputs[Poslocal].value - inputs[Posvisitante].value < 2)
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > -1 && inputs[Poslocal].value - inputs[Posvisitante].value < 1)
             {
-                alert('La diferencia de puntos entre los equipos debe ser mayor o igual a 2 en set '+set+'!')
+                alert('La diferencia de puntos entre los equipos debe ser mayor o igual a 1 en set '+set+'!')
                 return false
             }
         } else {

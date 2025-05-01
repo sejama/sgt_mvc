@@ -275,8 +275,10 @@ class PartidoManager
 
         if ($local > $visitante) {
             $ganador = $partido->getEquipoLocal();
+            $perdedor = $partido->getEquipoVisitante();
         } else {
             $ganador = $partido->getEquipoVisitante();
+            $perdedor = $partido->getEquipoLocal();
         }
         
 
@@ -287,9 +289,19 @@ class PartidoManager
             } elseif ($partidoConfig->getGanadorPartido2() === $partido) {
                 $partidoSiguiente->setEquipoVisitante($ganador); 
             }
+
+            if ($partidoConfig->getPerdedorPartido1() === $partido) {
+                $partidoSiguiente->setEquipoLocal($perdedor);
+            } elseif ($partidoConfig->getPerdedorPartido2() === $partido) {
+                $partidoSiguiente->setEquipoVisitante($perdedor);
+            }
+
+            // Guardar solo si $partidoSiguiente está definido
+             if (isset($partidoSiguiente)) {
+                $this->partidoRepository->guardar($partidoSiguiente);
+            }
         }
 
-        $this->partidoRepository->guardar($partidoSiguiente);
     }
 
     public function obtenerPartidosXCategoriaClasificatorio(Categoria $categoria): array
