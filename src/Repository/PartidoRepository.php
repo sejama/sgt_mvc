@@ -170,7 +170,7 @@ class PartidoRepository extends ServiceEntityRepository
     {
         /*
             SELECT s.nombre sede, c.nombre cancha, p.horario hora, eLocal.nombre equipoLocal, eVisitante.nombre equipoVisitante, g.nombre grupo, cat.nombre categoria, 
-            p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5
+            p.local_set1, p.visitante_set1, p.local_set2, p.visitante_set2, p.local_set3, p.visitante_set3, p.local_set4, p.visitante_set4, p.local_set5, p.visitante_set5
             FROM partido p 
             INNER JOIN cancha c ON p.cancha_id = c.id 
             INNER JOIN sede s ON c.sede_id = s.id 
@@ -315,41 +315,82 @@ class PartidoRepository extends ServiceEntityRepository
     public function buscarPartidosProgramadosPlayOffFinalesXTorneo(string $ruta): array
     {
         /*
-        SELECT p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, 
+        SELECT 
+            p.id, p.numero, s.nombre sede, c.nombre cancha, p.horario hora, 
             (CASE 
-                WHEN p.equipo_local_id IS NULL THEN CONCAT('Ganador ', pc1.nombre)
+                WHEN p.equipo_local_id IS NULL THEN 
+                    CASE 
+                        WHEN pc.ganador_partido1_id IS NOT NULL THEN CONCAT('Ganador ', pc1.nombre)
+                        WHEN pc.perdedor_partido1_id IS NOT NULL THEN CONCAT('Perdedor ', pc1p.nombre)
+                    END
                 ELSE eLocal.nombre 
             END) AS equipoLocal,
+
             (CASE 
-                WHEN p.equipo_visitante_id IS NULL THEN CONCAT('Ganador ', pc2.nombre)
+                WHEN p.equipo_visitante_id IS NULL THEN 
+                    CASE 
+                        WHEN pc.ganador_partido2_id IS NOT NULL THEN CONCAT('Ganador ', pc2.nombre)
+                        WHEN pc.perdedor_partido2_id IS NOT NULL THEN CONCAT('Perdedor ', pc2p.nombre)
+                    END
                 ELSE eVisitante.nombre 
             END) AS equipoVisitante,
             pc.nombre grupo, cat.nombre categoria,
-            p.local_set1, p.visitante_set1, p.local_set2, p.visitante_set2, p.local_set3, p.visitante_set3, p.local_set4, p.visitante_set4, p.local_set5, p.visitante_set5 
-            FROM partido p 
-            INNER JOIN cancha c ON p.cancha_id = c.id 
-            INNER JOIN sede s ON c.sede_id = s.id 
-            INNER JOIN categoria cat ON cat.id = p.categoria_id
-            INNER JOIN partido_config pc ON pc.partido_id = p.id
-            INNER JOIN partido p1 ON p1.id = pc.ganador_partido1_id
-            INNER JOIN partido_config pc1 ON pc1.partido_id = p1.id
-            INNER JOIN partido p2 ON p2.id = pc.ganador_partido2_id
-            INNER JOIN partido_config pc2 ON pc2.partido_id = p2.id
-            LEFT JOIN equipo eLocal ON eLocal.id = p.equipo_local_id
-            LEFT JOIN equipo eVisitante ON eVisitante.id = p.equipo_visitante_id
-            ORDER BY s.id, c.id, hora;
+            p.local_set1, p.visitante_set1, p.local_set2, p.visitante_set2, 
+            p.local_set3, p.visitante_set3, p.local_set4, p.visitante_set4, 
+            p.local_set5, p.visitante_set5 
+        FROM partido p 
+        INNER JOIN cancha c ON p.cancha_id = c.id 
+        INNER JOIN sede s ON c.sede_id = s.id 
+        INNER JOIN categoria cat ON cat.id = p.categoria_id
+        INNER JOIN partido_config pc ON pc.partido_id = p.id
+        -- Ganadores
+        LEFT JOIN partido p1 ON p1.id = pc.ganador_partido1_id
+        LEFT JOIN partido_config pc1 ON pc1.partido_id = p1.id
+        LEFT JOIN partido p2 ON p2.id = pc.ganador_partido2_id
+        LEFT JOIN partido_config pc2 ON pc2.partido_id = p2.id
+        -- Perdedores
+        LEFT JOIN partido p1p ON p1p.id = pc.perdedor_partido1_id
+        LEFT JOIN partido_config pc1p ON pc1p.partido_id = p1p.id
+        LEFT JOIN partido p2p ON p2p.id = pc.perdedor_partido2_id
+        LEFT JOIN partido_config pc2p ON pc2p.partido_id = p2p.id
+        -- Equipos definidos
+        LEFT JOIN equipo eLocal ON eLocal.id = p.equipo_local_id
+        LEFT JOIN equipo eVisitante ON eVisitante.id = p.equipo_visitante_id
+        WHERE 
+            (
+                p.equipo_local_id IS NOT NULL 
+                OR pc.ganador_partido1_id IS NOT NULL 
+                OR pc.perdedor_partido1_id IS NOT NULL
+            )
+            AND
+            (
+                p.equipo_visitante_id IS NOT NULL 
+                OR pc.ganador_partido2_id IS NOT NULL 
+                OR pc.perdedor_partido2_id IS NOT NULL
+            )
+        ORDER BY s.id, c.id, hora;
         */
         
         return $this->createQueryBuilder('p')
             ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, 
-                CASE 
-                    WHEN p.equipoLocal IS NULL THEN CONCAT(\'Ganador \', pc1.nombre)
+                (CASE 
+                    WHEN p.equipoLocal IS NULL THEN 
+                        CASE 
+                            WHEN pc.ganadorPartido1 IS NOT NULL THEN CONCAT(\'Ganador \', pc1.nombre)
+                            WHEN pc.perdedorPartido1 IS NOT NULL THEN CONCAT(\'Perdedor \', pc1p.nombre)
+                            ELSE \'Sin definir\' -- Agregar un ELSE aquí
+                        END
                     ELSE eLocal.nombre 
-                END AS equipoLocal,
-                CASE 
-                    WHEN p.equipoVisitante IS NULL THEN CONCAT(\'Ganador \', pc2.nombre)
-                    ELSE eVisitante.nombre 
-                END AS equipoVisitante,
+                END) AS equipoLocal,
+            (CASE 
+                WHEN p.equipoVisitante IS NULL THEN 
+                    CASE 
+                        WHEN pc.ganadorPartido2 IS NOT NULL THEN CONCAT(\'Ganador \', pc2.nombre)
+                        WHEN pc.perdedorPartido2 IS NOT NULL THEN CONCAT(\'Perdedor \', pc2p.nombre)
+                        ELSE \'Sin definir\' -- Agregar un ELSE aquí
+                    END
+                ELSE eVisitante.nombre 
+            END) AS equipoVisitante,
                 pc.nombre AS grupo, 
                 cat.nombre AS categoria, 
                 p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, 
@@ -359,12 +400,24 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('c.sede', 's')
             ->join('p.categoria', 'cat')
             ->join('p.partidoConfig', 'pc')
-            ->join('pc.ganadorPartido1', 'p1')
-            ->join('p1.partidoConfig', 'pc1')
-            ->join('pc.ganadorPartido2', 'p2')
-            ->join('p2.partidoConfig', 'pc2')
+            //Ganador
+            ->leftJoin('pc.ganadorPartido1', 'p1')
+            ->leftJoin('p1.partidoConfig', 'pc1')
+            ->leftJoin('pc.ganadorPartido2', 'p2')
+            ->leftJoin('p2.partidoConfig', 'pc2')
+            //Perdedor
+            ->leftJoin('pc.perdedorPartido1', 'p1p')
+            ->leftJoin('p1p.partidoConfig', 'pc1p')
+            ->leftJoin('pc.perdedorPartido2', 'p2p')
+            ->leftJoin('p2p.partidoConfig', 'pc2p')
             ->leftJoin('p.equipoLocal', 'eLocal')
             ->leftJoin('p.equipoVisitante', 'eVisitante')
+            ->where(
+                'p.equipoLocal IS NOT NULL OR pc.ganadorPartido1 IS NOT NULL OR pc.perdedorPartido1 IS NOT NULL'
+            )
+            ->andWhere(
+                'p.equipoVisitante IS NOT NULL OR pc.ganadorPartido2 IS NOT NULL OR pc.perdedorPartido2 IS NOT NULL'
+            )
             ->orderBy('s.id, c.id, p.horario')
             ->getQuery()
             ->getResult();
