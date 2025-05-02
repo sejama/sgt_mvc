@@ -45,9 +45,16 @@
                     <td>{{ partido.hora|date('H:i') }}</td>
                     <td>{{ partido.categoria }}</td>
                     <td>{{ partido.grupo }}</td>
-                    <td>{{ partido.equipoLocal }}</td>
+                    <td>
+                      <div>{{ partido.equipoLocal }}</div>
+                      <div>{{ partido.localSet1 ?? partido.localSet1 }} {{ partido.localSet2 ?? partido.localSet2 }} {{ partido.localSet3 ?? partido.localSet3 }}</div>
+                      </td>
                     <td>-</td>
-                    <td>{{ partido.equipoVisitante }}</td>
+                    <td>
+                      <div>{{ partido.equipoVisitante }}</div>
+                      <div>{{ partido.visitanteSet1 ?? partido.visitanteSet1 }} {{ partido.visitanteSet2 ?? partido.visitanteSet2 }} {{ partido.visitanteSet3 ?? partido.visitanteSet3 }}</div>
+                      </td>
+
                   </tr>
                 {% endfor %}
                 </tbody>
