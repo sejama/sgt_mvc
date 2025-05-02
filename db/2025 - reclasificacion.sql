@@ -1,0 +1,2 @@
+INSERT INTO partido (categoria_id,estado,tipo,numero,created_at,updated_at) VALUES (5,'Borrador','Eliminatorio',165,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO partido_config(partido_id,grupo_equipo1_id,grupo_equipo2_id,posicion_equipo1,posicion_equipo2,nombre,created_at,updated_at) VALUES (165,8,8,4,5,'RECLASIFICACION M+42',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
