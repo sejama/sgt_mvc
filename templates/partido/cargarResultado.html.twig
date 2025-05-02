@@ -118,9 +118,9 @@
     btnEditarPartido.addEventListener('click', function(event) {
         let local = visitante = 0;
         const form = document.querySelector('.needs-validation')
-        const validadorSet1 = validarSet(0, 1, 1, 25)
-        const validadorSet2 = validarSet(2, 3, 2, 25)
-        const validadorSet3 = validarSet(4, 5, 3, 15)
+        const validadorSet1 = validarSet(0, 1, 1, 25, 1)
+        const validadorSet2 = validarSet(2, 3, 2, 25, 1)
+        const validadorSet3 = validarSet(4, 5, 3, 15, 2)
         //const validador = true
         if (inputs[0].value > 0 || inputs[1].value > 0) {
                 if ( inputs[0].value < inputs[1].value) {
@@ -159,23 +159,23 @@
         
     })
 
-function validarSet(Poslocal, Posvisitante, set , puntos)
+function validarSet(Poslocal, Posvisitante, set , puntos, dif)
 {
     if (inputs[Poslocal].required && inputs[Posvisitante].required)
     {
         if (inputs[Poslocal].value >= puntos && inputs[Posvisitante].value >= puntos)
         {
-            if (inputs[Poslocal].value - inputs[Posvisitante].value > 1 || inputs[Poslocal].value - inputs[Posvisitante].value < -1)
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > dif || inputs[Poslocal].value - inputs[Posvisitante].value < -dif)
             {
-                alert('La diferencia de puntos entre los equipos debe ser de 1 en set '+set+'!')
+                alert('La diferencia de puntos entre los equipos debe ser de '+dif+' en set '+set+'!')
                 return false
             }
         }
         if (inputs[Poslocal].value >= puntos || inputs[Posvisitante].value >= puntos)
         {
-            if (inputs[Poslocal].value - inputs[Posvisitante].value > -1 && inputs[Poslocal].value - inputs[Posvisitante].value < 1)
+            if (inputs[Poslocal].value - inputs[Posvisitante].value > -dif && inputs[Poslocal].value - inputs[Posvisitante].value < dif)
             {
-                alert('La diferencia de puntos entre los equipos debe ser mayor o igual a 1 en set '+set+'!')
+                alert('La diferencia de puntos entre los equipos debe ser mayor o igual a '+dif+' en set '+set+'!')
                 return false
             }
         } else {
