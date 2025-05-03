@@ -92,6 +92,9 @@ class PartidoManager
     foreach ($paritdosOrdenados as $sede => &$canchas) {
         foreach ($canchas as $cancha => &$fechas) {
             foreach ($fechas as $fecha => &$partidos) {
+                // Eliminar duplicados basados en un identificador único (por ejemplo, 'id')
+                $partidos = array_values(array_unique($partidos, SORT_REGULAR));
+
                 usort($partidos, function ($a, $b) {
                     $horaA = strtotime($a['hora']);
                     $horaB = strtotime($b['hora']);
