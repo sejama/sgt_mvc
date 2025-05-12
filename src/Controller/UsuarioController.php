@@ -17,7 +17,7 @@ use Throwable;
 class UsuarioController extends AbstractController
 {
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('/', name: 'app_usuario', methods: ['GET'])]
+    #[Route('/', name: 'admin_usuario_index', methods: ['GET'])]
     public function usuarios(
         UsuarioManager $rm,
         LoggerInterface $logger
@@ -38,7 +38,7 @@ class UsuarioController extends AbstractController
                     return $this->redirectToRoute('app_main');
                 }
             }
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('security_login');
         } catch (Throwable $e) {
             $logger->error($e->getMessage());
             $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
@@ -46,7 +46,7 @@ class UsuarioController extends AbstractController
         }
     }
 
-    #[Route('/nuevo', name: 'app_usuario_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'admin_usuario_crear', methods: ['GET', 'POST'])]
     public function registrar(
         Request $request,
         UsuarioManager $rm,
@@ -71,7 +71,7 @@ class UsuarioController extends AbstractController
 
                 $rm->registrarUsuario($nombre, $apellido, $email, $username, $password, $roles);
                 $this->addFlash('success', 'Usuario registrado correctamente');
-                return $this->redirectToRoute('app_usuario');
+                return $this->redirectToRoute('admin_usuario_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -106,11 +106,11 @@ class UsuarioController extends AbstractController
                     return $this->redirectToRoute('app_main');
                 }
             }
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('security_login');
         }
     }
 
-    #[Route('/cambiar_password', name: 'app_usuario_cambiar_password', methods: ['GET', 'POST'])]
+    #[Route('/cambiar_password', name: 'admin_usuario_cambiar_password', methods: ['GET', 'POST'])]
     public function cambiarPassword(
         Request $request,
         UsuarioManager $rm,
@@ -135,7 +135,7 @@ class UsuarioController extends AbstractController
         return $this->render('usuario/cambiar_password.html.twig');
     }
 
-    #[Route('/editar/{id}', name: 'app_usuario_editar', methods: ['GET', 'POST'])]
+    #[Route('/editar/{id}', name: 'admin_usuario_editar', methods: ['GET', 'POST'])]
     public function editar(Request $request, UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
     {
         $usuario = $usuarioManager->buscarUsuario((int)$id);
@@ -161,7 +161,7 @@ class UsuarioController extends AbstractController
                     $roles
                 );
                 $this->addFlash('success', 'Usuario editado correctamente');
-                return $this->redirectToRoute('app_usuario');
+                return $this->redirectToRoute('admin_usuario_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -182,14 +182,14 @@ class UsuarioController extends AbstractController
         );
     }
 
-    #[Route('/eliminar/{id}', name: 'app_usuario_eliminar', methods: ['GET'])]
+    #[Route('/eliminar/{id}', name: 'admin_usuario_eliminar', methods: ['GET'])]
     public function eliminar(UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
     {
         try {
             $usuario = $usuarioManager->buscarUsuario((int)$id);
             $usuarioManager->eliminarUsuario($usuario);
             $this->addFlash('success', 'Usuario eliminado correctamente');
-            return $this->redirectToRoute('app_usuario');
+            return $this->redirectToRoute('admin_usuario_index');
         } catch (AppException $ae) {
             $logger->error($ae->getMessage());
             $this->addFlash('error', $ae->getMessage());

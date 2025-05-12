@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class GrupoController extends AbstractController
 {
-    #[Route('/grupos', name: 'app_grupos')]
+    #[Route('/grupos', name: 'admin_grupo_index', methods: ['GET'])]
     public function grupos(
         string $ruta,
         int $categoriaId,
@@ -52,7 +52,7 @@ class GrupoController extends AbstractController
         );
     }
 
-    #[Route('/armarPlayoff', name: 'app_grupo_playoff', methods: ['POST'])]
+    #[Route('/armarPlayoff', name: 'admin_playoff_armar', methods: ['POST'])]
     public function armarPlayOff(
         string $ruta,
         int $categoriaId,
@@ -71,16 +71,16 @@ class GrupoController extends AbstractController
             }
             $categoriaManager->armarPlayOff($categoria);
             $this->addFlash('success', 'Playoff armado con éxito para la categoría ' . $categoria->getNombre() . '.');
-            return $this->redirectToRoute('app_grupos', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+            return $this->redirectToRoute('admin_grupo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
         } catch (AppException $ae) {
             $this->addFlash('danger', "una app exception");
         } catch (\Exception $e) {
             $this->addFlash('danger', "Ocurrió un error al armar el playoff.");
         }
-        return $this->redirectToRoute('app_grupos', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+        return $this->redirectToRoute('admin_grupo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
 
-    #[Route('/grupo/crear', name: 'app_grupo_crear', methods: ['GET', 'POST'])]
+    #[Route('/grupo/crear', name: 'admin_grupo_crear', methods: ['GET', 'POST'])]
     public function crearGrupo(
         Request $request,
         GrupoManager $grupoManager,
@@ -99,7 +99,7 @@ class GrupoController extends AbstractController
 
                 if (count($gruposReq) !== $cantidadGrupos) {
                     $this->addFlash('danger', "La cantidad de grupos no coincide con la cantidad ingresada.");
-                    return $this->redirectToRoute('app_grupo_crear', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+                    return $this->redirectToRoute('admin_grupo_crear', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
                 }
 
                 foreach ($gruposReq as $grupoReq) {
@@ -115,7 +115,7 @@ class GrupoController extends AbstractController
                 $grupoManager->crearGrupos($grupos);
 
                 $this->addFlash('success', "Grupo creado con éxito.");
-                return $this->redirectToRoute('app_torneo');
+                return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $this->addFlash('danger', $ae->getMessage());
             } catch (\Exception $e) {
@@ -130,7 +130,7 @@ class GrupoController extends AbstractController
         );
     }
 
-    #[Route('/grupo/{grupoId}', name: 'app_grupo')]
+    #[Route('/grupo/{grupoId}', name: 'admin_grupo_ver', methods: ['GET'])]
     public function index(
         string $ruta,
         int $categoriaId,
@@ -150,6 +150,4 @@ class GrupoController extends AbstractController
             ]
         );
     }
-
-   
 }

@@ -8,8 +8,8 @@
     {% endfor %}
 <h1>{% block title %}SGT- Gestion Grupos{% endblock %}</h1>
 <div>
-    <form action="{{ path('app_grupo_playoff', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" method="post">
-    <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+    <form action="{{ path('admin_playoff_armar', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" method="post">
+    <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
     {% if categoria.estado != 'Zonas_cerradas' %}
         <input class="btn btn-primary" type="submit" value="Armar Play off" />
     </form>
@@ -64,7 +64,7 @@ Partidos
                             <td>{{ partido.localSet1 }} {{ partido.localSet2 }} {{partido.localSet3 }}</td>
                             <td>{{ partido.Visitante }}</td>
                             <td>{{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }}</td>
-                            <td> <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.id }) }}" class="btn btn-info">Editar</a> </td>
+                            <td> <a href="{{ path('admin_partido_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.id }) }}" class="btn btn-info">Editar</a> </td>
                                 
                         </tr>
                         {% endfor %}

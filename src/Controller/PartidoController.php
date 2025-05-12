@@ -20,7 +20,7 @@ use Throwable;
 #[Route('/admin/torneo/{ruta}')]
 class PartidoController extends AbstractController
 {
-    #[Route('/categoria/{categoriaId}/partido/crear', name: 'app_partido_crear', methods: ['GET','POST'])]
+    #[Route('/categoria/{categoriaId}/partido/crear', name: 'admin_partido_crear', methods: ['GET','POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function crearPartidoClasificatorio(
     string $ruta,
@@ -41,7 +41,7 @@ class PartidoController extends AbstractController
         if ($request->isMethod('POST')) {
             $partidosPlayOff = $request->request->all();
             $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
 
         foreach ($grupos as $grupo) {
@@ -118,15 +118,15 @@ class PartidoController extends AbstractController
     } catch (AppException $ae) {
         // Handle the exception
         $this->addFlash('error', $ae->getMessage());
-        return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
     } catch (Throwable $e) {
         // Handle the exception
         $this->addFlash('error', 'Ocurrió un error al crear el partido ' . $e);
-        return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+        return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
     }
 }
 
-    #[Route('/partido', name: 'app_partido')]
+    #[Route('/partido', name: 'admin_partido_index', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function index(
         string $ruta,
@@ -163,7 +163,7 @@ class PartidoController extends AbstractController
         );
     }
 
-    #[Route('/partido/editar', name: 'app_partido_editar', methods: ['POST'])]
+    #[Route('/partido/editar', name: 'admin_partido_editar', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function editarPartido(
         string $ruta,
@@ -177,19 +177,19 @@ class PartidoController extends AbstractController
 
             $partidoManager->editarPartido($ruta, $partidoId, $cancha, $horario);
 
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (Throwable $e) {
             // Handle the exception
             $this->addFlash('error', 'Ocurrió un error al editar el partido ' . $e);
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
     }
 
-    #[Route('/partido/{partidoNumero}/pdf', name: 'app_partido_pdf', methods: ['GET'])]
+    #[Route('/partido/{partidoNumero}/pdf', name: 'admin_partido_pdf', methods: ['GET'])]
     public function generarPDF(
         string $ruta,
         int $partidoNumero,
@@ -201,19 +201,19 @@ class PartidoController extends AbstractController
             $pdf = new GenerarPdf();
             $pdf->generarPdf($partido, $ruta);
             $this->addFlash('success', 'PDF generado correctamente.');
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (Throwable $e) {
             // Handle the exception
             $this->addFlash('error', 'Ocurrió un error al cargar el partido ' . $e);
-            return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
     }
 
-    #[Route('/partido/{partidoNumero}/cargar_resultado', name: 'app_partido_cargar_resultado', methods: ['GET', 'POST'])]
+    #[Route('/partido/{partidoNumero}/cargar_resultado', name: 'admin_partido_resultado', methods: ['GET', 'POST'])]
     public function cargarResultado(
         string $ruta,
         int $partidoNumero,
@@ -234,7 +234,7 @@ class PartidoController extends AbstractController
                 if ($this->isGranted('ROLE_PLANILLERO')) {
                     return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
                 } else {
-                    return $this->redirectToRoute('app_partido', ['ruta' => $ruta]);
+                    return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
                 }
             }
 
@@ -251,7 +251,7 @@ class PartidoController extends AbstractController
                 $request->getSession()->set('_security.main.target_path', $request->getUri());
 
                 // Redirigir al login si no está autenticado
-                return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('security_login');
             }
 
             // Redirigir al app_main_torneo con un mensaje de error

@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class EquipoController extends AbstractController
 {
-    #[Route('/', name: 'app_equipo')]
+    #[Route('/', name: 'admin_equipo_index', methods: ['GET'])]
     public function index(
         string $ruta,
         int $categoriaId,
@@ -39,7 +39,7 @@ class EquipoController extends AbstractController
         );
     }
 
-    #[Route('/nuevo', name: 'app_equipo_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'admin_equipo_crear', methods: ['GET', 'POST'])]
     public function agregarEquipo(
         string $ruta,
         int $categoriaId,
@@ -72,7 +72,7 @@ class EquipoController extends AbstractController
                     $delegado[0]['celular'],
                 );
                 $this->addFlash('success', "Equipo creado con éxito.");
-                return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+                return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -94,7 +94,7 @@ class EquipoController extends AbstractController
         );
     }
 
-    #[Route('/{equipoId}/editar', name: 'app_equipo_editar', methods: ['GET', 'POST'])]
+    #[Route('/{equipoId}/editar', name: 'admin_equipo_editar', methods: ['GET', 'POST'])]
     public function editarEquipo(
         string $ruta,
         int $categoriaId,
@@ -115,7 +115,7 @@ class EquipoController extends AbstractController
                 $localidad = $request->request->get('localidad') ?? null;
                 $equipoManager->editarEquipo($equipo, $nombre, $nombreCorto, $pais, $provincia, $localidad);
                 $this->addFlash('success', "Equipo editado con éxito.");
-                return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+                return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -133,7 +133,7 @@ class EquipoController extends AbstractController
         );
     }
 
-    #[Route('/{equipoId}/eliminar', name: 'app_equipo_eliminar', methods: ['GET'])]
+    #[Route('/{equipoId}/eliminar', name: 'admin_equipo_eliminar', methods: ['GET'])]
     public function eliminarEquipo(
         string $ruta,
         int $categoriaId,
@@ -152,10 +152,10 @@ class EquipoController extends AbstractController
             $logger->error($e->getMessage());
             $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
         }
-        return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+        return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
 
-    #[Route('/{equipoId}/bajar', name: 'app_equipo_bajar', methods: ['GET'])]
+    #[Route('/{equipoId}/bajar', name: 'admin_equipo_bajar', methods: ['GET'])]
     public function cambiarEstado(
         string $ruta,
         int $categoriaId,
@@ -174,6 +174,6 @@ class EquipoController extends AbstractController
             $logger->error($e->getMessage());
             $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
         }
-        return $this->redirectToRoute('app_equipo', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
+        return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
 }

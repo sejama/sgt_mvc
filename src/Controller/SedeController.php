@@ -18,7 +18,7 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class SedeController extends AbstractController
 {
-    #[Route('/nuevo', name: 'app_torneo_sede_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'admin_torneo_index_sede_nuevo', methods: ['GET', 'POST'])]
     public function agregarSede(
         string $ruta,
         TorneoManager $torneoManager,
@@ -40,7 +40,7 @@ class SedeController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Sede creada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
+                    return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
@@ -56,10 +56,10 @@ class SedeController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{sedeId}/editar', name: 'app_torneo_sede_editar', methods: ['GET', 'POST'])]
+    #[Route('/{sedeId}/editar', name: 'admin_torneo_index_sede_editar', methods: ['GET', 'POST'])]
     public function editarSede(
         string $ruta,
         int $sedeId,
@@ -84,7 +84,7 @@ class SedeController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Sede editada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
+                    return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
@@ -101,10 +101,10 @@ class SedeController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{sedeId}/eliminar', name: 'app_torneo_sede_eliminar', methods: ['GET'])]
+    #[Route('/{sedeId}/eliminar', name: 'admin_torneo_index_sede_eliminar', methods: ['GET'])]
     public function eliminarSede(
         string $ruta,
         int $sedeId,
@@ -120,7 +120,7 @@ class SedeController extends AbstractController
                 $sedeManager->eliminarSede($sede);
                 $entityManager->flush();
                 $this->addFlash('success', "Sede eliminada con éxito.");
-                return $this->redirectToRoute('app_torneo');
+                return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -129,6 +129,6 @@ class SedeController extends AbstractController
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
             }
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 }

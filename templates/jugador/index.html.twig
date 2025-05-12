@@ -9,8 +9,8 @@
     {% endfor %}
     <h1>{% block title %}SGT- Gestion Jugadores{% endblock %}</h1>
     <h3>Gestión de delegación del equipo {{ equipo.nombre }}</h3>
-    <a href="{{ path('app_equipo', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
-    <a href="{{ path('app_jugador_nuevo', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id }) }}" class="btn btn-success">Crear</a>
+    <a href="{{ path('admin_equipo_index', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('admin_jugador_crear', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id }) }}" class="btn btn-success">Crear</a>
     <table class="table">
         <thead>
             <tr>
@@ -37,7 +37,7 @@
                     <td>{{ jugador.tipo }}</td>
                     <td>{{ jugador.responsable ? 'Si' : 'No' }}</td>
                     <td>
-                        <a href="{{ path('app_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id }) }}" class="btn btn-info">Editar</a>
+                        <a href="{{ path('admin_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id }) }}" class="btn btn-info">Editar</a>
                         <a class="btn btn-danger" id="btnEliminarJugador{{ jugador.id }}">Eliminar</a>
                     </td>
                 </tr>
@@ -52,7 +52,7 @@
             btn.addEventListener('click', () => {
                 crearModal('Eliminar Jugador', '¿Está seguro que desea eliminar el jugador?');
                 document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('app_jugador_eliminar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': 'ID'}) }}`.replace('ID', index);
+                    window.location.href = `{{ path('admin_jugador_eliminar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': 'ID'}) }}`.replace('ID', index);
                 });
             });
         });

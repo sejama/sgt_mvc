@@ -13,7 +13,7 @@
     
     <h1>{% block title %}SGT- Nuevo Jugador{% endblock %}</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id  }) }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id  }) }}">
         <div class="row mb-2">
             <div class="col-md">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -90,7 +90,7 @@
         </div>
         <div class="row g-2 mt-2 mb-2">
             <div class="col">
-                <a href="{{ path('app_equipo', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
+                <a href="{{ path('admin_equipo_index', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>
                 <button type="submit" class="btn btn-success">Guardar</button>
             </div>
         </div>

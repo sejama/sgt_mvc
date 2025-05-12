@@ -8,7 +8,7 @@
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
     <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
-    <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
     <h3>Partidos clasificatorios</h3>
     {% if partidosSinAsignar['clasificatorios']|length == 0 %}
         <div class="alert alert-warning" role="alert">
@@ -59,11 +59,11 @@
                 <td>-</td>
                 <td>{{ partido.equipoVisitante }}</td>
                 <td>
-                  <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
+                  <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
                     <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
                     <input type="hidden" id="var_cancha{{ partido.id }}" name="var_cancha" value="">
                     <input type="hidden" id="var_horario{{ partido.id }}" name="var_horario" value="">
-                    <button id="app_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
+                    <button id="admin_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
                   </form>
               </td>
             </tr>  
@@ -121,11 +121,11 @@
         <td>-</td>
         <td>{{ partido.equipoVisitante }}</td>
         <td>
-          <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
+          <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
             <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
             <input type="hidden" id="var_cancha{{ partido.id }}" name="var_cancha" value="">
             <input type="hidden" id="var_horario{{ partido.id }}" name="var_horario" value="">
-            <button id="app_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
+            <button id="admin_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
           </form>
       </td>
     </tr>
@@ -183,11 +183,11 @@
         <td>-</td>
         <td>{{ partido.equipoPartidoVisitanteGanador ?? partido.equipoPartidoVisitantePerdedor}}</td>
         <td>
-          <form action="{{ path('app_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
+          <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
             <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
             <input type="hidden" id="var_cancha{{ partido.id }}" name="var_cancha" value="">
             <input type="hidden" id="var_horario{{ partido.id }}" name="var_horario" value="">
-            <button id="app_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
+            <button id="admin_partido_editar{{partido.id}}" class="btn btn-primary disabled" type="submit">Guardar</button>
           </form>
       </td>
     </tr>
@@ -233,8 +233,8 @@
                 <td>{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</td>
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
-                    <a href="{{ path('app_partido_cargar_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
-                    <a href="{{ path('app_partido_pdf', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">PDF</a>
+                    <a href="{{ path('admin_partido_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
+                    <a href="{{ path('admin_partido_pdf', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">PDF</a>
                     
                   {% endif %}
                 </td>
@@ -267,7 +267,7 @@
         console.log("Horario Partido ID ",horario_partidoId);
         console.log("Horario ", horario);
         document.getElementById('var_horario'+horario_partidoId).value = horario;
-        boton = document.getElementById('app_partido_editar' + horario_partidoId)
+        boton = document.getElementById('admin_partido_editar' + horario_partidoId)
         boton.classList.remove('disabled');
       });
     });

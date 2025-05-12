@@ -86,7 +86,7 @@
         </div>
         <div class="col-12">
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_partido', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
+                <a href="{{ path('admin_partido_index', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
             {% elseif is_granted('ROLE_PLANILLERO') %}
                 <a href="{{ path('app_main_torneo', {'ruta': ruta }) }}" class="btn btn-secondary">Volver</a>
             {% endif %}
@@ -152,7 +152,7 @@
             event.stopPropagation()
         }else{
             form.classList.add('was-validated')
-            form.action="{{ path('app_partido_cargar_resultado', {'ruta': ruta, 'partidoNumero': partido.numero}) }}"
+            form.action="{{ path('admin_partido_resultado', {'ruta': ruta, 'partidoNumero': partido.numero}) }}"
             form.method="POST"
             form.submit()
         }

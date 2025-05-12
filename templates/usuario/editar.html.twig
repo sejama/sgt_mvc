@@ -13,7 +13,7 @@
     
     <h1>SGT - Editar Usuario</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_usuario_editar', {'id': usuario.id}) }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_usuario_editar', {'id': usuario.id}) }}">
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" class="form-control" id="nombre" name="nombre" value="{{ usuario.nombre }}" required>
@@ -61,7 +61,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        <a href="{{ path('app_usuario') }}" class="btn btn-secondary">Volver</a>
+        <a href="{{ path('admin_usuario_index') }}" class="btn btn-secondary">Volver</a>
         <button type="submit" class="btn btn-success">Guardar</button>
     </form>
     <script>

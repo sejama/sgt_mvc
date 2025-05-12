@@ -9,7 +9,7 @@
     {% endfor %}
     <h1>{% block title %}SGT- Gestion Partidos Play Offs{% endblock %}</h1>
     <h2>{{ categoria.nombre }} - Total de {{ categoria.getEquipos|length }} Equipos </h2>
-    <a href="{{ path('app_equipo', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('admin_equipo_index', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-secondary">Volver</a>
     <table class="table">
         <thead>
             <tr>
@@ -36,7 +36,7 @@
         </tr>
         </tbody>    
     </table>
-    <form class="row g-3 needs-validation" novalidate action="{{ path('app_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}" method="POST">
+    <form class="row g-3 needs-validation" novalidate action="{{ path('admin_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}" method="POST">
         <div class="accordion" id="accordionExample">
             <!-- Partidos Oro-->
             <div class="accordion-item">

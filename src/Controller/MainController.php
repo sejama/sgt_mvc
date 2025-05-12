@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'app_main')]
+    #[Route('/', name: 'app_main', methods: ['GET'])]
     public function index(
         TorneoManager $torneoManager
     ): Response {
@@ -30,7 +30,7 @@ class MainController extends AbstractController
         );
     }
 
-    #[Route('/torneo/{ruta}', name: 'app_main_torneo')]
+    #[Route('/torneo/{ruta}', name: 'app_main_torneo', methods: ['GET'])]
     public function torneo(
         TorneoManager $torneoManager,
         PartidoManager $partidoManager,
@@ -50,7 +50,7 @@ class MainController extends AbstractController
         );
     }
 
-    #[Route('/torneo/{ruta}/categoria/{categoriaId}', name: 'app_main_categoria')]
+    #[Route('/torneo/{ruta}/categoria/{categoriaId}', name: 'app_main_categoria', methods: ['GET'])]
     public function categoria(
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,

@@ -12,7 +12,7 @@
 
 <h1>SGT - Torneos</h1>
 <a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
-<a href="{{ path('app_torneo_nuevo') }}" class="btn btn-success">Crear</a>
+<a href="{{ path('admin_torneo_crear') }}" class="btn btn-success">Crear</a>
 {% if torneos|length == 0 %}
     <div class="alert alert-warning" role="alert">
         No hay torneos registrados
@@ -32,7 +32,7 @@
         btn.addEventListener('click', () => {
             crearModal('Eliminar Torneo', '¿Está seguro que desea eliminar al torneo?');
             document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('app_torneo_eliminar', {'ruta': 'RUTA' }) }}`.replace('RUTA', ruta);
+                window.location.href = `{{ path('admin_torneo_eliminar', {'ruta': 'RUTA' }) }}`.replace('RUTA', ruta);
             });
         });
     });
@@ -44,7 +44,7 @@
         btn.addEventListener('click', () => {
             crearModal('Eliminar Categoria', '¿Está seguro que desea eliminar la categoria?');
             document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('app_torneo_categoria_eliminar', {'ruta': 'RUTA', 'categoriaId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+                window.location.href = `{{ path('admin_categoria_eliminar', {'ruta': 'RUTA', 'categoriaId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
             });
         });
     });
@@ -57,7 +57,7 @@
         btn.addEventListener('click', () => {
             crearModal('Eliminar Sede', '¿Está seguro que desea eliminar la sede?');
             document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('app_torneo_sede_eliminar', {'ruta': 'RUTA', 'sedeId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+                window.location.href = `{{ path('admin_torneo_index_sede_eliminar', {'ruta': 'RUTA', 'sedeId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
             });
         });
     });

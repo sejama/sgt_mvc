@@ -223,7 +223,7 @@
             event.stopPropagation()
         }else{
             form.classList.add('was-validated')
-            form.action="{{ path('app_partido_editar', {'id': partido.id}) }}"
+            form.action="{{ path('admin_partido_editar', {'id': partido.id}) }}"
             form.method="POST"
             form.submit()
         }

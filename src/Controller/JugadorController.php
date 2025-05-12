@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class JugadorController extends AbstractController
 {
-    #[Route('/', name: 'app_jugador')]
+    #[Route('/', name: 'admin_jugador_index', methods: ['GET'])]
     public function index(
         string $ruta,
         int $categoriaId,
@@ -38,7 +38,7 @@ class JugadorController extends AbstractController
         );
     }
 
-    #[Route('/nuevo', name: 'app_jugador_nuevo')]
+    #[Route('/nuevo', name: 'admin_jugador_crear', methods: ['GET', 'POST'])]
     public function crearJugador(
         string $ruta,
         int $categoriaId,
@@ -76,7 +76,7 @@ class JugadorController extends AbstractController
                 );
                 $this->addFlash('success', 'Jugador editado correctamente');
                 return $this->redirectToRoute(
-                    'app_jugador', [
+                    'admin_jugador_index', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,
                     'equipoId' => $equipoId,
@@ -109,7 +109,7 @@ class JugadorController extends AbstractController
         );
     }
 
-    #[Route('/{jugadorId}/editar', name: 'app_jugador_editar')]
+    #[Route('/{jugadorId}/editar', name: 'admin_jugador_editar', methods: ['GET', 'POST'])]
     public function editarJugador(
         string $ruta,
         int $categoriaId,
@@ -149,7 +149,7 @@ class JugadorController extends AbstractController
                 );
                 $this->addFlash('success', 'Jugador creado correctamente');
                 return $this->redirectToRoute(
-                    'app_jugador', [
+                    'admin_jugador_index', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,
                     'equipoId' => $equipoId,
@@ -184,7 +184,7 @@ class JugadorController extends AbstractController
         );
     }
 
-    #[Route('/{jugadorId}/eliminar', name: 'app_jugador_eliminar')]
+    #[Route('/{jugadorId}/eliminar', name: 'admin_jugador_eliminar', methods: ['GET'])]
     public function eliminarJugador(
         string $ruta,
         int $categoriaId,
@@ -197,7 +197,7 @@ class JugadorController extends AbstractController
         $jugador = $jugadorManager->obtenerJugador($jugadorId);
         $jugadorManager->eliminarJugador($jugador);
         return $this->redirectToRoute(
-            'app_jugador', [
+            'admin_jugador_index', [
             'ruta' => $ruta,
             'categoriaId' => $categoriaId,
             'equipoId' => $equipoId,

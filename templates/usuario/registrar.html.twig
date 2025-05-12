@@ -13,7 +13,7 @@
     
     <h1>SGT - Registrar Usuario</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_usuario_nuevo') }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_usuario_crear') }}">
         <div class="mb-2">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -60,7 +60,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        <a href="{{ path('app_usuario') }}" class="btn btn-secondary">Volver</a>
+        <a href="{{ path('admin_usuario_index') }}" class="btn btn-secondary">Volver</a>
         <button type="submit" class="btn btn-success">Guardar</button>
     </form>
     <script>

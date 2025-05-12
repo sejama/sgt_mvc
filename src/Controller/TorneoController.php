@@ -20,7 +20,7 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN', statusCode: 401, message: 'No autorizado.')]
 class TorneoController extends AbstractController
 {
-    #[Route('/', name: 'app_torneo', methods: ['GET'])]
+    #[Route('/', name: 'admin_torneo_index', methods: ['GET'])]
     public function index(
         TorneoManager $torneoManager
     ): Response {
@@ -33,10 +33,10 @@ class TorneoController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/nuevo', name: 'app_torneo_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'admin_torneo_crear', methods: ['GET', 'POST'])]
     public function nuevoTorneo(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -84,7 +84,7 @@ class TorneoController extends AbstractController
                     }
                     $entityManager->flush();
                     $this->addFlash('success', "Torneo creado con éxito.");
-                    return $this->redirectToRoute('app_torneo');
+                    return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
@@ -106,10 +106,10 @@ class TorneoController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{ruta}/eliminar', name: 'app_torneo_eliminar', methods: ['GET'])]
+    #[Route('/{ruta}/eliminar', name: 'admin_torneo_eliminar', methods: ['GET'])]
     public function eliminarTorneo(
         string $ruta,
         TorneoManager $torneoManager,
@@ -130,7 +130,7 @@ class TorneoController extends AbstractController
                 $torneoManager->eliminarTorneo($torneo);
                 $entityManager->flush();
                 $this->addFlash('success', "Torneo eliminado con éxito.");
-                return $this->redirectToRoute('app_torneo');
+                return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -139,10 +139,10 @@ class TorneoController extends AbstractController
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
             }
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{ruta}/editar', name: 'app_torneo_editar', methods: ['GET', 'POST'])]
+    #[Route('/{ruta}/editar', name: 'admin_torneo_editar', methods: ['GET', 'POST'])]
     public function editarTorneo(
         string $ruta,
         Request $request,
@@ -182,7 +182,7 @@ class TorneoController extends AbstractController
                             $fecha_fin_inscripcion
                         );
                         $this->addFlash('success', "Torneo editado con éxito.");
-                        return $this->redirectToRoute('app_torneo');
+                        return $this->redirectToRoute('admin_torneo_index');
                     } catch (AppException $ae) {
                         $logger->error($ae->getMessage());
                         $this->addFlash('error', $ae->getMessage());
@@ -202,11 +202,11 @@ class TorneoController extends AbstractController
                     ]
                 );
             }
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('security_login');
         }
     }
 
-    #[Route('/{ruta}/editar/reglamento', name: 'app_torneo_reglamento_editar', methods: ['GET', 'POST'])]
+    #[Route('/{ruta}/editar/reglamento', name: 'admin_torneo_editar_reglamento', methods: ['GET', 'POST'])]
     public function editarReglamento(
         string $ruta,
         TorneoManager $torneoManager,
@@ -221,7 +221,7 @@ class TorneoController extends AbstractController
                         $reglamento = $request->request->get('reglamento');
                         $torneoManager->editarReglamento($torneo, $reglamento);
                         $this->addFlash('success', "Reglamento editado con éxito.");
-                        return $this->redirectToRoute('app_torneo');
+                        return $this->redirectToRoute('admin_torneo_index');
                     } catch (AppException $ae) {
                         $logger->error($ae->getMessage());
                         $this->addFlash('error', $ae->getMessage());
@@ -238,6 +238,6 @@ class TorneoController extends AbstractController
                 );
             }
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 }

@@ -10,7 +10,7 @@
     
     <h1>{% block title %}SGT- Editar Torneo{% endblock %}</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_torneo_editar', {'ruta': torneo.ruta}) }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_torneo_editar', {'ruta': torneo.ruta}) }}">
         <div class="row g-2 mb-2 mt-2">
             <div class="col-md">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -121,7 +121,7 @@
         </div>
         <div class="row g-3 mt-2 mb-2">
             <div class="col">
-                <a href="{{ path('app_torneo') }}" class="btn btn-secondary">Volver</a>
+                <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
                 <button type="submit" class="btn btn-success">Guardar</button>
             </div>
         </div>

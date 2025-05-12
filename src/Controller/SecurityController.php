@@ -10,14 +10,14 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
+    #[Route(path: '/login', name: 'security_login')]
     public function login(
         AuthenticationUtils $authenticationUtils,
         UsuarioManager $rm
     ): Response {
 
         if ($rm->obtenerUsuarios() === []) {
-            return $this->redirectToRoute('app_usuario_nuevo');
+            return $this->redirectToRoute('admin_usuario_crear');
         }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route(path: '/logout', name: 'app_logout')]
+    #[Route(path: '/logout', name: 'security_logout')]
     public function logout(): void
     {
         throw new \LogicException(

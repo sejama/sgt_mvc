@@ -10,9 +10,9 @@
     <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
     <h3>{{ torneo.nombre }}</h3>
     <h3>{{ categoria.nombre }}</h3>
-    <a href="{{ path('app_equipo', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('admin_equipo_index', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}" class="btn btn-secondary">Volver</a>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('app_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}">
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="cantidadGrupos" class="form-label">Cantidad de Grupos</label>

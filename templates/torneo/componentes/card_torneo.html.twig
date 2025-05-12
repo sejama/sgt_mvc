@@ -32,10 +32,10 @@
                                             <div class="dropdown">
                                                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="{{ path('app_equipo', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Ver Equipos</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('app_grupos', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar_disputa', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_equipo_index', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Ver Equipos</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_grupo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_disputa_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
                                                     <li><a class="dropdown-item" type="button" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
                                                 </ul>
                                             </div>
@@ -68,10 +68,10 @@
                                                 
                                                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="{{ path('app_equipo', { 'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Ver Equipos</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('app_grupos', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('app_torneo_categoria_editar_disputa', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_equipo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Ver Equipos</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_grupo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_disputa_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
                                                     <li><a class="dropdown-item" type="button" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
                                                 </ul>
                                             </div>
@@ -102,8 +102,8 @@
                                         <div class="dropdown">
                                             <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="{{ path('app_torneo_sede_cancha',{'ruta': torneo.ruta,'sedeId' : sede.id}) }}">Ver Canchas</a></li>
-                                                <li><a class="dropdown-item" href="{{ path('app_torneo_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">Editar</a></li>
+                                                <li><a class="dropdown-item" href="{{ path('admin_cancha_index',{'ruta': torneo.ruta,'sedeId' : sede.id}) }}">Ver Canchas</a></li>
+                                                <li><a class="dropdown-item" href="{{ path('admin_torneo_index_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">Editar</a></li>
                                                 <li><a class="dropdown-item" type="button" id="btnEliminarSede{{torneo.ruta}} {{sede.id}}">Eliminar</a></li>
                                             </ul>
                                         </div>
@@ -119,11 +119,11 @@
     <div class="card-footer">
         <div class="row justify-content-end">
             <div class="col text-end">
-                <a href="{{ path('app_torneo_editar', {'ruta': torneo.ruta }) }}" class="btn btn-info">Editar</a>
-                <a href="{{ path('app_torneo_reglamento_editar', {'ruta': torneo.ruta }) }}" class="btn btn-info">Reglamento</a>
-                <a href="{{ path('app_torneo_categoria_nuevo', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Categoria</a>
-                <a href="{{ path('app_torneo_sede_nuevo', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Sede</a>
-                <a href="{{ path('app_partido', {'ruta': torneo.ruta }) }}" class="btn btn-info">Partidos</a>
+                <a href="{{ path('admin_torneo_editar', {'ruta': torneo.ruta }) }}" class="btn btn-info">Editar</a>
+                <a href="{{ path('admin_torneo_editar_reglamento', {'ruta': torneo.ruta }) }}" class="btn btn-info">Reglamento</a>
+                <a href="{{ path('admin_categoria_crear', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Categoria</a>
+                <a href="{{ path('admin_torneo_index_sede_nuevo', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Sede</a>
+                <a href="{{ path('admin_partido_index', {'ruta': torneo.ruta }) }}" class="btn btn-info">Partidos</a>
                 <a id="btnEliminarTorneo{{torneo.ruta}}" class="btn btn-danger">Eliminar</a>
             </div>
         </div>

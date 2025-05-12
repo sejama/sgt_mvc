@@ -19,7 +19,7 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class CategoriaController extends AbstractController
 {
-    #[Route('/{categoriaId<\d+>}/', name: 'app_torneo_categoria', methods: ['GET'])]
+    #[Route('/{categoriaId<\d+>}/', name: 'admin_categoria_ver', methods: ['GET'])]
     public function verCategoria(
         string $ruta,
         int $categoriaId,
@@ -38,7 +38,7 @@ class CategoriaController extends AbstractController
     }
 
 
-    #[Route('/nuevo', name: 'app_torneo_categoria_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'admin_categoria_crear', methods: ['GET', 'POST'])]
     public function agregarCategoria(
         string $ruta,
         TorneoManager $torneoManager,
@@ -62,7 +62,7 @@ class CategoriaController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Categoría creada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
+                    return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
@@ -82,10 +82,10 @@ class CategoriaController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{categoriaId}/editar/', name: 'app_torneo_categoria_editar', methods: ['GET', 'POST'])]
+    #[Route('/{categoriaId}/editar/', name: 'admin_categoria_editar', methods: ['GET', 'POST'])]
     public function editarCategoria(
         string $ruta,
         int $categoriaId,
@@ -111,7 +111,7 @@ class CategoriaController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Categoría editada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
+                    return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
@@ -132,12 +132,12 @@ class CategoriaController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
     #[Route(
         '/{categoriaId}/editar/disputa/',
-        name: 'app_torneo_categoria_editar_disputa',
+        name: 'admin_categoria_disputa_editar',
         methods: ['GET', 'POST']
     )]
     public function editarDisputa(
@@ -158,7 +158,7 @@ class CategoriaController extends AbstractController
                     $categoriaManager->editarDisputa($categoria, $disputa);
                     $entityManager->flush();
                     $this->addFlash('success', "Disputa editada con éxito.");
-                    return $this->redirectToRoute('app_torneo');
+                    return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
                     $this->addFlash('error', $ae->getMessage());
@@ -175,10 +175,10 @@ class CategoriaController extends AbstractController
                 ]
             );
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{categoriaId}/eliminar', name: 'app_torneo_categoria_eliminar', methods: ['GET'])]
+    #[Route('/{categoriaId}/eliminar', name: 'admin_categoria_eliminar', methods: ['GET'])]
     public function eliminarCategoria(
         string $ruta,
         int $categoriaId,
@@ -194,7 +194,7 @@ class CategoriaController extends AbstractController
                 $categoriaManager->eliminarCategoria($categoria);
                 $entityManager->flush();
                 $this->addFlash('success', "Categoría eliminada con éxito.");
-                return $this->redirectToRoute('app_torneo');
+                return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
                 $this->addFlash('error', $ae->getMessage());
@@ -203,6 +203,6 @@ class CategoriaController extends AbstractController
                 $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
             }
         }
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('security_login');
     }
 }
