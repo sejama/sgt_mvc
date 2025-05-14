@@ -20,7 +20,7 @@ use Throwable;
 #[Route('/admin/torneo/{ruta}')]
 class PartidoController extends AbstractController
 {
-    #[Route('/categoria/{categoriaId}/partido/crear', name: 'admin_partido_crear', methods: ['GET','POST'])]
+    #[Route('/categoria/{categoriaId}/partido/crear', name: 'admin_categoria_partido_crear', methods: ['GET','POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function crearPartidoClasificatorio(
     string $ruta,

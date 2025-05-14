@@ -15,7 +15,7 @@
         <a href="{{ path('admin_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
     {% else %}
         {% if equipos and equipos[0].partidosLocal|length == 0 and equipos[0].partidosVisitante|length == 0 %}
-        <a href="{{ path('admin_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
+        <a href="{{ path('admin_categoria_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
         {% endif %}
     {% endif %}
     <div class="table-responsive">
