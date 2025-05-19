@@ -10,7 +10,7 @@
     
     <h1>{% block title %}SGT- Editar Sede{% endblock %}</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('admin_torneo_index_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="sede" class="form-label">Sede</label>

@@ -18,7 +18,7 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class SedeController extends AbstractController
 {
-    #[Route('/nuevo', name: 'admin_torneo_index_sede_nuevo', methods: ['GET', 'POST'])]
+    #[Route('/nuevo', name: 'admin_sede_crear', methods: ['GET', 'POST'])]
     public function agregarSede(
         string $ruta,
         TorneoManager $torneoManager,
@@ -59,7 +59,7 @@ class SedeController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{sedeId}/editar', name: 'admin_torneo_index_sede_editar', methods: ['GET', 'POST'])]
+    #[Route('/{sedeId}/editar', name: 'admin_sede_editar', methods: ['GET', 'POST'])]
     public function editarSede(
         string $ruta,
         int $sedeId,
@@ -104,7 +104,7 @@ class SedeController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{sedeId}/eliminar', name: 'admin_torneo_index_sede_eliminar', methods: ['GET'])]
+    #[Route('/{sedeId}/eliminar', name: 'admin_sede_eliminar', methods: ['GET'])]
     public function eliminarSede(
         string $ruta,
         int $sedeId,

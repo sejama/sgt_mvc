@@ -57,7 +57,7 @@
         btn.addEventListener('click', () => {
             crearModal('Eliminar Sede', '¿Está seguro que desea eliminar la sede?');
             document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('admin_torneo_index_sede_eliminar', {'ruta': 'RUTA', 'sedeId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
+                window.location.href = `{{ path('admin_sede_eliminar', {'ruta': 'RUTA', 'sedeId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
             });
         });
     });

@@ -18,15 +18,14 @@ class UsuarioController extends AbstractController
 {
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/', name: 'admin_usuario_index', methods: ['GET'])]
-    public function usuarios(
-        UsuarioManager $rm,
+    public function obtenerUsuarios(
+        UsuarioManager $usuarioManager,
         LoggerInterface $logger
     ): Response {
         try {
-            $usuarios = $rm->obtenerUsuarios();
-
             if ($this->getUser() !== null) {
                 if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                    $usuarios = $usuarioManager->obtenerUsuarios();
                     return $this->render(
                         'usuario/index.html.twig',
                         [
@@ -47,80 +46,102 @@ class UsuarioController extends AbstractController
     }
 
     #[Route('/nuevo', name: 'admin_usuario_crear', methods: ['GET', 'POST'])]
-    public function registrar(
+    public function crearUsuario(
         Request $request,
-        UsuarioManager $rm,
+        UsuarioManager $usuarioManager,
         LoggerInterface $logger
     ): Response {
-        if ($request->isMethod('POST')) {
-            try {
-                // Handle the submission of the form
-                $username = $request->request->get('username');
-                $password = $request->request->get('password');
-                $nombre = $request->request->get('nombre');
-                $apellido = $request->request->get('apellido');
-                $email = $request->request->get('email');
+        $usuarios = $usuarioManager->obtenerUsuarios();
+        $roles = [];
+        // MODO INVITADO: No hay usuarios, se permite crear el primer admin
+         if ($usuarios === []) {
+            if ($request->isMethod('POST')) {
+                try {
+                    $username = $request->request->get('username');
+                    $password = $request->request->get('password');
+                    $nombre = $request->request->get('nombre');
+                    $apellido = $request->request->get('apellido');
+                    $email = $request->request->get('email');
 
-                if ($request->request->all('roles') === []) {
-                    $roles[] = 'ROLE_ADMIN';
-                } else {
-                    foreach ($request->request->all('roles') as $rol) {
-                        $roles[] = $rol;
+                    $roles = ["ROLE_USER", Rol::ROLE_ADMIN->value];
+
+                    $usuarioManager->registrarUsuario($nombre, $apellido, $email, $username, $password, $roles);
+                    $this->addFlash('success', 'Primer usuario administrador creado correctamente');
+                    return $this->redirectToRoute('security_login');
+                } catch (AppException $ae) {
+                    $logger->error($ae->getMessage());
+                    $this->addFlash('error', $ae->getMessage());
+                } catch (Throwable $e) {
+                    $logger->error($e->getMessage());
+                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+                }
+            }
+            return $this->render('usuario/registrar.html.twig', ['roles' => []]);
+        }
+
+         // MODO ADMIN: Solo un usuario autenticado con ROLE_ADMIN puede crear usuarios
+        if ($this->getUser() !== null && in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            foreach (Rol::cases() as $rol) {
+                $roles[] = $rol->value;
+            }
+
+            if ($request->isMethod('POST')) {
+                try {
+                    $username = trim($request->request->get('username', ''));
+                    $password = trim($request->request->get('password', ''));
+                    $nombre = trim($request->request->get('nombre', ''));
+                    $apellido = trim($request->request->get('apellido', ''));
+                    $email = trim($request->request->get('email', ''));
+                    $rolesSeleccionados = $request->request->all('roles') ?? [];
+
+                    // Validación básica
+                    if (!$username || !$password || !$nombre || !$apellido || !$email) {
+                        $this->addFlash('error', 'Todos los campos son obligatorios.');
+                        return $this->render('usuario/registrar.html.twig', ['roles' => $roles]);
                     }
-                }
 
-                $rm->registrarUsuario($nombre, $apellido, $email, $username, $password, $roles);
-                $this->addFlash('success', 'Usuario registrado correctamente');
-                return $this->redirectToRoute('admin_usuario_index');
-            } catch (AppException $ae) {
-                $logger->error($ae->getMessage());
-                $this->addFlash('error', $ae->getMessage());
-            } catch (Throwable $e) {
-                $logger->error($e->getMessage());
-                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
-            }
-        }
+                    $rolesAsignados = ["ROLE_USER"];
+                    foreach ($rolesSeleccionados as $rol) {
+                        if (in_array($rol, $roles)) {
+                            $rolesAsignados[] = $rol;
+                        }
+                    }
+                    if (empty($rolesAsignados)) {
+                        $this->addFlash('error', 'Debe seleccionar al menos un rol.');
+                        return $this->render('usuario/registrar.html.twig', ['roles' => $roles]);
+                    }
 
-        foreach (Rol::cases() as $rol) {
-            $roles[] = $rol->value;
-        }
-        $usuarios = $rm->obtenerUsuarios();
-        if ($usuarios === []) {
-            return $this->render(
-                'usuario/registrar.html.twig',
-                [
-                'roles' => [],
-                ]
-            );
-        } else {
-            if ($this->getUser() !== null) {
-                if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-                    return $this->render(
-                        'usuario/registrar.html.twig',
-                        [
-                        'roles' => $roles,
-                        ]
-                    );
-                } else {
-                    $this->addFlash('error', "Debe tener el rol de administrador.");
-                    return $this->redirectToRoute('app_main');
+                    $usuarioManager->registrarUsuario($nombre, $apellido, $email, $username, $password, $rolesAsignados);
+                    $this->addFlash('success', 'Usuario registrado correctamente');
+                    return $this->redirectToRoute('admin_usuario_index');
+                } catch (AppException $ae) {
+                    $logger->error($ae->getMessage());
+                    $this->addFlash('error', $ae->getMessage());
+                } catch (Throwable $e) {
+                    $logger->error($e->getMessage());
+                    $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
                 }
             }
-            return $this->redirectToRoute('security_login');
+            return $this->render('usuario/registrar.html.twig', ['roles' => $roles]);
         }
+
+        // Si no es admin, redirige
+        $this->addFlash('error', "Debe tener el rol de administrador.");
+        return $this->redirectToRoute($this->getUser() ? 'app_main' : 'security_login');
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/cambiar_password', name: 'admin_usuario_cambiar_password', methods: ['GET', 'POST'])]
     public function cambiarPassword(
         Request $request,
-        UsuarioManager $rm,
+        UsuarioManager $usuarioManager,
         LoggerInterface $logger
     ): Response {
         if ($request->isMethod('POST')) {
             try {
                 // Handle the submission of the form
                 $password = $request->request->get('password');
-                $rm->cambiarPassword($this->getUser(), $password);
+                $usuarioManager->cambiarPassword($this->getUser(), $password);
                 $this->addFlash('success', 'Contraseña cambiada correctamente');
                 return $this->redirectToRoute('app_main');
             } catch (AppException $ae) {
@@ -136,7 +157,10 @@ class UsuarioController extends AbstractController
     }
 
     #[Route('/editar/{id}', name: 'admin_usuario_editar', methods: ['GET', 'POST'])]
-    public function editar(Request $request, UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
+    public function editarUsuario(
+        Request $request, 
+        UsuarioManager $usuarioManager, 
+        LoggerInterface $logger, $id): Response
     {
         $usuario = $usuarioManager->buscarUsuario((int)$id);
         if ($request->isMethod('POST')) {
@@ -147,10 +171,11 @@ class UsuarioController extends AbstractController
                 $email = $request->request->get('email');
                 $username = $request->request->get('username');
                 //$password = $request->request->get('password');
-
+                $roles = ["ROLE_USER"];
                 foreach ($request->request->all('roles') as $rol) {
                     $roles[] = $rol;
                 }
+
                 $usuarioManager->editarUsuario(
                     $usuario,
                     $nombre,
@@ -182,8 +207,9 @@ class UsuarioController extends AbstractController
         );
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/eliminar/{id}', name: 'admin_usuario_eliminar', methods: ['GET'])]
-    public function eliminar(UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
+    public function eliminarUsuario(UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
     {
         try {
             $usuario = $usuarioManager->buscarUsuario((int)$id);

@@ -103,7 +103,7 @@
                                             <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="{{ path('admin_cancha_index',{'ruta': torneo.ruta,'sedeId' : sede.id}) }}">Ver Canchas</a></li>
-                                                <li><a class="dropdown-item" href="{{ path('admin_torneo_index_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">Editar</a></li>
+                                                <li><a class="dropdown-item" href="{{ path('admin_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">Editar</a></li>
                                                 <li><a class="dropdown-item" type="button" id="btnEliminarSede{{torneo.ruta}} {{sede.id}}">Eliminar</a></li>
                                             </ul>
                                         </div>
@@ -122,7 +122,7 @@
                 <a href="{{ path('admin_torneo_editar', {'ruta': torneo.ruta }) }}" class="btn btn-info">Editar</a>
                 <a href="{{ path('admin_torneo_editar_reglamento', {'ruta': torneo.ruta }) }}" class="btn btn-info">Reglamento</a>
                 <a href="{{ path('admin_categoria_crear', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Categoria</a>
-                <a href="{{ path('admin_torneo_index_sede_nuevo', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Sede</a>
+                <a href="{{ path('admin_sede_crear', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Sede</a>
                 <a href="{{ path('admin_partido_index', {'ruta': torneo.ruta }) }}" class="btn btn-info">Partidos</a>
                 <a id="btnEliminarTorneo{{torneo.ruta}}" class="btn btn-danger">Eliminar</a>
             </div>
