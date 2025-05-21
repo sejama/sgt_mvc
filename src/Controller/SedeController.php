@@ -19,7 +19,7 @@ use Throwable;
 class SedeController extends AbstractController
 {
     #[Route('/nuevo', name: 'admin_sede_crear', methods: ['GET', 'POST'])]
-    public function agregarSede(
+    public function crearSede(
         string $ruta,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
