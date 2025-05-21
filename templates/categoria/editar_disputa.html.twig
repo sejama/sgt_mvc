@@ -10,7 +10,7 @@
     
     <h1>{% block title %}SGT- Editar Disputa{% endblock %}</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('admin_categoria_ver_editar_disputa', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}">
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_categoria_editar_disputa', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}">
         <input type="textarea" name="disputa" id="disputa" hidden>
             {% set texto = categoria.disputa %}
             {{ include ('./componentes/textrich.html.twig', { texto }) }}

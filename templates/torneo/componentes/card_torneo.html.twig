@@ -35,7 +35,7 @@
                                                     <li><a class="dropdown-item" href="{{ path('admin_equipo_index', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Ver Equipos</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_grupo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_disputa_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_editar_disputa', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
                                                     <li><a class="dropdown-item" type="button" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
                                                 </ul>
                                             </div>
@@ -71,7 +71,7 @@
                                                     <li><a class="dropdown-item" href="{{ path('admin_equipo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Ver Equipos</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_grupo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
-                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_disputa_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
+                                                    <li><a class="dropdown-item" href="{{ path('admin_categoria_editar_disputa', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
                                                     <li><a class="dropdown-item" type="button" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
                                                 </ul>
                                             </div>
