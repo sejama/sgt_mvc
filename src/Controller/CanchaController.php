@@ -18,33 +18,29 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CanchaController extends AbstractController
 {
     #[Route('/', name: 'admin_cancha_index', methods: ['GET'])]
-    public function index(
+    public function indexCancha(
         string $ruta,
         int $sedeId,
-        TorneoManager $torneoManager,
         SedeManager $sedeManager,
     ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
         $sede = $sedeManager->obtenerSede($sedeId);
         return $this->render(
             'cancha/index.html.twig', [
-            'torneo' => $torneo,
+            'ruta' => $ruta,
             'sede' => $sede,
             ]
         );
     }
 
     #[Route('/nuevo', name: 'admin_cancha_crear', methods: ['GET', 'POST'])]
-    public function agregarCancha(
+    public function crearCancha(
         string $ruta,
         int $sedeId,
         Request $request,
-        TorneoManager $torneoManager,
         SedeManager $sedeManager,
         CanchaManager $canchaManager,
         LoggerInterface $logger
     ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
         $sede = $sedeManager->obtenerSede($sedeId);
 
         if ($request->isMethod('POST')) {
@@ -65,7 +61,7 @@ class CanchaController extends AbstractController
         }
         return $this->render(
             'cancha/nuevo.html.twig', [
-            'torneo' => $torneo,
+            'ruta' => $ruta,
             'sede' => $sede,
             ]
         );
@@ -81,12 +77,10 @@ class CanchaController extends AbstractController
         int $sedeId,
         int $canchaId,
         Request $request,
-        TorneoManager $torneoManager,
         SedeManager $sedeManager,
         CanchaManager $canchaManager,
         LoggerInterface $logger
     ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
         $sede = $sedeManager->obtenerSede($sedeId);
         $cancha = $canchaManager->obtenerCancha($canchaId);
 
@@ -121,15 +115,12 @@ class CanchaController extends AbstractController
         int $sedeId,
         int $canchaId,
         Request $request,
-        TorneoManager $torneoManager,
         SedeManager $sedeManager,
         CanchaManager $canchaManager,
         LoggerInterface $logger
     ): Response {
-        $torneo = $torneoManager->obtenerTorneo($ruta);
         $sede = $sedeManager->obtenerSede($sedeId);
         $cancha = $canchaManager->obtenerCancha($canchaId);
-
         if ($request->isMethod('GET')) {
             // Procesar el formulario
             try {

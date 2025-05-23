@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EquipoController extends AbstractController
 {
     #[Route('/', name: 'admin_equipo_index', methods: ['GET'])]
-    public function index(
+    public function indexEquipo(
         string $ruta,
         int $categoriaId,
         TorneoManager $torneoManager,
@@ -40,7 +40,7 @@ class EquipoController extends AbstractController
     }
 
     #[Route('/nuevo', name: 'admin_equipo_crear', methods: ['GET', 'POST'])]
-    public function agregarEquipo(
+    public function crearEquipo(
         string $ruta,
         int $categoriaId,
         Request $request,
@@ -56,9 +56,12 @@ class EquipoController extends AbstractController
                 $pais = $request->request->get('pais') ?? null;
                 $provincia = $request->request->get('provincia') ?? null;
                 $localidad = $request->request->get('localidad') ?? null;
-                $categoria = $categoriaManager->obtenerCategoria($categoriaId);
                 $delegado = $request->request->all('delegado');
+                
+                $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+                
                 $equipo = $equipoManager->crearEquipo($categoria, $nombre, $nombreCorto, $pais, $provincia, $localidad);
+                
                 $jugadorManager->crearJugador(
                     $equipo,
                     $delegado[0]['nombre'],
@@ -71,6 +74,7 @@ class EquipoController extends AbstractController
                     $delegado[0]['email'],
                     $delegado[0]['celular'],
                 );
+                
                 $this->addFlash('success', "Equipo creado con éxito.");
                 return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
             } catch (AppException $ae) {
