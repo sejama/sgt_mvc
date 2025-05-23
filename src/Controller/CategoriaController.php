@@ -6,7 +6,6 @@ use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\TorneoManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +23,6 @@ class CategoriaController extends AbstractController
         string $ruta,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
         Request $request,
         LoggerInterface $logger
     ): Response {
@@ -41,7 +39,6 @@ class CategoriaController extends AbstractController
                         $nombre,
                         $nombreCorto
                     );
-                    $entityManager->flush();
                     $this->addFlash('success', "Categoría creada con éxito.");
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
@@ -72,7 +69,6 @@ class CategoriaController extends AbstractController
         int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
         Request $request,
         LoggerInterface $logger
     ): Response {
@@ -90,7 +86,6 @@ class CategoriaController extends AbstractController
                         $nombre,
                         $nombreCorto
                     );
-                    $entityManager->flush();
                     $this->addFlash('success', "Categoría editada con éxito.");
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
@@ -126,7 +121,6 @@ class CategoriaController extends AbstractController
         int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
         Request $request,
         LoggerInterface $logger
     ): Response {
@@ -137,7 +131,6 @@ class CategoriaController extends AbstractController
                 try {
                     $disputa = $request->request->get('disputa');
                     $categoriaManager->editarDisputa($categoria, $disputa);
-                    $entityManager->flush();
                     $this->addFlash('success', "Disputa editada con éxito.");
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
@@ -165,15 +158,12 @@ class CategoriaController extends AbstractController
         int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        EntityManagerInterface $entityManager,
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
             try {
-                $categoria = $categoriaManager->obtenerCategoria($categoriaId);
-                $categoriaManager->eliminarCategoria($categoria);
-                $entityManager->flush();
+                $categoriaManager->eliminarCategoria($categoriaId);
                 $this->addFlash('success', "Categoría eliminada con éxito.");
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {

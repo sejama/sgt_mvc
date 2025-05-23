@@ -112,8 +112,12 @@ class CategoriaManager
         $this->categoriaRepository->guardar($categoria, $flush);
     }
 
-    public function eliminarCategoria(Categoria $categoria): void
+    public function eliminarCategoria(int $categoriaId): void
     {
+        $categoria = $this->categoriaRepository->find($categoriaId);
+        if ($categoria === null) {
+            throw new AppException('No se encontró la categoría');
+        }
         $this->categoriaRepository->eliminar($categoria, true);
     }
 

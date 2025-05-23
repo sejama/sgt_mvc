@@ -23,7 +23,6 @@ class SedeController extends AbstractController
         string $ruta,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
-        EntityManagerInterface $entityManager,
         Request $request,
         LoggerInterface $logger
     ): Response {
@@ -38,7 +37,6 @@ class SedeController extends AbstractController
                         $nombre,
                         $direccion
                     );
-                    $entityManager->flush();
                     $this->addFlash('success', "Sede creada con éxito.");
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
@@ -65,7 +63,6 @@ class SedeController extends AbstractController
         int $sedeId,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
-        EntityManagerInterface $entityManager,
         Request $request,
         LoggerInterface $logger
     ): Response {
@@ -82,7 +79,6 @@ class SedeController extends AbstractController
                         $nombre,
                         $direccion
                     );
-                    $entityManager->flush();
                     $this->addFlash('success', "Sede editada con éxito.");
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
@@ -110,7 +106,6 @@ class SedeController extends AbstractController
         int $sedeId,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
-        EntityManagerInterface $entityManager,
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
@@ -118,7 +113,6 @@ class SedeController extends AbstractController
             try {
                 $sede = $sedeManager->obtenerSede($sedeId);
                 $sedeManager->eliminarSede($sede);
-                $entityManager->flush();
                 $this->addFlash('success', "Sede eliminada con éxito.");
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
