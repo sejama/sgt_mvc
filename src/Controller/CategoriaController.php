@@ -176,4 +176,32 @@ class CategoriaController extends AbstractController
         }
         return $this->redirectToRoute('security_login');
     }
+
+    #[Route('/{categoriaId}/cerrar', name: 'admin_categoria_cerrar', methods: ['POST'])]
+    public function cerrarCategoria(
+        string $ruta,
+        int $categoriaId,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        LoggerInterface $logger
+    ): Response {
+        if ($this->getUser() !== null) {
+            try {
+                $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+                $categoriaManager->cerrarCategoria($categoria);
+                $this->addFlash('success', "Categoría cerrada con éxito.");
+                return $this->redirectToRoute('admin_equipo_index', [
+                    'ruta' => $ruta,
+                    'categoriaId' => $categoriaId,
+                ]);
+            } catch (AppException $ae) {
+                $logger->error($ae->getMessage());
+                $this->addFlash('error', $ae->getMessage());
+            } catch (Throwable $e) {
+                $logger->error($e->getMessage());
+                $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
+            }
+        }
+        return $this->redirectToRoute('security_login');
+    }
 }

@@ -7,16 +7,18 @@
     {% for flash_success in app.flashes('success') %}
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
-    <h1>{% block title %}SGT- Gestion Equipos{% endblock %}</h1>
+    <h1>{% block title %}SGT- Gestión Equipos{% endblock %}</h1>
     <h3>Gestión de equipos del torneo {{ torneo.nombre }} de la categoria {{ categoria.nombre }} con {{ categoria.getEquipos|length }} Equipos </h2></h3>
     <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
-    {% if equipos|length == 0 or (equipos|length > 0 and equipos[0].grupo == null) %}
+    {% if categoria.estado == 'Borrador' or categoria.estado == 'Activa' %}
         <a href="{{ path('admin_equipo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-success">Crear</a>
+        <form action="{{ path('admin_categoria_cerrar', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-warning">Cerrar Categoría</button>
+        </form>
+    {% elseif categoria.estado == 'Cerrada' %}
         <a href="{{ path('admin_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
-    {% else %}
-        {% if equipos and equipos[0].partidosLocal|length == 0 and equipos[0].partidosVisitante|length == 0 %}
+    {% elseif categoria.estado == 'Zonas_creadas' %}
         <a href="{{ path('admin_categoria_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
-        {% endif %}
     {% endif %}
     <div class="table-responsive">
         <table class="table align-middle" style="white-space: nowrap; overflow-x: auto;">

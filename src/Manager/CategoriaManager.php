@@ -155,4 +155,9 @@ class CategoriaManager
         $categoria->setEstado(EstadoCategoria::ZONAS_CERRADAS->value);
         $this->categoriaRepository->guardar($categoria, true);
     }
+
+    public function cerrarCategoria(Categoria $categoria){
+        $categoria->setEstado(EstadoCategoria::CERRADA->value);
+        $this->categoriaRepository->guardar($categoria, true);
+    }
 }
