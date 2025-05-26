@@ -105,10 +105,8 @@ class EquipoController extends AbstractController
         int $equipoId,
         Request $request,
         EquipoManager $equipoManager,
-        CategoriaManager $categoriaManager,
         LoggerInterface $logger
     ): Response {
-        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         $equipo = $equipoManager->obtenerEquipo($equipoId);
         if ($request->isMethod('POST')) {
             try {
