@@ -24,6 +24,7 @@ class SedeController extends AbstractController
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
         Request $request,
+        EntityManagerInterface $entityManager,
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
@@ -37,6 +38,7 @@ class SedeController extends AbstractController
                         $nombre,
                         $direccion
                     );
+                    $entityManager->flush();
                     $this->addFlash('success', "Sede creada con éxito.");
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {

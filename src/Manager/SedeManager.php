@@ -70,7 +70,7 @@ class SedeManager
 
         $sede->setNombre($nombre);
         $sede->setDomicilio($direccion);
-        $this->sedeRepository->guardar($sede, false);
+        $this->sedeRepository->guardar($sede, true);
     }
 
     public function eliminarSede(Sede $sede): void
