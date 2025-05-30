@@ -181,7 +181,6 @@ class CategoriaController extends AbstractController
     public function cerrarCategoria(
         string $ruta,
         int $categoriaId,
-        TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         LoggerInterface $logger
     ): Response {

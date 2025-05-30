@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class GrupoController extends AbstractController
 {
     #[Route('/grupos', name: 'admin_grupo_index', methods: ['GET'])]
-    public function grupos(
+    public function gruposIndex(
         string $ruta,
         int $categoriaId,
         TorneoManager $torneoManager,

@@ -234,7 +234,7 @@
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
                     <a href="{{ path('admin_partido_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
-                    <a href="{{ path('admin_partido_pdf', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">PDF</a>
+                    <a href="{{ asset('assets/planillas/' ~ torneo.ruta ~ '/pdf/partido-' ~ partido.numero ~ '.pdf') }}" class="btn btn-info" target="_blank">PDF</a>
                     
                   {% endif %}
                 </td>
