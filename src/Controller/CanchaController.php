@@ -50,6 +50,7 @@ class CanchaController extends AbstractController
                 $descripcion = $request->request->get('descripcionCancha') ?? '';
                 $canchaManager->crearCancha($sede, $nombre, $descripcion);
                 $this->addFlash('success', 'Cancha creada con éxito.');
+                $logger->info('Cancha creada: ' . 'nueva' . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
