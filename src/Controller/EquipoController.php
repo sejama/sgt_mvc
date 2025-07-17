@@ -76,6 +76,7 @@ class EquipoController extends AbstractController
                 );
                 
                 $this->addFlash('success', "Equipo creado con éxito.");
+                $logger->info('Equipo creado: ' . $equipo->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -117,6 +118,7 @@ class EquipoController extends AbstractController
                 $localidad = $request->request->get('localidad') ?? null;
                 $equipoManager->editarEquipo($equipo, $nombre, $nombreCorto, $pais, $provincia, $localidad);
                 $this->addFlash('success', "Equipo editado con éxito.");
+                $logger->info('Equipo editado: ' . $equipo->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -147,6 +149,7 @@ class EquipoController extends AbstractController
             $equipo = $equipoManager->obtenerEquipo($equipoId);
             $equipoManager->eliminarEquipo($equipo);
             $this->addFlash('success', "Equipo eliminado con éxito.");
+            $logger->info('Equipo eliminado: ' . $equipo->getId() . ', por el usuario: ' .  $this->getUser()->getId());
         } catch (AppException $ae) {
             $logger->error($ae->getMessage());
             $this->addFlash('error', $ae->getMessage());
@@ -169,6 +172,7 @@ class EquipoController extends AbstractController
             $equipo = $equipoManager->obtenerEquipo($equipoId);
             $equipoManager->bajarEquipo($equipo);
             $this->addFlash('success', "Equipo dado de baja con éxito.");
+            $logger->info('Equipo dado de baja: ' . $equipo->getId() . ', por el usuario: ' .  $this->getUser()->getId());
         } catch (AppException $ae) {
             $logger->error($ae->getMessage());
             $this->addFlash('error', $ae->getMessage());

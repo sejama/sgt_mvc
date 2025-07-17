@@ -34,6 +34,7 @@ class UsuarioController extends AbstractController
                     );
                 } else {
                     $this->addFlash('error', "Debe tener el rol de administrador.");
+                    $logger->error('Acceso denegado al index de usuarios por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('app_main');
                 }
             }
@@ -67,6 +68,7 @@ class UsuarioController extends AbstractController
 
                     $usuarioManager->registrarUsuario($nombre, $apellido, $email, $username, $password, $roles);
                     $this->addFlash('success', 'Primer usuario administrador creado correctamente');
+                    $logger->info('Primer usuario administrador creado: ' . $username . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('security_login');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -113,6 +115,7 @@ class UsuarioController extends AbstractController
 
                     $usuarioManager->registrarUsuario($nombre, $apellido, $email, $username, $password, $rolesAsignados);
                     $this->addFlash('success', 'Usuario registrado correctamente');
+                    $logger->info('Usuario registrado: ' . $username . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_usuario_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -143,6 +146,7 @@ class UsuarioController extends AbstractController
                 $password = $request->request->get('password');
                 $usuarioManager->cambiarPassword($this->getUser(), $password);
                 $this->addFlash('success', 'Contraseña cambiada correctamente');
+                $logger->info('Contraseña cambiada por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('app_main');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -186,6 +190,7 @@ class UsuarioController extends AbstractController
                     $roles
                 );
                 $this->addFlash('success', 'Usuario editado correctamente');
+                $logger->info('Usuario editado: ' . $usuario->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_usuario_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -215,6 +220,7 @@ class UsuarioController extends AbstractController
             $usuario = $usuarioManager->buscarUsuario((int)$id);
             $usuarioManager->eliminarUsuario($usuario);
             $this->addFlash('success', 'Usuario eliminado correctamente');
+            $logger->info('Usuario eliminado: ' . $usuario->getId() . ', por el usuario: ' .  $this->getUser()->getId());
             return $this->redirectToRoute('admin_usuario_index');
         } catch (AppException $ae) {
             $logger->error($ae->getMessage());

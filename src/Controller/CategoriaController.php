@@ -40,6 +40,7 @@ class CategoriaController extends AbstractController
                         $nombreCorto
                     );
                     $this->addFlash('success', "Categoría creada con éxito.");
+                    $logger->info('Categoria creada: ' . 'nueva' . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -87,6 +88,7 @@ class CategoriaController extends AbstractController
                         $nombreCorto
                     );
                     $this->addFlash('success', "Categoría editada con éxito.");
+                    $logger->info('Categoria editada: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -132,6 +134,7 @@ class CategoriaController extends AbstractController
                     $disputa = $request->request->get('disputa');
                     $categoriaManager->editarDisputa($categoria, $disputa);
                     $this->addFlash('success', "Disputa editada con éxito.");
+                    $logger->info('Disputa editada en la categoria: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -165,6 +168,7 @@ class CategoriaController extends AbstractController
             try {
                 $categoriaManager->eliminarCategoria($categoriaId);
                 $this->addFlash('success', "Categoría eliminada con éxito.");
+                $logger->info('Categoria eliminada: ' . $categoriaId . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -189,6 +193,7 @@ class CategoriaController extends AbstractController
                 $categoria = $categoriaManager->obtenerCategoria($categoriaId);
                 $categoriaManager->cerrarCategoria($categoria);
                 $this->addFlash('success', "Categoría cerrada con éxito.");
+                $logger->info('Categoria cerrada: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_equipo_index', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,

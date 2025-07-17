@@ -91,6 +91,7 @@ class CanchaController extends AbstractController
                 $descripcion = $request->request->get('descripcionCancha') ?? '';
                 $canchaManager->editarCancha($cancha, $nombre, $descripcion);
                 $this->addFlash('success', 'Cancha editada con éxito.');
+                $logger->info('Cancha editada: ' . $cancha->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -126,6 +127,7 @@ class CanchaController extends AbstractController
             try {
                 $canchaManager->eliminarCancha($cancha);
                 $this->addFlash('success', 'Cancha eliminada con éxito.');
+                $logger->info('Cancha eliminada: ' . $cancha->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());

@@ -9,6 +9,8 @@ use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
 use App\Security\Voter\PartidoVoter;
 use App\Utils\GenerarPdf;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +31,8 @@ class PartidoController extends AbstractController
     TorneoManager $torneoManager,
     EquipoManager $equipoManager,
     PartidoManager $partidoManager,
-    Request $request
+    Request $request,
+    LoggerInterface $logger
 ): Response {
     try {
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
@@ -41,6 +44,8 @@ class PartidoController extends AbstractController
         if ($request->isMethod('POST')) {
             $partidosPlayOff = $request->request->all();
             $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
+            $this->addFlash('success', 'Partidos creados correctamente.');
+            $logger->info('Partidos creados para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
 
@@ -113,15 +118,17 @@ class PartidoController extends AbstractController
             'tipoBronce' => $tipoBronce,
             'partidosPlayOff' => $request->request->all() // Mantener los datos del formulario
         ];
-
+        
         return $this->render('partido/crear.html.twig', $params);
     } catch (AppException $ae) {
         // Handle the exception
         $this->addFlash('error', $ae->getMessage());
+        $logger->error('Error al crear partidos clasificatorios: ' . $ae->getMessage());
         return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
     } catch (Throwable $e) {
         // Handle the exception
         $this->addFlash('error', 'Ocurrió un error al crear el partido ' . $e);
+        $logger->error('Error al crear partidos clasificatorios: ' . $e);
         return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
     }
 }
@@ -168,7 +175,8 @@ class PartidoController extends AbstractController
     public function editarPartido(
         string $ruta,
         Request $request,
-        PartidoManager $partidoManager
+        PartidoManager $partidoManager,
+        LoggerInterface $logger
     ): Response {
         try {
             $partidoId = (int)$request->request->get('var_partidoId');
@@ -177,14 +185,18 @@ class PartidoController extends AbstractController
 
             $partidoManager->editarPartido($ruta, $partidoId, $cancha, $horario);
 
+            $this->addFlash('success', 'Partido editado correctamente.');
+            $logger->info('Partido editado: ' . $partidoId . ', por el usuario: ' .  $this->getUser()->getId());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
+            $logger->error('Error al editar partido: ' . $ae->getMessage());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (Throwable $e) {
             // Handle the exception
             $this->addFlash('error', 'Ocurrió un error al editar el partido ' . $e);
+            $logger->error('Error al editar partido: ' . $e);
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
     }
@@ -193,7 +205,8 @@ class PartidoController extends AbstractController
     public function generarPDF(
         string $ruta,
         int $partidoNumero,
-        PartidoManager $partidoManager
+        PartidoManager $partidoManager,
+        LoggerInterface $logger
     ): Response {
         try {
             $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
@@ -201,14 +214,17 @@ class PartidoController extends AbstractController
             $pdf = new GenerarPdf();
             $pdf->generarPdf($partido, $ruta);
             $this->addFlash('success', 'PDF generado correctamente.');
+            $logger->info('PDF generado para el partido: ' . $partidoNumero . ', por el usuario: ' .  $this->getUser()->getId());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
+            $logger->error('Error al generar PDF del partido: ' . $ae->getMessage());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (Throwable $e) {
             // Handle the exception
             $this->addFlash('error', 'Ocurrió un error al cargar el partido ' . $e);
+            $logger->error('Error al generar PDF del partido: ' . $e);
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
     }
@@ -218,7 +234,8 @@ class PartidoController extends AbstractController
         string $ruta,
         int $partidoNumero,
         Request $request,
-        PartidoManager $partidoManager
+        PartidoManager $partidoManager,
+        LoggerInterface $logger
     ): Response {
         try {
             $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
@@ -231,6 +248,7 @@ class PartidoController extends AbstractController
                 $resultadoVisitante = $request->request->all('puntosVisitante');
                 $partidoManager->cargarResultado($partido, $resultadoLocal, $resultadoVisitante);
                 $this->addFlash('success', 'Resultado cargado correctamente.');
+                $logger->info('Resultado cargado para el partido: ' . $partidoNumero . ', por el usuario: ' .  $this->getUser()->getId());
                 if ($this->isGranted('ROLE_PLANILLERO')) {
                     return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
                 } else {
@@ -256,14 +274,17 @@ class PartidoController extends AbstractController
 
             // Redirigir al app_main_torneo con un mensaje de error
             $this->addFlash('error', 'No tienes permiso para cargar el resultado de este partido.');
+            $logger->error('Acceso denegado al cargar resultado del partido: ' . $partidoNumero . ', por el usuario: ' .  $this->getUser()->getId());
             return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
+            $logger->error('Error al cargar resultado del partido: ' . $ae->getMessage());
             return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         } catch (Throwable $e) {
             // Handle the exception
             $this->addFlash('error', 'Ocurrió un error al cargar el resultado ' . $e);
+            $logger->error('Error al cargar resultado del partido: ' . $e);
             return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         }
     }

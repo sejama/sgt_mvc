@@ -40,6 +40,7 @@ class SedeController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Sede creada con éxito.");
+                    $logger->info('Sede creada: ' . $nombre . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -82,6 +83,7 @@ class SedeController extends AbstractController
                         $direccion
                     );
                     $this->addFlash('success', "Sede editada con éxito.");
+                    $logger->info('Sede editada: ' . $sede->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -116,6 +118,7 @@ class SedeController extends AbstractController
                 $sede = $sedeManager->obtenerSede($sedeId);
                 $sedeManager->eliminarSede($sede);
                 $this->addFlash('success', "Sede eliminada con éxito.");
+                $logger->info('Sede eliminada: ' . $sede->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());

@@ -8,6 +8,7 @@ use App\Manager\GrupoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,7 +59,8 @@ class GrupoController extends AbstractController
         int $categoriaId,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
-        TablaManager $tablaManager
+        TablaManager $tablaManager,
+        LoggerInterface $logger
     ): Response {
         try {
             $torneo = $torneoManager->obtenerTorneo($ruta);
@@ -71,11 +73,14 @@ class GrupoController extends AbstractController
             }
             $categoriaManager->armarPlayOff($categoria);
             $this->addFlash('success', 'Playoff armado con éxito para la categoría ' . $categoria->getNombre() . '.');
+            $logger->info('PlayOff armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
             return $this->redirectToRoute('admin_grupo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
         } catch (AppException $ae) {
             $this->addFlash('danger', "una app exception");
+            $logger->error($ae->getMessage());
         } catch (\Exception $e) {
             $this->addFlash('danger', "Ocurrió un error al armar el playoff.");
+            $logger->error($e->getMessage());
         }
         return $this->redirectToRoute('admin_grupo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
@@ -87,7 +92,8 @@ class GrupoController extends AbstractController
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         string $ruta,
-        int $categoriaId
+        int $categoriaId,
+        LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
@@ -115,11 +121,14 @@ class GrupoController extends AbstractController
                 $grupoManager->crearGrupos($grupos);
 
                 $this->addFlash('success', "Grupo creado con éxito.");
+                $logger->info('Grupo armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $this->addFlash('danger', $ae->getMessage());
+                $logger->error($ae->getMessage());
             } catch (\Exception $e) {
                 $this->addFlash('danger', "Ocurrió un error al crear el grupo.");
+                $logger->error($e->getMessage());
             }
         }
         return $this->render(

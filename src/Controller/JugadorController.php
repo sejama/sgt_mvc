@@ -61,7 +61,6 @@ class JugadorController extends AbstractController
                 $email = $request->request->get('email');
                 $celular = $request->request->get('celular');
 
-
                 $jugadorManager->crearJugador(
                     $equipo,
                     $nombre,
@@ -75,6 +74,7 @@ class JugadorController extends AbstractController
                     $celular
                 );
                 $this->addFlash('success', 'Jugador editado correctamente');
+                $logger->info('Jugador creado en el equipo: ' . $equipo->getId() . ', con el nombre: ' . $nombre . ' ' . $apellido . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute(
                     'admin_jugador_index', [
                     'ruta' => $ruta,
@@ -147,7 +147,8 @@ class JugadorController extends AbstractController
                     $email,
                     $celular
                 );
-                $this->addFlash('success', 'Jugador creado correctamente');
+                $this->addFlash('success', 'Jugador editado correctamente');
+                $logger->info('Jugador editado en el equipo: ' . $equipo->getId() . ', con el nombre: ' . $nombre . ' ' . $apellido . ', por el usuario: ' .  $this->getUser()->getId());
                 return $this->redirectToRoute(
                     'admin_jugador_index', [
                     'ruta' => $ruta,
@@ -191,11 +192,14 @@ class JugadorController extends AbstractController
         int $equipoId,
         int $jugadorId,
         EquipoManager $equipoManager,
-        JugadorManager $jugadorManager
+        JugadorManager $jugadorManager,
+        LoggerInterface $logger
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
         $jugador = $jugadorManager->obtenerJugador($jugadorId);
         $jugadorManager->eliminarJugador($jugador);
+        $this->addFlash('success', 'Jugador eliminado correctamente');
+        $logger->info('Jugador eliminado del equipo: ' . $equipo->getId() . ', con el nombre: ' . $jugador->getNombre() . ' ' . $jugador->getApellido() . ', por el usuario: ' .  $this->getUser()->getId());
         return $this->redirectToRoute(
             'admin_jugador_index', [
             'ruta' => $ruta,
