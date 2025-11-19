@@ -19,6 +19,33 @@
         </option>
     {% endfor %}
 </select>
+<form method="get" id="filtersForm" class="mb-3 mt-3">
+  <div class="row g-2 align-items-center">
+    <div class="col-auto">
+      <select name="categoria" class="form-select" onchange="document.getElementById('filtersForm').submit();">
+        <option value="">Filtrar por categorías</option>
+        {% for categoria in categorias %}
+          <option value="{{ categoria.id }}" {% if categoria.id == selectedCategoriaId %}selected{% endif %}>{{ categoria.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <select name="equipo" class="form-select" onchange="document.getElementById('filtersForm').submit();">
+        <option value="">Filtrar por equipo</option>
+        {% if equipos is defined %}
+          {% for equipo in equipos %}
+            <option value="{{ equipo.id }}" {% if equipo.id == selectedEquipoId %}selected{% endif %}>{{ equipo.nombre }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <a href="{{ path('app_main_torneo', {'ruta': torneo.ruta}) }}" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+  </div>
+</form>
   {% for key, canchas in partidosProgramados %}
           <h3>{{ key }}</h3>
           {% for key, fechas in canchas %}
