@@ -23,10 +23,6 @@ jobs:
           --health-timeout=5s
           --health-retries=10
 
-    defaults:
-      run:
-        working-directory: src/sgt_mvc
-
     env:
       APP_ENV: test
       DATABASE_URL: mysql://root:root@127.0.0.1:3306/sgt_test?serverVersion=8.0.40&charset=utf8mb4
@@ -34,7 +30,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Detect project directory
+        id: project-dir
+        shell: bash
+        run: |
+          if [ -f "composer.json" ] && [ -f "phpunit.xml.dist" ]; then
+            echo "dir=." >> "$GITHUB_OUTPUT"
+          elif [ -f "src/sgt_mvc/composer.json" ] && [ -f "src/sgt_mvc/phpunit.xml.dist" ]; then
+            echo "dir=src/sgt_mvc" >> "$GITHUB_OUTPUT"
+          else
+            echo "No se encontro el directorio del proyecto Symfony/PHPUnit"
+            pwd
+            ls -la
+            exit 1
+          fi
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -44,12 +55,15 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
+        working-directory: ${{ steps.project-dir.outputs.dir }}
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Prepare test database
+        working-directory: ${{ steps.project-dir.outputs.dir }}
         run: |
           php bin/console doctrine:database:create --if-not-exists --env=test --no-interaction
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
       - name: Run test suites with coverage gate
+        working-directory: ${{ steps.project-dir.outputs.dir }}
         run: composer test:ci
