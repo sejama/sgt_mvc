@@ -143,23 +143,19 @@ class PartidoRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->select('p.id AS id, p.numero, pc.nombre AS nombre, 
                 CONCAT(\'Ganador \', pc1.nombre) AS equipoPartidoLocalGanador, CONCAT(\'Ganador \', pc2.nombre) AS equipoPartidoVisitanteGanador,
-                CONCAT(\'Perdedor \', pc3.nombre) AS equipoPartidoLocalPerdedor, CONCAT(\'Perdedor \', pc4.nombre) AS equipoPartidoVisitantePerdedor,
+                    \'\' AS equipoPartidoLocalPerdedor, \'\' AS equipoPartidoVisitantePerdedor,
                 c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
             ->join('p.partidoConfig', 'pc')
             ->leftJoin('pc.ganadorPartido1', 'p1')
             ->leftJoin('p1.partidoConfig', 'pc1')
             ->leftJoin('pc.ganadorPartido2', 'p2')
             ->leftJoin('p2.partidoConfig', 'pc2')
-            ->leftJoin('pc.perdedorPartido1', 'p3')
-            ->leftJoin('p3.partidoConfig', 'pc3')
-            ->leftJoin('pc.perdedorPartido2', 'p4')
-            ->leftJoin('p4.partidoConfig', 'pc4')
             ->join('p.categoria', 'c')
             ->join('c.torneo', 't')
             ->where('t.ruta = :ruta')
             ->andWhere('p.cancha IS NULL')
-            ->andWhere('(pc.ganadorPartido1 IS NOT NULL OR pc.perdedorPartido1 IS NOT NULL)')
-            ->andWhere('(pc.ganadorPartido2 IS NOT NULL OR pc.perdedorPartido2 IS NOT NULL)')
+            ->andWhere('pc.ganadorPartido1 IS NOT NULL')
+            ->andWhere('pc.ganadorPartido2 IS NOT NULL')
             ->setParameter('ruta', $ruta)
             ->addOrderBy('p.id', 'ASC')
             ->getQuery()
@@ -186,8 +182,11 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('c.sede', 's')
             ->join('p.grupo', 'g')
             ->join('g.categoria', 'cat')
+            ->join('cat.torneo', 't')
             ->join('p.equipoLocal', 'eLocal')
             ->join('p.equipoVisitante', 'eVisitante')
+            ->where('t.ruta = :ruta')
+            ->setParameter('ruta', $ruta)
             ->orderBy('s.id, c.id, horario')
             ->getQuery()
             ->getResult();
@@ -300,13 +299,16 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.categoria', 'cat')
+            ->join('cat.torneo', 't')
             ->join('p.partidoConfig', 'pc')
             ->leftJoin('pc.grupoEquipo1', 'g1')
             ->leftJoin('pc.grupoEquipo2', 'g2')
             ->leftJoin('p.equipoLocal', 'eLocal')
             ->leftJoin('p.equipoVisitante', 'eVisitante')
-            ->where('pc.grupoEquipo1 IS NOT NULL')
+            ->where('t.ruta = :ruta')
+            ->andWhere('pc.grupoEquipo1 IS NOT NULL')
             ->andWhere('pc.grupoEquipo2 IS NOT NULL')
+            ->setParameter('ruta', $ruta)
             ->orderBy('s.id, c.id, p.horario')
             ->getQuery()
             ->getResult();
@@ -377,7 +379,6 @@ class PartidoRepository extends ServiceEntityRepository
                     WHEN p.equipoLocal IS NULL THEN 
                         CASE 
                             WHEN pc.ganadorPartido1 IS NOT NULL THEN CONCAT(\'Ganador \', pc1.nombre)
-                            WHEN pc.perdedorPartido1 IS NOT NULL THEN CONCAT(\'Perdedor \', pc1p.nombre)
                             ELSE \'Sin definir\' -- Agregar un ELSE aquí
                         END
                     ELSE eLocal.nombre 
@@ -386,7 +387,6 @@ class PartidoRepository extends ServiceEntityRepository
                 WHEN p.equipoVisitante IS NULL THEN 
                     CASE 
                         WHEN pc.ganadorPartido2 IS NOT NULL THEN CONCAT(\'Ganador \', pc2.nombre)
-                        WHEN pc.perdedorPartido2 IS NOT NULL THEN CONCAT(\'Perdedor \', pc2p.nombre)
                         ELSE \'Sin definir\' -- Agregar un ELSE aquí
                     END
                 ELSE eVisitante.nombre 
@@ -399,25 +399,23 @@ class PartidoRepository extends ServiceEntityRepository
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.categoria', 'cat')
+            ->join('cat.torneo', 't')
             ->join('p.partidoConfig', 'pc')
             //Ganador
             ->leftJoin('pc.ganadorPartido1', 'p1')
             ->leftJoin('p1.partidoConfig', 'pc1')
             ->leftJoin('pc.ganadorPartido2', 'p2')
             ->leftJoin('p2.partidoConfig', 'pc2')
-            //Perdedor
-            ->leftJoin('pc.perdedorPartido1', 'p1p')
-            ->leftJoin('p1p.partidoConfig', 'pc1p')
-            ->leftJoin('pc.perdedorPartido2', 'p2p')
-            ->leftJoin('p2p.partidoConfig', 'pc2p')
             ->leftJoin('p.equipoLocal', 'eLocal')
             ->leftJoin('p.equipoVisitante', 'eVisitante')
-            ->where(
-                'p.equipoLocal IS NOT NULL OR pc.ganadorPartido1 IS NOT NULL OR pc.perdedorPartido1 IS NOT NULL'
+            ->where('t.ruta = :ruta')
+            ->andWhere(
+                'p.equipoLocal IS NOT NULL OR pc.ganadorPartido1 IS NOT NULL'
             )
             ->andWhere(
-                'p.equipoVisitante IS NOT NULL OR pc.ganadorPartido2 IS NOT NULL OR pc.perdedorPartido2 IS NOT NULL'
+                'p.equipoVisitante IS NOT NULL OR pc.ganadorPartido2 IS NOT NULL'
             )
+            ->setParameter('ruta', $ruta)
             ->orderBy('s.id, c.id, p.horario')
             ->getQuery()
             ->getResult();

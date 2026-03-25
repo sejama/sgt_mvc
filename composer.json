@@ -82,6 +82,19 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
         },
+        "test": "php ./vendor/bin/phpunit",
+        "test:unit": "php ./vendor/bin/phpunit --testsuite Unit",
+        "test:integration": "php ./vendor/bin/phpunit --testsuite Integration",
+        "test:functional": "php ./vendor/bin/phpunit --testsuite Functional",
+        "test:coverage": "XDEBUG_MODE=coverage php ./vendor/bin/phpunit --coverage-clover var/coverage/clover.xml --coverage-text",
+        "test:coverage:check": "php ./scripts/check-coverage.php var/coverage/clover.xml 90",
+        "test:ci": [
+            "@test:unit",
+            "@test:integration",
+            "@test:functional",
+            "@test:coverage",
+            "@test:coverage:check"
+        ],
         "post-install-cmd": [
             "@auto-scripts"
         ],

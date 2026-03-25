@@ -56,10 +56,8 @@ class PartidoConfig
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Partido $perdedorPartido1 = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Partido $perdedorPartido2 = null;
 
     public function getId(): ?int

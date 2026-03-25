@@ -6,6 +6,7 @@ use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\TorneoManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ class CategoriaController extends AbstractController
         string $ruta,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
+        EntityManagerInterface $entityManager,
         Request $request,
         LoggerInterface $logger
     ): Response {
@@ -39,6 +41,7 @@ class CategoriaController extends AbstractController
                         $nombre,
                         $nombreCorto
                     );
+                    $entityManager->flush();
                     $this->addFlash('success', "Categoría creada con éxito.");
                     $logger->info('Categoria creada: ' . 'nueva' . ', por el usuario: ' .  $this->getUser()->getId());
                     return $this->redirectToRoute('admin_torneo_index');
