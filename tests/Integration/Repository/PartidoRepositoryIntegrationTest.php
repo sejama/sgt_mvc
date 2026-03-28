@@ -37,6 +37,7 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
         $partidoRepository = $registry->getRepository(Partido::class);
         self::assertInstanceOf(PartidoRepository::class, $partidoRepository);
         $this->partidoRepository = $partidoRepository;
+        $this->entityManager->clear();
     }
 
     protected function tearDown(): void
@@ -123,7 +124,7 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
         $this->partidoRepository->guardar($partido, true);
 
-        $encontrado = $this->partidoRepository->buscarPartidoXCanchaHorario((int) $cancha->getId(), $horario);
+        $encontrado = $this->partidoRepository->buscarPartidoXCanchaHorario($ruta, 0, (int) $cancha->getId(), $horario);
         self::assertInstanceOf(Partido::class, $encontrado);
         self::assertSame(88, $encontrado->getNumero());
         self::assertSame((int) $cancha->getId(), (int) $encontrado->getCancha()?->getId());
@@ -152,7 +153,7 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
         $this->partidoRepository->guardar($partido, true);
 
-        $encontrado = $this->partidoRepository->buscarPartidoXCanchaHorario((int) $cancha->getId(), $horarioConsulta);
+        $encontrado = $this->partidoRepository->buscarPartidoXCanchaHorario($ruta, 0, (int) $cancha->getId(), $horarioConsulta);
         self::assertNull($encontrado);
     }
 
@@ -719,6 +720,13 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
     private function crearTorneo(Usuario $creador, string $ruta, string $suffix): Torneo
     {
+        $creadorId = $creador->getId();
+        self::assertNotNull($creadorId);
+
+        /** @var Usuario|null $creadorGestionado */
+        $creadorGestionado = $this->entityManager->getRepository(Usuario::class)->find($creadorId);
+        self::assertInstanceOf(Usuario::class, $creadorGestionado);
+
         $torneo = (new Torneo())
             ->setNombre('IT Torneo Partido ' . $suffix)
             ->setRuta($ruta)
@@ -728,7 +736,7 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
             ->setFechaInicioTorneo(new \DateTimeImmutable('2026-02-01 10:00:00'))
             ->setFechaFinTorneo(new \DateTimeImmutable('2026-02-20 10:00:00'))
             ->setEstado('activo')
-            ->setCreador($creador);
+            ->setCreador($creadorGestionado);
 
         $this->entityManager->persist($torneo);
         $this->entityManager->flush();
@@ -751,12 +759,19 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
     private function crearCategoria(Torneo $torneo, string $suffix): Categoria
     {
+        $torneoId = $torneo->getId();
+        self::assertNotNull($torneoId);
+
+        /** @var Torneo|null $torneoGestionado */
+        $torneoGestionado = $this->entityManager->getRepository(Torneo::class)->find($torneoId);
+        self::assertInstanceOf(Torneo::class, $torneoGestionado);
+
         $categoria = (new Categoria())
             ->setNombre('IT Categoria ' . $suffix)
             ->setNombreCorto('IT' . strtoupper(substr($suffix, 0, 4)))
             ->setGenero(Genero::MASCULINO)
             ->setEstado('activo')
-            ->setTorneo($torneo);
+            ->setTorneo($torneoGestionado);
 
         $this->entityManager->persist($categoria);
         $this->entityManager->flush();
@@ -766,10 +781,17 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
     private function crearSede(Torneo $torneo, string $suffix): Sede
     {
+        $torneoId = $torneo->getId();
+        self::assertNotNull($torneoId);
+
+        /** @var Torneo|null $torneoGestionado */
+        $torneoGestionado = $this->entityManager->getRepository(Torneo::class)->find($torneoId);
+        self::assertInstanceOf(Torneo::class, $torneoGestionado);
+
         $sede = (new Sede())
             ->setNombre('IT Sede ' . $suffix)
             ->setDomicilio('Calle Test 123')
-            ->setTorneo($torneo);
+            ->setTorneo($torneoGestionado);
 
         $this->entityManager->persist($sede);
         $this->entityManager->flush();
@@ -779,10 +801,17 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
     private function crearCancha(Sede $sede, string $suffix): Cancha
     {
+        $sedeId = $sede->getId();
+        self::assertNotNull($sedeId);
+
+        /** @var Sede|null $sedeGestionada */
+        $sedeGestionada = $this->entityManager->getRepository(Sede::class)->find($sedeId);
+        self::assertInstanceOf(Sede::class, $sedeGestionada);
+
         $cancha = (new Cancha())
             ->setNombre('IT Cancha ' . $suffix)
             ->setDescripcion('Cancha de test')
-            ->setSede($sede);
+            ->setSede($sedeGestionada);
 
         $this->entityManager->persist($cancha);
         $this->entityManager->flush();
@@ -792,13 +821,20 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
     private function crearGrupo(Categoria $categoria, string $suffix): Grupo
     {
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        /** @var Categoria|null $categoriaGestionada */
+        $categoriaGestionada = $this->entityManager->getRepository(Categoria::class)->find($categoriaId);
+        self::assertInstanceOf(Categoria::class, $categoriaGestionada);
+
         $grupo = (new Grupo())
             ->setNombre('Grupo ' . strtoupper(substr($suffix, 0, 4)))
             ->setClasificaOro(2)
             ->setClasificaPlata(0)
             ->setClasificaBronce(0)
             ->setEstado('activo')
-            ->setCategoria($categoria);
+            ->setCategoria($categoriaGestionada);
 
         $this->entityManager->persist($grupo);
         $this->entityManager->flush();
@@ -808,11 +844,23 @@ class PartidoRepositoryIntegrationTest extends KernelTestCase
 
     private function crearEquipo(Categoria $categoria, Grupo $grupo, string $nombreBase, int $numero, string $suffix): Equipo
     {
+        $categoriaId = $categoria->getId();
+        $grupoId = $grupo->getId();
+        self::assertNotNull($categoriaId);
+        self::assertNotNull($grupoId);
+
+        /** @var Categoria|null $categoriaGestionada */
+        $categoriaGestionada = $this->entityManager->getRepository(Categoria::class)->find($categoriaId);
+        /** @var Grupo|null $grupoGestionado */
+        $grupoGestionado = $this->entityManager->getRepository(Grupo::class)->find($grupoId);
+        self::assertInstanceOf(Categoria::class, $categoriaGestionada);
+        self::assertInstanceOf(Grupo::class, $grupoGestionado);
+
         $equipo = (new Equipo())
             ->setNombre($nombreBase . ' ' . strtoupper(substr($suffix, 0, 4)))
             ->setNombreCorto(substr(strtoupper($nombreBase), 0, 3) . $numero)
-            ->setCategoria($categoria)
-            ->setGrupo($grupo)
+            ->setCategoria($categoriaGestionada)
+            ->setGrupo($grupoGestionado)
             ->setEstado('activo')
             ->setNumero($numero);
 

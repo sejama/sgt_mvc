@@ -12,7 +12,6 @@ use App\Enum\EstadoGrupo;
 use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Repository\PartidoRepository;
-use App\Utils\GenerarPdf;
 
 class CategoriaManager
 {
@@ -145,9 +144,6 @@ class CategoriaManager
                     $partido->setEquipoVisitante($gruposPosiciones[$grupoEquipo2->getNombre()][$posicionEquipo2 - 1]['equipo']);
                     
                     $this->partidoRepository->guardar($partido);
-
-                    $pdf = new GenerarPdf();
-                    $pdf->generarPdf($partido, $categoria->getTorneo()->getRuta());
                 }
             }
         }

@@ -50,11 +50,17 @@ class PartidoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function buscarPartidoXCanchaHorario(int $canchaId, \DateTimeImmutable $horario): ?Partido
+    public function buscarPartidoXCanchaHorario(string $ruta, int $partidoId, int $canchaId, \DateTimeImmutable $horario): ?Partido
     {
         return $this->createQueryBuilder('p')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
             ->where('p.cancha = :canchaId')
             ->andWhere('p.horario = :horario')
+            ->andWhere('t.ruta = :ruta')
+            ->andWhere('p.id != :partidoId')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('partidoId', $partidoId)
             ->setParameter('canchaId', $canchaId)
             ->setParameter('horario', $horario)
             ->getQuery()

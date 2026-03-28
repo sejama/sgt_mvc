@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% set primerGrupo = grupos|first %}
     {% for flash_error in app.flashes('error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
@@ -53,7 +54,7 @@
                         'equipos': equiposOro, 
                         'grupos': grupos, 
                         'clasificaAnterior': 0,
-                        'clasifica': grupos[0].clasificaOro 
+                                                'clasifica': primerGrupo ? (primerGrupo.clasificaOro ?? 0) : 0
                     } ) }}
                 </div>
               </div>
@@ -72,8 +73,8 @@
                         'tipo': tipoPlata, 
                         'equipos': equiposPlata, 
                         'grupos': grupos, 
-                        'clasificaAnterior': grupos[0].clasificaOro,
-                        'clasifica': grupos[0].clasificaPlata 
+                                                'clasificaAnterior': primerGrupo ? (primerGrupo.clasificaOro ?? 0) : 0,
+                                                'clasifica': primerGrupo ? (primerGrupo.clasificaPlata ?? 0) : 0
                     } ) }}
                 </div>
               </div>
@@ -92,8 +93,8 @@
                         'tipo': tipoBronce, 
                         'equipos': equiposBronce, 
                         'grupos': grupos, 
-                        'clasificaAnterior': grupos[0].clasificaOro + grupos[0].clasificaPlata,
-                        'clasifica': grupos[0].clasificaBronce 
+                                                'clasificaAnterior': primerGrupo ? ((primerGrupo.clasificaOro ?? 0) + (primerGrupo.clasificaPlata ?? 0)) : 0,
+                                                'clasifica': primerGrupo ? (primerGrupo.clasificaBronce ?? 0) : 0
                     } ) }}
                 </div>
               </div>

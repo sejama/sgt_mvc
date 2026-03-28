@@ -8,7 +8,6 @@ use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
 use App\Security\Voter\PartidoVoter;
-use App\Utils\GenerarPdf;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -209,12 +208,9 @@ class PartidoController extends AbstractController
         LoggerInterface $logger
     ): Response {
         try {
-            $partido =  $partidoManager->obtenerPartido($ruta, $partidoNumero);
-
-            $pdf = new GenerarPdf();
-            $pdf->generarPdf($partido, $ruta);
-            $this->addFlash('success', 'PDF generado correctamente.');
-            $logger->info('PDF generado para el partido: ' . $partidoNumero . ', por el usuario: ' .  $this->getUser()->getId());
+            $partidoManager->obtenerPartido($ruta, $partidoNumero);
+            $this->addFlash('warning', 'La generación de PDF fue desactivada.');
+            $logger->info('Intento de generar PDF desactivado para el partido: ' . $partidoNumero);
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception

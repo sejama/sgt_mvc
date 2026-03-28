@@ -12,7 +12,6 @@ use App\Manager\ValidadorPartidoManager;
 use App\Repository\EquipoRepository;
 use App\Repository\PartidoConfigRepository;
 use App\Repository\PartidoRepository;
-use App\Utils\GenerarPdf;
 
 class PartidoManager
 {
@@ -207,7 +206,7 @@ class PartidoManager
     {
         $horario = new \DateTimeImmutable(substr_replace($horario, '00', -2));
 
-        if ($this->partidoRepository->buscarPartidoXCanchaHorario($canchaId, $horario)) {
+        if ($this->partidoRepository->buscarPartidoXCanchaHorario($ruta, $partidoId, $canchaId, $horario)) {
             throw new AppException('Ya existe un partido programado en esa cancha y horario');
         }
 
@@ -215,9 +214,6 @@ class PartidoManager
         $partido->setCancha($this->canchaManager->obtenerCancha($canchaId));
         $partido->setHorario($horario);
         $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);
-
-        $pdf = new GenerarPdf();
-        $pdf->generarPdf($partido, $ruta);
 
         $this->partidoRepository->guardar($partido);
         
@@ -317,6 +313,13 @@ class PartidoManager
     public function obtenerPartidosXCategoriaEliminatoriaPostClasificatorio(Categoria $categoria): array
     {
         $todos = $this->partidoRepository->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria->getId());
+        $partidos = [
+            'oro' => [],
+            'plata' => [],
+            'bronce' => [],
+            'general' => [],
+        ];
+
         foreach ($todos as $partido) {
             if (str_contains($partido['nombre'], 'Oro')) {
                 $partidos['oro'][] = $partido;

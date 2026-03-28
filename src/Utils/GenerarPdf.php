@@ -26,18 +26,23 @@ class GenerarPdf
         $pathQr = $torneoPath . '/qr/';
         $pathPdf = $torneoPath . '/pdf/';
 
-
         if (!$filesystem->exists($torneoPath)) {
             $filesystem->mkdir($torneoPath);
+        }
+        if (!$filesystem->exists($pathQr)) {
             $filesystem->mkdir($pathQr);
+        }
+        if (!$filesystem->exists($pathPdf)) {
             $filesystem->mkdir($pathPdf);
         }
+
+        $host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
 
         $qr = new Builder(
             writer: new PngWriter(),
             writerOptions: [],
             validateResult: false,
-            data: 'https://' . $_SERVER['HTTP_HOST'] .
+            data: 'https://' . $host .
                 '/sgt_mvc/public/admin/torneo/' . $ruta . '/partido/' . $partido->getNumero() . '/cargar_resultado',
             encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::High,
@@ -114,7 +119,12 @@ class GenerarPdf
         } 
 
         if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
-            $texto = $texto . ' - ' . strtoupper($partido->getPartidoConfig()->getNombre()); 
+            $partidoConfig = $partido->getPartidoConfig();
+            if ($partidoConfig !== null && $partidoConfig->getNombre() !== null) {
+                $texto = $texto . ' - ' . strtoupper($partidoConfig->getNombre());
+            } else {
+                $texto = $texto . ' - PARTIDO SIN CONFIG';
+            }
         }
 
         $pdf->Write(0, $texto);
@@ -150,9 +160,10 @@ class GenerarPdf
         //$pdf->SetXY(101, 104.5);
         //$pdf->Write(0, $partido->getEquipoVisitante()->getNombre());
 
-        $pdf->Output(__DIR__ .  'partido-' . $partido->getNumero() . '.pdf', 'F');
+        $tempPdfPath = __DIR__ . '/partido-' . $partido->getNumero() . '.pdf';
+        $pdf->Output($tempPdfPath, 'F');
         $filesystem->rename(
-            __DIR__ . 'partido-' . $partido->getNumero() . '.pdf',
+            $tempPdfPath,
             $pathPdf . 'partido-' . $partido->getNumero() . '.pdf'
         );
     }

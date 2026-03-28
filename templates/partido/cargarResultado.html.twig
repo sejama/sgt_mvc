@@ -13,7 +13,7 @@
             <div class="col">
                 <div class="form-floating mb-1">
                     <select class="form-select" id="floatingSelectLocal" name="equipoLocal" aria-label="Floating label select example" disabled>
-                        <option value="{{ partido.equipoLocal.id }}" selected>{{ partido.equipoLocal.nombre }}</option>
+                        <option value="{{ partido.equipoLocal ? partido.equipoLocal.id : '' }}" selected>{{ partido.equipoLocal ? partido.equipoLocal.nombre : 'Sin asignar' }}</option>
                     </select>
                     <label class="form-label" for="floatingSelectLocal" name="equipoLocal">Equipo Local:</label>
                 </div>
@@ -21,7 +21,7 @@
             <div class="col">
                 <div class="form-floating mb-1">
                     <select class="form-select" id="floatingSelectVisitante" name="equipoVisitante" aria-label="Floating label select example" disabled>
-                        <option value="{{ partido.equipoVisitante.id }}" selected>{{ partido.equipoVisitante.nombre }}</option>
+                        <option value="{{ partido.equipoVisitante ? partido.equipoVisitante.id : '' }}" selected>{{ partido.equipoVisitante ? partido.equipoVisitante.nombre : 'Sin asignar' }}</option>
                     </select>
                     <label class="form-label" for="floatingSelectVisitante">Equipo Visitante:</label>
                 </div>

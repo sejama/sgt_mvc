@@ -103,7 +103,7 @@ class TorneoController extends AbstractController
                 'hoy' => (
                     new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'))
                     ),
-                'host' => 'https://' . $_SERVER['HTTP_HOST'] . '/'
+                'host' => $request->getSchemeAndHttpHost() . '/'
                 ],
             );
         }
