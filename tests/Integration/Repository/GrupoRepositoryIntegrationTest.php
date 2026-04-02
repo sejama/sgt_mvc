@@ -11,6 +11,7 @@ use App\Entity\Usuario;
 use App\Enum\Genero;
 use App\Repository\GrupoRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -96,6 +97,70 @@ class GrupoRepositoryIntegrationTest extends KernelTestCase
         self::assertSame('activo', $persistido->getEstado());
         self::assertSame($categoria->getId(), $persistido->getCategoria()?->getId());
         self::assertSame(2, $persistido->getClasificaOro());
+    }
+
+    public function testEliminarCategoriaConGruposAsociadosLanzaExcepcionDeFk(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-grupo-fk', $suffix);
+
+        $creador = $this->crearUsuario('it_grupo_fk_user_' . $suffix);
+        $torneo = $this->crearTorneo($creador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+
+        $grupo = (new Grupo())
+            ->setNombre('Grupo FK ' . strtoupper(substr($suffix, 0, 4)))
+            ->setClasificaOro(2)
+            ->setClasificaPlata(1)
+            ->setClasificaBronce(0)
+            ->setEstado('activo')
+            ->setCategoria($categoria);
+
+        $this->grupoRepository->guardar($grupo, true);
+
+        try {
+            $this->entityManager->remove($categoria);
+            $this->entityManager->flush();
+            self::fail('Se esperaba excepción de FK al eliminar categoria con grupo asociado.');
+        } catch (ForeignKeyConstraintViolationException $e) {
+            self::assertTrue(true);
+        }
+
+        $grupoPersistido = $this->entityManager->getRepository(Grupo::class)->findOneBy(['nombre' => $grupo->getNombre()]);
+        self::assertInstanceOf(Grupo::class, $grupoPersistido);
+        self::assertSame($categoria->getId(), $grupoPersistido->getCategoria()?->getId());
+    }
+
+    public function testGuardarYEliminarGrupo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-grupo-del', $suffix);
+
+        $creador = $this->crearUsuario('it_grupo_del_user_' . $suffix);
+        $torneo = $this->crearTorneo($creador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+
+        $grupo = (new Grupo())
+            ->setNombre('Grupo Delete ' . strtoupper(substr($suffix, 0, 4)))
+            ->setClasificaOro(2)
+            ->setClasificaPlata(1)
+            ->setClasificaBronce(0)
+            ->setEstado('activo')
+            ->setCategoria($categoria);
+
+        $this->grupoRepository->guardar($grupo, true);
+        $grupoId = (int) $grupo->getId();
+        self::assertGreaterThan(0, $grupoId);
+
+        $persistido = $this->entityManager->getRepository(Grupo::class)->find($grupoId);
+        self::assertInstanceOf(Grupo::class, $persistido);
+        self::assertSame('activo', $persistido->getEstado());
+
+        $this->grupoRepository->eliminar($persistido, true);
+        $this->entityManager->clear();
+
+        $eliminado = $this->entityManager->getRepository(Grupo::class)->find($grupoId);
+        self::assertNull($eliminado);
     }
 
     private function crearUsuario(string $username): Usuario

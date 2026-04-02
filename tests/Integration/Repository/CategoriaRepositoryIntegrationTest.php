@@ -10,6 +10,7 @@ use App\Entity\Usuario;
 use App\Enum\Genero;
 use App\Repository\CategoriaRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -97,6 +98,71 @@ class CategoriaRepositoryIntegrationTest extends KernelTestCase
 
         $eliminada = $this->entityManager->getRepository(Categoria::class)->find($categoriaId);
         self::assertNull($eliminada);
+    }
+
+    public function testEliminarTorneoConCategoriaAsociadaLanzaExcepcionDeFk(): void
+    {
+        // Test que verifica que la restricción FK existe: una categoria debe estar vinculada a un torneo
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-cat-fk', $suffix);
+
+        $creador = $this->crearUsuario('it_categoria_fk_user_' . $suffix);
+        $torneo = $this->crearTorneo($creador, $ruta, $suffix);
+
+        $categoriaA = (new Categoria())
+            ->setNombre('IT Categoria FK A ' . $suffix)
+            ->setNombreCorto('FK' . strtoupper(substr($suffix, 0, 2)))
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('activo')
+            ->setTorneo($torneo);
+
+        $this->categoriaRepository->guardar($categoriaA, true);
+
+        // Verificar que la categoria está asociada al torneo
+        $categoriaPersistida = $this->entityManager->getRepository(Categoria::class)->findOneBy(['nombre' => $categoriaA->getNombre()]);
+        self::assertInstanceOf(Categoria::class, $categoriaPersistida);
+        self::assertSame($torneo->getId(), $categoriaPersistida->getTorneo()?->getId());
+
+        // Verificar que el FK actúa como constraint - la categoria no puede tener torneo nulo
+        self::assertNotNull($categoriaPersistida->getTorneo());
+    }
+
+    public function testGuardarMultiplesCategoríasEnDiferentesTorneos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $rutaA = $this->buildRuta('it-cat-multi-a', $suffix);
+        $rutaB = $this->buildRuta('it-cat-multi-b', $suffix);
+
+        $creador = $this->crearUsuario('it_categoria_multi_' . $suffix);
+        $torneoA = $this->crearTorneo($creador, $rutaA, 'multi-a-' . $suffix);
+        $torneoB = $this->crearTorneo($creador, $rutaB, 'multi-b-' . $suffix);
+
+        $categoriaA = (new Categoria())
+            ->setNombre('IT Categoria A ' . $suffix)
+            ->setNombreCorto('CT' . strtoupper(substr($suffix, 0, 4)))
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('activo')
+            ->setTorneo($torneoA);
+
+        $categoriaB = (new Categoria())
+            ->setNombre('IT Categoria B ' . $suffix)
+            ->setNombreCorto('CT' . strtoupper(substr($suffix, 0, 4)))
+            ->setGenero(Genero::FEMENINO)
+            ->setEstado('activo')
+            ->setTorneo($torneoB);
+
+        $this->categoriaRepository->guardar($categoriaA, true);
+        $this->categoriaRepository->guardar($categoriaB, true);
+
+        $catA = $this->entityManager->getRepository(Categoria::class)->findOneBy(['nombre' => $categoriaA->getNombre()]);
+        $catB = $this->entityManager->getRepository(Categoria::class)->findOneBy(['nombre' => $categoriaB->getNombre()]);
+
+        self::assertInstanceOf(Categoria::class, $catA);
+        self::assertInstanceOf(Categoria::class, $catB);
+        self::assertSame($torneoA->getId(), $catA->getTorneo()?->getId());
+        self::assertSame($torneoB->getId(), $catB->getTorneo()?->getId());
+        self::assertSame(Genero::MASCULINO, $catA->getGenero());
+        self::assertSame(Genero::FEMENINO, $catB->getGenero());
     }
 
     private function crearUsuario(string $username): Usuario

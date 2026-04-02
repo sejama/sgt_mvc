@@ -8,6 +8,9 @@ use App\Entity\Torneo;
 use App\Entity\Usuario;
 use App\Repository\TorneoRepository;
 use App\Repository\UsuarioRepository;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -20,11 +23,7 @@ class TorneoRepositoryIntegrationTest extends KernelTestCase
 
     private UsuarioRepository $usuarioRepository;
 
-    /** @var string[] */
-    private array $rutasTorneoToCleanup = [];
-
-    /** @var string[] */
-    private array $usernamesToCleanup = [];
+    private Connection $connection;
 
     protected function setUp(): void
     {
@@ -42,35 +41,51 @@ class TorneoRepositoryIntegrationTest extends KernelTestCase
         $usuarioRepository = $registry->getRepository(Usuario::class);
         self::assertInstanceOf(UsuarioRepository::class, $usuarioRepository);
         $this->usuarioRepository = $usuarioRepository;
+
+        $this->connection = $this->entityManager->getConnection();
     }
 
     protected function tearDown(): void
     {
-        foreach (array_unique($this->rutasTorneoToCleanup) as $ruta) {
-            $torneo = $this->torneoRepository->findOneBy(['ruta' => $ruta]);
-            if ($torneo instanceof Torneo) {
-                $this->torneoRepository->eliminar($torneo, true);
-            }
-        }
+        $this->purgeDatabase($this->connection);
 
-        foreach (array_unique($this->usernamesToCleanup) as $username) {
-            $usuario = $this->usuarioRepository->findOneBy(['username' => $username]);
-            if ($usuario instanceof Usuario) {
-                $this->usuarioRepository->eliminar($usuario, true);
-            }
+        if ($this->entityManager->isOpen()) {
+            $this->entityManager->clear();
         }
-
-        $this->entityManager->clear();
 
         parent::tearDown();
+    }
+
+    private function purgeDatabase(Connection $connection): void
+    {
+        $tables = [
+            'partido_config',
+            'partido',
+            'jugador',
+            'equipo',
+            'grupo',
+            'cancha',
+            'sede',
+            'categoria',
+            'torneo',
+            'usuario',
+        ];
+
+        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+
+        try {
+            foreach ($tables as $table) {
+                $connection->executeStatement(sprintf('TRUNCATE TABLE `%s`', $table));
+            }
+        } finally {
+            $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+        }
     }
 
     public function testGuardarYEliminarTorneo(): void
     {
         $id = substr(md5(uniqid('', true)), 0, 8);
         $ruta = 'it' . $id;
-
-        $this->rutasTorneoToCleanup[] = $ruta;
 
         $creador = $this->crearUsuario('it_torneo_creator_' . $id);
 
@@ -101,10 +116,112 @@ class TorneoRepositoryIntegrationTest extends KernelTestCase
         self::assertNull($eliminado);
     }
 
+    public function testGuardarTorneoConRutaDuplicadaLanzaExcepcionDeUnicidad(): void
+    {
+        $id = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = 'it-ruta-' . $id;
+
+        $creador = $this->crearUsuario('it_torneo_dup_ruta_' . $id);
+
+        $torneoA = (new Torneo())
+            ->setNombre('Torneo Dup Ruta A ' . $id)
+            ->setRuta($ruta)
+            ->setDescripcion('Primer torneo con ruta unica')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-01-01 10:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-01-15 10:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-02-01 10:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-02-15 10:00:00'))
+            ->setEstado('activo')
+            ->setCreador($creador);
+
+        $torneoB = (new Torneo())
+            ->setNombre('Torneo Dup Ruta B ' . $id)
+            ->setRuta($ruta)
+            ->setDescripcion('Segundo torneo con misma ruta')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-03-01 10:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-03-15 10:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-04-01 10:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-04-15 10:00:00'))
+            ->setEstado('activo')
+            ->setCreador($creador);
+
+        $this->torneoRepository->guardar($torneoA, true);
+
+        $this->expectException(UniqueConstraintViolationException::class);
+        $this->torneoRepository->guardar($torneoB, true);
+    }
+
+    public function testGuardarTorneoConNombreDuplicadoLanzaExcepcionDeUnicidad(): void
+    {
+        $id = substr(md5(uniqid('', true)), 0, 8);
+        $nombre = 'IT Torneo Nombre Duplicado ' . $id;
+        $rutaA = 'it-nombre-a-' . $id;
+        $rutaB = 'it-nombre-b-' . $id;
+
+        $creador = $this->crearUsuario('it_torneo_dup_nombre_' . $id);
+
+        $torneoA = (new Torneo())
+            ->setNombre($nombre)
+            ->setRuta($rutaA)
+            ->setDescripcion('Primer torneo con nombre unico')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-01-01 10:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-01-15 10:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-02-01 10:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-02-15 10:00:00'))
+            ->setEstado('activo')
+            ->setCreador($creador);
+
+        $torneoB = (new Torneo())
+            ->setNombre($nombre)
+            ->setRuta($rutaB)
+            ->setDescripcion('Segundo torneo con mismo nombre')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-03-01 10:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-03-15 10:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-04-01 10:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-04-15 10:00:00'))
+            ->setEstado('activo')
+            ->setCreador($creador);
+
+        $this->torneoRepository->guardar($torneoA, true);
+
+        $this->expectException(UniqueConstraintViolationException::class);
+        $this->torneoRepository->guardar($torneoB, true);
+    }
+
+    public function testEliminarUsuarioCreadorConTorneoAsociadoLanzaExcepcionDeFk(): void
+    {
+        $id = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = 'it-fk-' . $id;
+
+        $creador = $this->crearUsuario('it_torneo_fk_user_' . $id);
+
+        $torneo = (new Torneo())
+            ->setNombre('Torneo FK ' . $id)
+            ->setRuta($ruta)
+            ->setDescripcion('Torneo para validar FK con creador')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-01-01 10:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-01-15 10:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-02-01 10:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-02-15 10:00:00'))
+            ->setEstado('activo')
+            ->setCreador($creador);
+
+        $this->torneoRepository->guardar($torneo, true);
+
+        try {
+            $this->usuarioRepository->eliminar($creador, true);
+            self::fail('Se esperaba excepción de FK al eliminar usuario creador con torneo asociado.');
+        } catch (ForeignKeyConstraintViolationException $e) {
+            self::assertTrue(true);
+        }
+
+        $torneoPersistido = $this->torneoRepository->findOneBy(['ruta' => $ruta]);
+        self::assertInstanceOf(Torneo::class, $torneoPersistido);
+        self::assertSame($creador->getId(), $torneoPersistido->getCreador()?->getId());
+    }
+
     private function crearUsuario(string $username): Usuario
     {
-        $this->usernamesToCleanup[] = $username;
-
         $usuario = (new Usuario())
             ->setUsername($username)
             ->setEmail($username . '@example.com')

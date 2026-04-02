@@ -112,6 +112,84 @@ class SecurityAccessFunctionalTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testAnonimoNoAccedeACrearUsuarioCuandoYaHayUsuarios(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $this->client->request('GET', '/admin/usuario/nuevo');
+
+        self::assertResponseRedirects('/login');
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeACrearUsuarioYRedirigeAMain(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+        $usuario = $this->crearUsuario(['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/usuario/nuevo');
+
+        self::assertResponseRedirects('/');
+    }
+
+    public function testUsuarioSinRolAdminNoPuedeCrearUsuarioPorPostYRedirigeAMain(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+        $usuario = $this->crearUsuario(['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('POST', '/admin/usuario/nuevo', [
+            'username' => 'new_user_denied_' . uniqid('', true),
+            'password' => 'Abc12345!',
+            'nombre' => 'Nombre',
+            'apellido' => 'Apellido',
+            'email' => 'denied_' . uniqid('', true) . '@example.com',
+            'roles' => ['ROLE_ADMIN'],
+        ]);
+
+        self::assertResponseRedirects('/');
+    }
+
+    public function testUsuarioSinRolAdminNoPuedeEliminarUsuarios(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario(['ROLE_USER']);
+        $usuarioActor = $this->crearUsuario(['ROLE_USER']);
+
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+
+        $this->client->loginUser($usuarioActor);
+        $this->client->request('GET', '/admin/usuario/eliminar/' . $usuarioObjetivoId);
+
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        self::assertContains($statusCode, [401, 403]);
+
+        $usuarioSigueExistiendo = $this->usuarioRepository->find($usuarioObjetivoId);
+        self::assertInstanceOf(Usuario::class, $usuarioSigueExistiendo);
+    }
+
+    public function testAnonimoNoPuedeEliminarUsuarios(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario(['ROLE_USER']);
+
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+
+        $this->client->request('GET', '/admin/usuario/eliminar/' . $usuarioObjetivoId);
+
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        if ($statusCode === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($statusCode, [401, 403]);
+        }
+
+        $usuarioSigueExistiendo = $this->usuarioRepository->find($usuarioObjetivoId);
+        self::assertInstanceOf(Usuario::class, $usuarioSigueExistiendo);
+    }
+
     /**
      * @dataProvider provideAdminRoutes
      */

@@ -8,6 +8,7 @@ use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
 use App\Security\Voter\PartidoVoter;
+use App\Entity\Usuario;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,18 @@ use Throwable;
 #[Route('/admin/torneo/{ruta}')]
 class PartidoController extends AbstractController
 {
+    private function getLogUserId(): string
+    {
+        $user = $this->getUser();
+
+        if ($user instanceof Usuario) {
+            $id = $user->getId();
+            return $id !== null ? (string) $id : 'anon';
+        }
+
+        return 'anon';
+    }
+
     #[Route('/categoria/{categoriaId}/partido/crear', name: 'admin_categoria_partido_crear', methods: ['GET','POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function crearPartidoClasificatorio(
@@ -44,7 +57,7 @@ class PartidoController extends AbstractController
             $partidosPlayOff = $request->request->all();
             $partidoManager->crearPartidoXCategoria($categoria, $partidosPlayOff);
             $this->addFlash('success', 'Partidos creados correctamente.');
-            $logger->info('Partidos creados para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+            $logger->info('Partidos creados para la categoría: ' . $categoria->getId() . ', por el usuario: ' . $this->getLogUserId());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         }
 
@@ -185,7 +198,7 @@ class PartidoController extends AbstractController
             $partidoManager->editarPartido($ruta, $partidoId, $cancha, $horario);
 
             $this->addFlash('success', 'Partido editado correctamente.');
-            $logger->info('Partido editado: ' . $partidoId . ', por el usuario: ' .  $this->getUser()->getId());
+            $logger->info('Partido editado: ' . $partidoId . ', por el usuario: ' . $this->getLogUserId());
             return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception
@@ -244,7 +257,7 @@ class PartidoController extends AbstractController
                 $resultadoVisitante = $request->request->all('puntosVisitante');
                 $partidoManager->cargarResultado($partido, $resultadoLocal, $resultadoVisitante);
                 $this->addFlash('success', 'Resultado cargado correctamente.');
-                $logger->info('Resultado cargado para el partido: ' . $partidoNumero . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Resultado cargado para el partido: ' . $partidoNumero . ', por el usuario: ' . $this->getLogUserId());
                 if ($this->isGranted('ROLE_PLANILLERO')) {
                     return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
                 } else {
@@ -270,7 +283,7 @@ class PartidoController extends AbstractController
 
             // Redirigir al app_main_torneo con un mensaje de error
             $this->addFlash('error', 'No tienes permiso para cargar el resultado de este partido.');
-            $logger->error('Acceso denegado al cargar resultado del partido: ' . $partidoNumero . ', por el usuario: ' .  $this->getUser()->getId());
+            $logger->error('Acceso denegado al cargar resultado del partido: ' . $partidoNumero . ', por el usuario: ' . $this->getLogUserId());
             return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
         } catch (AppException $ae) {
             // Handle the exception

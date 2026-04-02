@@ -216,6 +216,33 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertSame($torneo->getId(), $categoria->getTorneo()?->getId());
     }
 
+    public function testAdminNoCreaCategoriaConNombreInvalidoPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-post-cat-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_post_cat_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/nuevo', [
+            'genero' => 'Masculino',
+            'nombre' => 'FT',
+            'nombreCorto' => 'FC' . strtoupper(substr($suffix, 0, 4)),
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Nombre debe tener entre 3 y 128 caracteres', $this->client->getResponse()->getContent());
+
+        $categorias = $this->entityManager->getRepository(Categoria::class)->findBy([
+            'torneo' => $torneo,
+            'nombre' => 'FT',
+        ]);
+
+        self::assertCount(0, $categorias);
+    }
+
     public function testAdminCreaSedePorPostYSePersiste(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -240,6 +267,32 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
         self::assertInstanceOf(Sede::class, $sede);
         self::assertSame($torneo->getId(), $sede->getTorneo()?->getId());
+    }
+
+    public function testAdminNoCreaSedeConDireccionInvalidaPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-post-sede-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_post_sede_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/nuevo', [
+            'sedeNombre' => 'FT Sede Inv ' . $suffix,
+            'sedeDireccion' => 'Corta',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Dirección debe tener entre 8 y 128 caracteres', $this->client->getResponse()->getContent());
+
+        $sedes = $this->entityManager->getRepository(Sede::class)->findBy([
+            'torneo' => $torneo,
+            'nombre' => 'FT Sede Inv ' . $suffix,
+        ]);
+
+        self::assertCount(0, $sedes);
     }
 
     public function testAdminNoCreaCategoriaDuplicadaPorPost(): void
@@ -624,6 +677,65 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertNull($noEditado->getHorario());
     }
 
+    public function testAdminNoEditaPartidoConCanchaInexistente(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-edit-partido-cancha-inx', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_edit_partido_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $partidoObjetivo = $this->crearPartido($categoria, 3);
+        $partidoObjetivoId = $partidoObjetivo->getId();
+        self::assertNotNull($partidoObjetivoId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/editar', [
+            'var_partidoId' => (string) $partidoObjetivoId,
+            'var_cancha' => '999999',
+            'var_horario' => '2026-05-01 12:00',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+
+        $this->entityManager->clear();
+        $noEditado = $this->entityManager->getRepository(Partido::class)->find($partidoObjetivoId);
+        self::assertInstanceOf(Partido::class, $noEditado);
+        self::assertNull($noEditado->getCancha());
+        self::assertNull($noEditado->getHorario());
+    }
+
+    public function testAdminNoEditaPartidoConHorarioInvalido(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-edit-partido-hora-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_edit_partido_hora_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $cancha = $this->crearCancha($torneo, $suffix);
+        $partidoObjetivo = $this->crearPartido($categoria, 4);
+        $partidoObjetivoId = $partidoObjetivo->getId();
+        self::assertNotNull($partidoObjetivoId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/editar', [
+            'var_partidoId' => (string) $partidoObjetivoId,
+            'var_cancha' => (string) $cancha->getId(),
+            'var_horario' => '2026-99-99 25:99',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+
+        $this->entityManager->clear();
+        $noEditado = $this->entityManager->getRepository(Partido::class)->find($partidoObjetivoId);
+        self::assertInstanceOf(Partido::class, $noEditado);
+        self::assertNull($noEditado->getCancha());
+        self::assertNull($noEditado->getHorario());
+    }
+
     public function testAdminGestionaCanchaPorPostYGet(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -907,6 +1019,38 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
     }
 
+    public function testAdminNoCreaSedeDuplicadaPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-post-sede-dup', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_post_sede_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $nombreSede = 'FT Sede Duplicada ' . $suffix;
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/nuevo', [
+            'sedeNombre' => $nombreSede,
+            'sedeDireccion' => 'Calle Funcional 456',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/');
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/nuevo', [
+            'sedeNombre' => $nombreSede,
+            'sedeDireccion' => 'Calle Funcional 456',
+        ]);
+
+        self::assertStringContainsString('Ya existe una sede con ese nombre', $this->client->getResponse()->getContent());
+
+        $sedes = $this->entityManager->getRepository(Sede::class)->findBy([
+            'torneo' => $torneo,
+            'nombre' => $nombreSede,
+        ]);
+
+        self::assertCount(1, $sedes);
+    }
     public function testAdminAccedeAFormularioCreacionPartidosClasificatoriosPorGet(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -962,6 +1106,59 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertSame('Finalizado', $partidoFinalizado->getEstado());
         self::assertSame(21, $partidoFinalizado->getLocalSet1());
         self::assertSame(18, $partidoFinalizado->getVisitanteSet1());
+    }
+
+    public function testAdminNoPuedeCargarResultadoDePartidoInexistente(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-res-inx', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_res_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->crearTorneo($admin, $ruta, $suffix);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/999999/cargar_resultado');
+
+        self::assertResponseRedirects('/torneo/' . $ruta);
+    }
+
+    public function testAdminNoCargaResultadoConPayloadIncompleto(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-res-payload-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_res_payload_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'il');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'iv');
+        $partido = $this->crearPartido($categoria, 124);
+        $partido
+            ->setEquipoLocal($equipoLocal)
+            ->setEquipoVisitante($equipoVisitante);
+        $this->entityManager->flush();
+
+        $partidoNumero = $partido->getNumero();
+        $partidoId = $partido->getId();
+        self::assertNotNull($partidoNumero);
+        self::assertNotNull($partidoId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/cargar_resultado', [
+            'puntosLocal' => ['21'],
+            'puntosVisitante' => ['18'],
+        ]);
+
+        self::assertResponseRedirects('/torneo/' . $ruta);
+
+        $this->entityManager->clear();
+        $partidoSinCambios = $this->entityManager->getRepository(Partido::class)->find($partidoId);
+        self::assertInstanceOf(Partido::class, $partidoSinCambios);
+        self::assertNotSame('Finalizado', $partidoSinCambios->getEstado());
+        self::assertNull($partidoSinCambios->getLocalSet1());
+        self::assertNull($partidoSinCambios->getVisitanteSet1());
     }
 
     public function testAdminAccedeAFormularioCargaResultadoPorGetSinEquiposAsignados(): void
@@ -1180,6 +1377,32 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertSame('FT Torneo Nuevo ' . $suffix, $torneoCreado->getNombre());
     }
 
+    public function testAdminNoCreaTorneoConRutaDuplicadaYMuestraError(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-create-torneo-dup', $suffix);
+        $admin = $this->crearUsuario('admin_torneo_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+
+        $this->crearTorneo($admin, $ruta, $suffix);
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/torneo/nuevo', [
+            'nombre' => 'FT Torneo Nuevo Duplicado ' . $suffix,
+            'ruta' => $ruta,
+            'descripcion' => 'Torneo duplicado funcional',
+            'fechaInicioTorneo' => '2026-02-01 10:00',
+            'fechaFinTorneo' => '2026-02-20 18:00',
+            'fechaInicioInscripcion' => '2026-01-01 10:00',
+            'fechaFinInscripcion' => '2026-01-10 18:00',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('La ruta ya se encuentra registrada', $this->client->getResponse()->getContent());
+
+        $torneos = $this->entityManager->getRepository(Torneo::class)->findBy(['ruta' => $ruta]);
+        self::assertCount(1, $torneos);
+    }
+
     public function testAdminAccedeAFormularioEditarTorneoPorGet(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -1224,6 +1447,43 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $torneoActualizado = $this->entityManager->getRepository(Torneo::class)->find($torneoId);
         self::assertInstanceOf(Torneo::class, $torneoActualizado);
         self::assertSame('Torneo Editado ' . $suffix, $torneoActualizado->getNombre());
+    }
+
+    public function testAdminNoEditaTorneoConRutaDuplicadaYMuestraError(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $rutaOriginal = 'it-edit-a-' . $suffix;
+        $rutaDestino = 'it-edit-b-' . $suffix;
+        $admin = $this->crearUsuario('admin_torneo_editar_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+
+        $torneoOriginal = $this->crearTorneo($admin, $rutaOriginal, 'orig-' . $suffix);
+        $this->crearTorneo($admin, $rutaDestino, 'dup-' . $suffix);
+
+        $torneoOriginalId = $torneoOriginal->getId();
+        self::assertNotNull($torneoOriginalId);
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/torneo/' . $rutaOriginal . '/editar', [
+            'nombre' => 'Torneo Editado Duplicado ' . $suffix,
+            'ruta' => $rutaDestino,
+            'descripcion' => 'Descripción actualizada funcional',
+            'fechaInicioTorneo' => '2026-02-01',
+            'horaInicioTorneo' => '10:00',
+            'fechaFinTorneo' => '2026-02-20',
+            'horaFinTorneo' => '18:00',
+            'fechaInicioInscripcion' => '2026-01-01',
+            'horaInicioInscripcion' => '10:00',
+            'fechaFinInscripcion' => '2026-01-10',
+            'horaFinInscripcion' => '18:00',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('La ruta ya se encuentra registrada', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $torneoSinCambios = $this->entityManager->getRepository(Torneo::class)->find($torneoOriginalId);
+        self::assertInstanceOf(Torneo::class, $torneoSinCambios);
+        self::assertSame($rutaOriginal, $torneoSinCambios->getRuta());
     }
 
     public function testAdminAccedeAFormularioEditarReglamentoPorGet(): void
@@ -1313,6 +1573,57 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertInstanceOf(Usuario::class, $usuarioCreado);
         self::assertContains('ROLE_USER', $usuarioCreado->getRoles());
         self::assertContains('ROLE_ADMIN', $usuarioCreado->getRoles());
+    }
+
+    public function testAdminNoCreaUsuarioConCamposObligatoriosIncompletos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_invalido_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/usuario/nuevo', [
+            'username' => 'usuario_invalido_' . $suffix,
+            'password' => 'NuevaPass123!',
+            'nombre' => '',
+            'apellido' => 'Apellido ' . $suffix,
+            'email' => 'invalido_' . $suffix . '@example.com',
+            'roles' => ['ROLE_ADMIN'],
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('Todos los campos son obligatorios.', $this->client->getResponse()->getContent());
+
+        $usuarioCreado = $this->entityManager->getRepository(Usuario::class)->findOneBy([
+            'username' => 'usuario_invalido_' . $suffix,
+        ]);
+        self::assertNull($usuarioCreado);
+    }
+
+    public function testAdminNoCreaUsuarioDuplicadoYMuestraError(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $usernameDuplicado = 'usuario_dup_' . $suffix;
+
+        $this->crearUsuario($usernameDuplicado, ['ROLE_USER']);
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/usuario/nuevo', [
+            'username' => $usernameDuplicado,
+            'password' => 'NuevaPass123!',
+            'nombre' => 'Nombre ' . $suffix,
+            'apellido' => 'Apellido ' . $suffix,
+            'email' => 'duplicado_' . $suffix . '@example.com',
+            'roles' => ['ROLE_ADMIN'],
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El nombre de usuario ya se encuentra registrado', $this->client->getResponse()->getContent());
+
+        $usuarios = $this->entityManager->getRepository(Usuario::class)->findBy([
+            'username' => $usernameDuplicado,
+        ]);
+        self::assertCount(1, $usuarios);
     }
 
     public function testAdminEditaUsuarioYActualizaDatos(): void
@@ -1445,7 +1756,14 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->entityManager->persist($usuario);
         $this->entityManager->flush();
 
-        return $usuario;
+        $usuarioId = $usuario->getId();
+        self::assertNotNull($usuarioId);
+
+        /** @var Usuario|null $usuarioGestionado */
+        $usuarioGestionado = $this->entityManager->getRepository(Usuario::class)->find($usuarioId);
+        self::assertInstanceOf(Usuario::class, $usuarioGestionado);
+
+        return $usuarioGestionado;
     }
 
     private function crearTorneo(Usuario $creador, string $ruta, string $suffix): Torneo
