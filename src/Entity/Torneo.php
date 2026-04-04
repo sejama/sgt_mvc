@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TorneoRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -42,6 +43,7 @@ class Torneo
     private ?\DateTimeImmutable $fechaFinTorneo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank(message: "El reglamento no puede estar vacío", allowNull: true)]
     private ?string $reglamento = null;
 
     #[ORM\ManyToOne(inversedBy: 'torneosCreados')]

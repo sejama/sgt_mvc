@@ -1790,6 +1790,67 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertStringContainsString('Reglamento funcional', (string) $torneoActualizado->getReglamento());
     }
 
+    public function testAdminNoEditaReglamentoVacioPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-regl-vacio', $suffix);
+        $admin = $this->crearUsuario('admin_torneo_regl_vacio_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $torneoId = $torneo->getId();
+        self::assertNotNull($torneoId);
+        
+        // Set initial reglamento
+        $torneoBaseReglamento = '<p>Reglamento base ' . $suffix . '</p>';
+        $torneo->setReglamento($torneoBaseReglamento);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($admin);
+        
+        // Attempt to edit with empty reglamento
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/editar/reglamento', [
+            'reglamento' => '',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Reglamento no puede estar vacío', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $torneoSinCambios = $this->entityManager->getRepository(Torneo::class)->find($torneoId);
+        self::assertInstanceOf(Torneo::class, $torneoSinCambios);
+        self::assertSame($torneoBaseReglamento, $torneoSinCambios->getReglamento());
+    }
+
+    public function testAdminNoEditaReglamentoMuyLargoPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-regl-largo', $suffix);
+        $admin = $this->crearUsuario('admin_torneo_regl_largo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $torneoId = $torneo->getId();
+        self::assertNotNull($torneoId);
+        
+        // Set initial reglamento
+        $torneoBaseReglamento = '<p>Reglamento base ' . $suffix . '</p>';
+        $torneo->setReglamento($torneoBaseReglamento);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($admin);
+        
+        // Attempt to edit with very long reglamento (>5000 chars)
+        $reglamentoLargo = '<p>' . str_repeat('A', 5100) . '</p>';
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/editar/reglamento', [
+            'reglamento' => $reglamentoLargo,
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Reglamento no puede exceder 5000 caracteres', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $torneoSinCambios = $this->entityManager->getRepository(Torneo::class)->find($torneoId);
+        self::assertInstanceOf(Torneo::class, $torneoSinCambios);
+        self::assertSame($torneoBaseReglamento, $torneoSinCambios->getReglamento());
+    }
+
     public function testAdminEliminaTorneoYRedirigeAIndex(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);

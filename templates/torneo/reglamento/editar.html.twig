@@ -8,13 +8,21 @@
         <div class="alert alert-success" role="alert">{{ flash_success }}</div>
     {% endfor %}
     
-    <h1>{% block title %}SGT- Editar Reglamento{% endblock %}</h1>
+    <h1>{% block title %}SGT - Editar Reglamento{% endblock %}</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('admin_torneo_editar_reglamento', {'ruta': torneo.ruta}) }}">
-        <input type="textarea" name="reglamento" id="reglamento" hidden>
-            {% set texto = torneo.reglamento %}
-            {{ include ('./componentes/textrich.html.twig', { texto }) }}
-            
+    <form class="needs-validation" novalidate method="post" action="{{ path('admin_torneo_editar_reglamento', {'ruta': torneo.ruta}) }}" id="formReglamento">
+        <div class="row g-3 mb-3 mt-2">
+            <div class="col-12">
+                <label for="reglamento" class="form-label">Reglamento del Torneo</label>
+                <input type="textarea" name="reglamento" id="reglamento" hidden>
+                {% set texto = torneo.reglamento %}
+                {{ include ('./componentes/textrich.html.twig', { texto }) }}
+                <div id="reglamentoFeedback" class="invalid-feedback d-block" style="display: none;">
+                    El reglamento no puede estar vacío
+                </div>
+            </div>
+        </div>
+        
         <div class="row g-3 mt-2 mb-2">
             <div class="col">
                 <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
@@ -24,10 +32,26 @@
     </form>
 
     <script>
-        var form = document.querySelector('form');
-        form.onsubmit = function() {
-            var reglamento = document.querySelector('input[name=reglamento]');
-            reglamento.value = quill.root.innerHTML;
+        const form = document.querySelector('#formReglamento');
+        const reglamentoInput = document.querySelector('input[name=reglamento]');
+        const reglamentoFeedback = document.querySelector('#reglamentoFeedback');
+
+        form.onsubmit = function(e) {
+            // Obtener contenido del editor Quill
+            const contenido = quill.root.innerHTML;
+            const textoLimpio = quill.getText().trim();
+            
+            // Validar que no esté vacío
+            if (!textoLimpio) {
+                e.preventDefault();
+                reglamentoFeedback.style.display = 'block';
+                form.classList.add('was-validated');
+                return false;
+            }
+            
+            // Si pasa validación, asignar valor
+            reglamentoInput.value = contenido;
+            reglamentoFeedback.style.display = 'none';
         }
     </script>
 {% endblock %}

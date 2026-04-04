@@ -220,6 +220,28 @@ class TorneoController extends AbstractController
                 if ($request->isMethod('POST')) {
                     try {
                         $reglamento = $request->request->get('reglamento');
+                        $reglamento = is_string($reglamento) ? $reglamento : '';
+
+                        if (trim($reglamento) === '') {
+                            $this->addFlash('error', 'El Reglamento no puede estar vacío');
+                            return $this->render(
+                                'torneo/reglamento/editar.html.twig',
+                                [
+                                    'torneo' => $torneo,
+                                ]
+                            );
+                        }
+
+                        if (mb_strlen($reglamento) > 5000) {
+                            $this->addFlash('error', 'El Reglamento no puede exceder 5000 caracteres');
+                            return $this->render(
+                                'torneo/reglamento/editar.html.twig',
+                                [
+                                    'torneo' => $torneo,
+                                ]
+                            );
+                        }
+
                         $torneoManager->editarReglamento($torneo, $reglamento);
                         $this->addFlash('success', "Reglamento editado con éxito.");
                         return $this->redirectToRoute('admin_torneo_index');
