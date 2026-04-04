@@ -1894,6 +1894,90 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertCount(1, $usuarios);
     }
 
+    public function testAdminNoCreaUsuarioDuplicadoEmailYMuestraError(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_dup_email_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        
+        // Create first user - email will be username@example.com
+        $usuarioBase = $this->crearUsuario('usuario_base_email_' . $suffix, ['ROLE_USER']);
+        $emailDuplicado = $usuarioBase->getEmail();
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/usuario/nuevo', [
+            'username' => 'usuario_nuevo_' . $suffix,
+            'password' => 'NuevaPass123!',
+            'nombre' => 'Nombre ' . $suffix,
+            'apellido' => 'Apellido ' . $suffix,
+            'email' => $emailDuplicado,
+            'roles' => ['ROLE_ADMIN'],
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El email ya se encuentra registrado', $this->client->getResponse()->getContent());
+
+        $usuarios = $this->entityManager->getRepository(Usuario::class)->findBy([
+            'email' => $emailDuplicado,
+        ]);
+        self::assertCount(1, $usuarios);
+    }
+
+    public function testAdminNoEditaUsuarioDuplicadoUsernameYMuestraError(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_edit_dup_user_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioBase = $this->crearUsuario('usuario_base_user_' . $suffix, ['ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario('usuario_objetivo_user_' . $suffix, ['ROLE_USER']);
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/usuario/editar/' . $usuarioObjetivoId, [
+            'nombre' => 'Nombre Editado',
+            'apellido' => 'Apellido Editado',
+            'email' => 'usuario_objetivo_upd_' . $suffix . '@example.com',
+            'username' => 'usuario_base_user_' . $suffix,
+            'roles' => ['ROLE_USER'],
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El nombre de usuario ya se encuentra registrado', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $usuarioSinCambios = $this->entityManager->getRepository(Usuario::class)->find($usuarioObjetivoId);
+        self::assertInstanceOf(Usuario::class, $usuarioSinCambios);
+        self::assertSame('usuario_objetivo_user_' . $suffix, $usuarioSinCambios->getUsername());
+    }
+
+    public function testAdminNoEditaUsuarioDuplicadoEmailYMuestraError(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_edit_dup_email_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioBase = $this->crearUsuario('usuario_base_email_' . $suffix, ['ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario('usuario_objetivo_email_' . $suffix, ['ROLE_USER']);
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+        
+        $emailBase = $usuarioBase->getEmail();
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/usuario/editar/' . $usuarioObjetivoId, [
+            'nombre' => 'Nombre Editado',
+            'apellido' => 'Apellido Editado',
+            'email' => $emailBase,
+            'username' => 'usuario_objetivo_email_' . $suffix,
+            'roles' => ['ROLE_USER'],
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El email ya se encuentra registrado', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $usuarioSinCambios = $this->entityManager->getRepository(Usuario::class)->find($usuarioObjetivoId);
+        self::assertInstanceOf(Usuario::class, $usuarioSinCambios);
+        self::assertSame('usuario_objetivo_email_' . $suffix, $usuarioSinCambios->getUsername());
+    }
+
     public function testAdminEditaUsuarioYActualizaDatos(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
