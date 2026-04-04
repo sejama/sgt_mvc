@@ -104,7 +104,7 @@ class CanchaController extends AbstractController
         }
         return $this->render(
             'cancha/editar.html.twig', [
-            'torneo' => $torneo,
+            'torneo' => $sede->getTorneo(),
             'sede' => $sede,
             'cancha' => $cancha,
             ]

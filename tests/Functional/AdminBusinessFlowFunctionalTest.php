@@ -788,6 +788,108 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertNull($canchaEliminada);
     }
 
+    public function testAdminNoCreaCanchaDuplicadaPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-cancha-dup', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_cancha_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+        $nombreCancha = 'FT Cancha Duplicada ' . $suffix;
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/nuevo', [
+            'nombreCancha' => $nombreCancha,
+            'descripcionCancha' => 'Cancha funcional duplicada',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/');
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/nuevo', [
+            'nombreCancha' => $nombreCancha,
+            'descripcionCancha' => 'Cancha funcional duplicada',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('Ya existe una cancha con ese nombre', $this->client->getResponse()->getContent());
+
+        $canchas = $this->entityManager->getRepository(Cancha::class)->findBy([
+            'sede' => $sede,
+            'nombre' => $nombreCancha,
+        ]);
+
+        self::assertCount(1, $canchas);
+    }
+
+    public function testAdminNoCreaCanchaConNombreInvalidoPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-cancha-nom-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_cancha_nom_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+
+        $this->client->loginUser($admin);
+
+        // Attempt to create cancha with empty nombre
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/nuevo', [
+            'nombreCancha' => '',
+            'descripcionCancha' => 'Cancha con nombre inválido',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Nombre debe tener entre 1 y 128 caracteres', $this->client->getResponse()->getContent());
+
+        $canchas = $this->entityManager->getRepository(Cancha::class)->findBy(['sede' => $sede]);
+        self::assertCount(0, $canchas);
+    }
+
+    public function testAdminNoEditaCanchaConNombreInvalidoPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-cancha-edit-nom-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_cancha_edit_nom_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+        $cancha = $this->crearCancha($torneo, $suffix);
+
+        $this->client->loginUser($admin);
+
+        // Attempt to edit cancha with empty nombre
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/' . $cancha->getId() . '/editar', [
+            'nombreCancha' => '',
+            'descripcionCancha' => 'Descripción actualizada',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Nombre debe tener entre 1 y 128 caracteres', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $canchaNoEditada = $this->entityManager->getRepository(Cancha::class)->find($cancha->getId());
+        self::assertNotSame('', $canchaNoEditada->getNombre());
+    }
+
+    public function testAdminAccedeAFormularioEditarCanchaPorGet(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-cancha-edit-get', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_cancha_edit_get_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+        $cancha = $this->crearCancha($torneo, $suffix);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/' . $cancha->getId() . '/editar');
+
+        self::assertResponseIsSuccessful();
+    }
+
     public function testAdminGestionaJugadorPorPostYGet(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -855,6 +957,172 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->entityManager->clear();
         $jugadorEliminado = $this->entityManager->getRepository(Jugador::class)->find($jugadorId);
         self::assertNull($jugadorEliminado);
+    }
+
+    public function testAdminNoCreaJugadorConDocumentoInvalido(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-jugador-inv', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_jugador_inv_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+
+        $categoriaId = $categoria->getId();
+        $equipoId = $equipo->getId();
+        self::assertNotNull($categoriaId);
+        self::assertNotNull($equipoId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/nuevo', [
+            'nombre' => 'Mario',
+            'apellido' => 'Gomez',
+            'nacimiento' => '2000-02-01',
+            'tipoPersona' => 'Jugador',
+            'tipoDocumento' => 'DNI',
+            'numeroDocumento' => '1234',
+            'email' => 'jugador-inv+' . $suffix . '@example.com',
+            'celular' => '2614441122',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('El Número Documento debe tener entre 5 y 8 caracteres', $this->client->getResponse()->getContent());
+
+        $jugador = $this->entityManager->getRepository(Jugador::class)->findOneBy([
+            'equipo' => $equipo,
+            'numeroDocumento' => '1234',
+        ]);
+        self::assertNull($jugador);
+    }
+
+    public function testAdminNoCreaJugadorDuplicadoPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-jugador-dup', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_jugador_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+
+        $categoriaId = $categoria->getId();
+        $equipoId = $equipo->getId();
+        $dniFijo = '12345678';
+        self::assertNotNull($categoriaId);
+        self::assertNotNull($equipoId);
+
+        $this->client->loginUser($admin);
+
+        // Create first jugador with DNI
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/nuevo', [
+            'nombre' => 'Mario',
+            'apellido' => 'Gomez',
+            'nacimiento' => '2000-02-01',
+            'tipoPersona' => 'Jugador',
+            'tipoDocumento' => 'DNI',
+            'numeroDocumento' => $dniFijo,
+            'email' => 'jugador-dup1+' . $suffix . '@example.com',
+            'celular' => '2614441122',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/');
+
+        // Attempt to create second jugador with same DNI
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/nuevo', [
+            'nombre' => 'Juan',
+            'apellido' => 'Perez',
+            'nacimiento' => '2001-03-15',
+            'tipoPersona' => 'Jugador',
+            'tipoDocumento' => 'DNI',
+            'numeroDocumento' => $dniFijo,
+            'email' => 'jugador-dup2+' . $suffix . '@example.com',
+            'celular' => '2614441123',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('Ya existe un jugador con ese DNI', $this->client->getResponse()->getContent());
+
+        $jugadores = $this->entityManager->getRepository(Jugador::class)->findBy([
+            'equipo' => $equipo,
+            'numeroDocumento' => $dniFijo,
+        ]);
+
+        self::assertCount(1, $jugadores);
+    }
+
+    public function testAdminNoEditaJugadorConDniDuplicadoPorPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-jugador-edit-dup', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_jugador_edit_dup_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+
+        $categoriaId = $categoria->getId();
+        $equipoId = $equipo->getId();
+        $dniBase = '12345678';
+        $dniSegundo = '87654321';
+        self::assertNotNull($categoriaId);
+        self::assertNotNull($equipoId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/nuevo', [
+            'nombre' => 'Mario',
+            'apellido' => 'Gomez',
+            'nacimiento' => '2000-02-01',
+            'tipoPersona' => 'Jugador',
+            'tipoDocumento' => 'DNI',
+            'numeroDocumento' => $dniBase,
+            'email' => 'jugador-ed-dup1+' . $suffix . '@example.com',
+            'celular' => '2614441122',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/');
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/nuevo', [
+            'nombre' => 'Juan',
+            'apellido' => 'Perez',
+            'nacimiento' => '2001-03-15',
+            'tipoPersona' => 'Jugador',
+            'tipoDocumento' => 'DNI',
+            'numeroDocumento' => $dniSegundo,
+            'email' => 'jugador-ed-dup2+' . $suffix . '@example.com',
+            'celular' => '2614441123',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/');
+
+        $jugadorEditar = $this->entityManager->getRepository(Jugador::class)->findOneBy([
+            'equipo' => $equipo,
+            'numeroDocumento' => $dniSegundo,
+        ]);
+        self::assertInstanceOf(Jugador::class, $jugadorEditar);
+        $jugadorEditarId = $jugadorEditar->getId();
+        self::assertNotNull($jugadorEditarId);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/' . $jugadorEditarId . '/editar', [
+            'nombre' => 'Juan',
+            'apellido' => 'Perez',
+            'nacimiento' => '2001-03-15',
+            'tipoPersona' => 'Jugador',
+            'tipoDocumento' => 'DNI',
+            'numeroDocumento' => $dniBase,
+            'email' => 'jugador-ed-dup2+' . $suffix . '@example.com',
+            'celular' => '2614441123',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertStringContainsString('Ya existe un jugador con ese DNI', $this->client->getResponse()->getContent());
+
+        $this->entityManager->clear();
+        $jugadorSinCambios = $this->entityManager->getRepository(Jugador::class)->find($jugadorEditarId);
+        self::assertInstanceOf(Jugador::class, $jugadorSinCambios);
+        self::assertSame($dniSegundo, $jugadorSinCambios->getNumeroDocumento());
     }
 
     public function testAdminAccedeAVistasDeGrupos(): void
