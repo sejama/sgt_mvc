@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Manager;
 
+use App\Entity\Cancha;
 use App\Entity\Categoria;
 use App\Entity\Equipo;
 use App\Entity\Grupo;
 use App\Entity\Partido;
 use App\Entity\PartidoConfig;
+use App\Entity\Sede;
 use App\Entity\Torneo;
+use App\Entity\Usuario;
 use App\Enum\EstadoEquipo;
 use App\Enum\EstadoPartido;
+use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Manager\CanchaManager;
 use App\Manager\GrupoManager;
@@ -278,6 +282,109 @@ class PartidoManagerTest extends TestCase
         $this->expectExceptionMessage('Ya existe un partido programado en esa cancha y horario');
 
         $manager->editarPartido('ruta-test', 1, 2, '2026-05-01 10:30');
+    }
+
+    public function testEditarPartidoProgramaPartidoYActivaEquiposBorrador(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $canchaManager = $this->createMock(CanchaManager::class);
+
+        $torneo = (new Torneo())
+            ->setNombre('Torneo')
+            ->setRuta('ruta-test')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-01-01 00:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-01-02 00:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-01-03 00:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-01-04 00:00:00'))
+            ->setCreador((new Usuario())
+                ->setNombre('Creador')
+                ->setApellido('Test')
+                ->setEmail('creador@example.com')
+                ->setUsername('creador')
+                ->setRoles(['ROLE_USER']))
+            ->setEstado('Activo');
+
+        $categoria = (new Categoria())
+            ->setNombre('Categoria')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('borrador')
+            ->setTorneo($torneo);
+
+        $sede = (new Sede())
+            ->setNombre('Sede')
+            ->setDomicilio('Domicilio')
+            ->setTorneo($torneo);
+
+        $cancha = (new Cancha())
+            ->setNombre('Cancha')
+            ->setDescripcion('Descripcion')
+            ->setSede($sede);
+
+        $equipoLocal = (new Equipo())
+            ->setNombre('Equipo Local')
+            ->setNombreCorto('EL')
+            ->setPais('Argentina')
+            ->setProvincia('Mendoza')
+            ->setLocalidad('Capital')
+            ->setCategoria($categoria)
+            ->setEstado(EstadoEquipo::BORRADOR->value);
+
+        $equipoVisitante = (new Equipo())
+            ->setNombre('Equipo Visitante')
+            ->setNombreCorto('EV')
+            ->setPais('Argentina')
+            ->setProvincia('Cordoba')
+            ->setLocalidad('Centro')
+            ->setCategoria($categoria)
+            ->setEstado(EstadoEquipo::BORRADOR->value);
+
+        $partido = (new Partido())
+            ->setCategoria($categoria)
+            ->setEquipoLocal($equipoLocal)
+            ->setEquipoVisitante($equipoVisitante)
+            ->setEstado('Borrador')
+            ->setTipo('Clasificatorio')
+            ->setNumero(7);
+
+        $partidoRepository->expects($this->once())
+            ->method('buscarPartidoXCanchaHorario')
+            ->willReturn(null);
+
+        $partidoRepository->expects($this->once())
+            ->method('find')
+            ->with(7)
+            ->willReturn($partido);
+
+        $canchaManager->expects($this->once())
+            ->method('obtenerCancha')
+            ->with(5)
+            ->willReturn($cancha);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($partido);
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('guardar');
+
+        $manager = new PartidoManager(
+            $canchaManager,
+            $this->createMock(GrupoManager::class),
+            $equipoRepository,
+            $partidoRepository,
+            $this->createMock(PartidoConfigRepository::class),
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $manager->editarPartido('ruta-test', 7, 5, '2026-05-01 10:30');
+
+        $this->assertSame('Programado', $partido->getEstado());
+        $this->assertSame(EstadoEquipo::ACTIVO->value, $equipoLocal->getEstado());
+        $this->assertSame(EstadoEquipo::ACTIVO->value, $equipoVisitante->getEstado());
+        $this->assertSame('2026-05-01 10:00', $partido->getHorario()?->format('Y-m-d H:i'));
+        $this->assertSame($cancha, $partido->getCancha());
     }
 
     public function testCrearPartidosXGrupoCreaCrucesYActivaEquiposBorrador(): void

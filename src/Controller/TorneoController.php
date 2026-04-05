@@ -51,10 +51,15 @@ class TorneoController extends AbstractController
                     $nombre = $request->request->get('nombre');
                     $ruta = $request->request->get('ruta');
                     $descripcion = $request->request->get('descripcion');
-                    $fecha_inicio_torneo = str_replace("T", " ", $request->request->get('fechaInicioTorneo'));
-                    $fecha_fin_torneo = str_replace("T", " ", $request->request->get('fechaFinTorneo'));
-                    $fecha_inicio_inscripcion = str_replace("T", " ", $request->request->get('fechaInicioInscripcion'));
-                    $fecha_fin_inscripcion = str_replace("T", " ", $request->request->get('fechaFinInscripcion'));
+                    $fechaInicioTorneoRaw = $request->request->get('fechaInicioTorneo');
+                    $fechaFinTorneoRaw = $request->request->get('fechaFinTorneo');
+                    $fechaInicioInscripcionRaw = $request->request->get('fechaInicioInscripcion');
+                    $fechaFinInscripcionRaw = $request->request->get('fechaFinInscripcion');
+                    
+                    $fecha_inicio_torneo = $fechaInicioTorneoRaw ? str_replace("T", " ", $fechaInicioTorneoRaw) : null;
+                    $fecha_fin_torneo = $fechaFinTorneoRaw ? str_replace("T", " ", $fechaFinTorneoRaw) : null;
+                    $fecha_inicio_inscripcion = $fechaInicioInscripcionRaw ? str_replace("T", " ", $fechaInicioInscripcionRaw) : null;
+                    $fecha_fin_inscripcion = $fechaFinInscripcionRaw ? str_replace("T", " ", $fechaFinInscripcionRaw) : null;
                     $categorias = $request->request->all('categorias');
                     $sedes = $request->request->all('sedes');
                     $torneo = $torneoManager->crearTorneo(

@@ -68,7 +68,7 @@ class UsuarioController extends AbstractController
 
                     $usuarioManager->registrarUsuario($nombre, $apellido, $email, $username, $password, $roles);
                     $this->addFlash('success', 'Primer usuario administrador creado correctamente');
-                    $logger->info('Primer usuario administrador creado: ' . $username . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Primer usuario administrador creado: ' . $username . ', por el usuario: ' . ($this->getUser()?->getId() ?? 'anon'));
                     return $this->redirectToRoute('security_login');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
