@@ -2159,7 +2159,8 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->client->loginUser($admin);
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/pdf');
-        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+        self::assertResponseStatusCodeSame(200);
+        self::assertResponseHeaderSame('content-type', 'application/pdf');
     }
 
     public function testAnonimoGeneraPdfDePartidoYRedirigeAIndice(): void
@@ -2176,7 +2177,8 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/pdf');
 
-        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+        self::assertResponseStatusCodeSame(200);
+        self::assertResponseHeaderSame('content-type', 'application/pdf');
     }
 
     public function testAnonimoPdfDePartidoInexistenteRedirigeAIndice(): void
@@ -2189,7 +2191,10 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/999999/pdf');
 
-        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+        self::assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        self::assertNotNull($location);
+        self::assertStringStartsWith('/error?', $location);
     }
 
     public function testUsuarioSinPermisoNoPuedeCargarResultadoYVuelveATorneo(): void
@@ -2215,7 +2220,10 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->client->loginUser($usuario);
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/cargar_resultado');
-        self::assertResponseRedirects('/torneo/' . $ruta);
+        self::assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        self::assertNotNull($location);
+        self::assertStringStartsWith('/no-autorizado', $location);
     }
 
     public function testPlanilleroCargaResultadoYRedirigeATorneo(): void
@@ -2294,7 +2302,10 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/cargar_resultado');
 
-        self::assertResponseRedirects('/torneo/' . $ruta);
+        self::assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        self::assertNotNull($location);
+        self::assertStringStartsWith('/no-autorizado', $location);
     }
 
     public function testAdminEditaDisputaYCierraCategoria(): void

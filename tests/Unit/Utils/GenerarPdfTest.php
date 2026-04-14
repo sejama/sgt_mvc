@@ -24,7 +24,7 @@ class GenerarPdfTest extends TestCase
     protected function setUp(): void
     {
         $this->projectRoot = dirname(__DIR__, 3);
-        $this->planillaImagePath = $this->projectRoot . '/assets/img/planilla.png';
+        $this->planillaImagePath = $this->projectRoot . '/public/assets/img/planilla.png';
 
         if (!is_dir(dirname($this->planillaImagePath))) {
             mkdir(dirname($this->planillaImagePath), 0777, true);
@@ -39,8 +39,8 @@ class GenerarPdfTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->removeDirectory($this->projectRoot . '/assets/planillas/test-generar-pdf-full');
-        $this->removeDirectory($this->projectRoot . '/assets/planillas/test-generar-pdf-fallback');
+        $this->removeDirectory($this->projectRoot . '/public/assets/planillas/test-generar-pdf-full');
+        $this->removeDirectory($this->projectRoot . '/public/assets/planillas/test-generar-pdf-fallback');
 
         $tempPdf = $this->projectRoot . '/src/Utils/partido-101.pdf';
         if (file_exists($tempPdf)) {
@@ -68,8 +68,8 @@ class GenerarPdfTest extends TestCase
         $generarPdf = new GenerarPdf();
         $generarPdf->generarPdf($partido, $ruta);
 
-        $pdfPath = $this->projectRoot . '/assets/planillas/' . $ruta . '/pdf/partido-101.pdf';
-        $qrPath = $this->projectRoot . '/assets/planillas/' . $ruta . '/qr/partido-101.png';
+        $pdfPath = $this->projectRoot . '/public/assets/planillas/' . $ruta . '/pdf/partido-101.pdf';
+        $qrPath = $this->projectRoot . '/public/assets/planillas/' . $ruta . '/qr/partido-101.png';
 
         self::assertFileExists($pdfPath);
         self::assertFileExists($qrPath);
@@ -88,8 +88,8 @@ class GenerarPdfTest extends TestCase
         $generarPdf = new GenerarPdf();
         $generarPdf->generarPdf($partido, $ruta);
 
-        $pdfPath = $this->projectRoot . '/assets/planillas/' . $ruta . '/pdf/partido-102.pdf';
-        $qrPath = $this->projectRoot . '/assets/planillas/' . $ruta . '/qr/partido-102.png';
+        $pdfPath = $this->projectRoot . '/public/assets/planillas/' . $ruta . '/pdf/partido-102.pdf';
+        $qrPath = $this->projectRoot . '/public/assets/planillas/' . $ruta . '/qr/partido-102.png';
 
         self::assertFileExists($pdfPath);
         self::assertFileExists($qrPath);
