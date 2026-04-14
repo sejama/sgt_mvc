@@ -67,6 +67,26 @@ class PartidoRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function existenOtrosPartidosProgramadosXTorneo(string $ruta, int $partidoId): bool
+    {
+        $cantidad = (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->where('t.ruta = :ruta')
+            ->andWhere('p.id != :partidoId')
+            ->andWhere('p.cancha IS NOT NULL')
+            ->andWhere('p.horario IS NOT NULL')
+            ->andWhere('p.estado != :estadoCancelado')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('partidoId', $partidoId)
+            ->setParameter('estadoCancelado', 'Cancelado')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $cantidad > 0;
+    }
+
     public function buscarPartidosSinAsignarXTorneo(string $ruta): array
     {
         /*

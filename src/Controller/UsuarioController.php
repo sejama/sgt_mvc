@@ -160,6 +160,7 @@ class UsuarioController extends AbstractController
         return $this->render('usuario/cambiar_password.html.twig');
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/editar/{id}', name: 'admin_usuario_editar', methods: ['GET', 'POST'])]
     public function editarUsuario(
         Request $request, 

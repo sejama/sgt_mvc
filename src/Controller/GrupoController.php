@@ -122,7 +122,10 @@ class GrupoController extends AbstractController
 
                 $this->addFlash('success', "Grupo creado con éxito.");
                 $logger->info('Grupo armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
-                return $this->redirectToRoute('admin_torneo_index');
+                return $this->redirectToRoute('admin_equipo_index', [
+                    'ruta' => $ruta,
+                    'categoriaId' => $categoriaId,
+                ]);
             } catch (AppException $ae) {
                 $this->addFlash('danger', $ae->getMessage());
                 $logger->error($ae->getMessage());

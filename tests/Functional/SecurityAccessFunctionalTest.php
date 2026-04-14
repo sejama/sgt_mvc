@@ -102,6 +102,49 @@ class SecurityAccessFunctionalTest extends WebTestCase
         self::assertResponseRedirects('/login');
     }
 
+    public function testLoginRedirigeARegistrarPrimerUsuarioCuandoNoHayUsuarios(): void
+    {
+        $this->purgeDatabase();
+
+        $this->client->request('GET', '/login');
+
+        self::assertResponseRedirects('/admin/usuario/nuevo');
+    }
+
+    public function testAnonimoAccedeAFormularioPrimerUsuarioCuandoNoHayUsuarios(): void
+    {
+        $this->purgeDatabase();
+
+        $this->client->request('GET', '/admin/usuario/nuevo');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Registrar Usuario');
+    }
+
+    public function testAnonimoCreaPrimerUsuarioAdminCuandoNoHayUsuarios(): void
+    {
+        $this->purgeDatabase();
+
+        $username = 'ft_first_admin_' . uniqid('', true);
+        $this->usernamesToCleanup[] = $username;
+
+        $this->client->request('POST', '/admin/usuario/nuevo', [
+            'username' => $username,
+            'password' => 'PrimeraClave123!',
+            'nombre' => 'Primer',
+            'apellido' => 'Admin',
+            'email' => $username . '@example.com',
+        ]);
+
+        self::assertResponseRedirects('/login');
+
+        $usuarioCreado = $this->usuarioRepository->findOneBy(['username' => $username]);
+        self::assertInstanceOf(Usuario::class, $usuarioCreado);
+        self::assertContains('ROLE_ADMIN', $usuarioCreado->getRoles());
+        self::assertContains('ROLE_USER', $usuarioCreado->getRoles());
+    }
+
+
     public function testUsuarioAutenticadoAccedeACambiarPassword(): void
     {
         $usuario = $this->crearUsuario(['ROLE_USER']);
@@ -167,6 +210,40 @@ class SecurityAccessFunctionalTest extends WebTestCase
 
         $usuarioSigueExistiendo = $this->usuarioRepository->find($usuarioObjetivoId);
         self::assertInstanceOf(Usuario::class, $usuarioSigueExistiendo);
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEditarUsuario(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario(['ROLE_USER']);
+        $usuarioActor = $this->crearUsuario(['ROLE_USER']);
+
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+
+        $this->client->loginUser($usuarioActor);
+        $this->client->request('GET', '/admin/usuario/editar/' . $usuarioObjetivoId);
+
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        self::assertContains($statusCode, [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeAEditarUsuario(): void
+    {
+        $this->crearUsuario(['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario(['ROLE_USER']);
+
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+
+        $this->client->request('GET', '/admin/usuario/editar/' . $usuarioObjetivoId);
+
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        if ($statusCode === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($statusCode, [401, 403]);
+        }
     }
 
     public function testAnonimoNoPuedeEliminarUsuarios(): void
@@ -274,5 +351,34 @@ class SecurityAccessFunctionalTest extends WebTestCase
         $this->entityManager->flush();
 
         return $usuario;
+    }
+
+    private function purgeDatabase(): void
+    {
+        $tables = [
+            'partido_config',
+            'partido',
+            'jugador',
+            'equipo',
+            'grupo',
+            'cancha',
+            'sede',
+            'categoria',
+            'torneo',
+            'usuario',
+        ];
+
+        $connection = $this->entityManager->getConnection();
+        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+
+        try {
+            foreach ($tables as $table) {
+                $connection->executeStatement(sprintf('TRUNCATE TABLE `%s`', $table));
+            }
+        } finally {
+            $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+        }
+
+        $this->entityManager->clear();
     }
 }

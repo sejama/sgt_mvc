@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
 #[Route('/admin/torneo')]
-#[IsGranted('ROLE_ADMIN', statusCode: 401, message: 'No autorizado.')]
+#[IsGranted('ROLE_ADMIN', statusCode: 403, message: 'No autorizado.')]
 class TorneoController extends AbstractController
 {
     #[Route('/', name: 'admin_torneo_index', methods: ['GET'])]
@@ -128,7 +128,7 @@ class TorneoController extends AbstractController
             try {
                 $torneo = $torneoManager->obtenerTorneo($ruta);
                 foreach ($torneo->getCategorias() as $categoria) {
-                    $categoriaManager->eliminarCategoria($categoria);
+                    $categoriaManager->eliminarCategoriaEntidad($categoria);
                 }
                 foreach ($torneo->getSedes() as $sede) {
                     $sedeManager->eliminarSede($sede);

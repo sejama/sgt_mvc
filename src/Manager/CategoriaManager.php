@@ -120,6 +120,11 @@ class CategoriaManager
         $this->categoriaRepository->eliminar($categoria, true);
     }
 
+    public function eliminarCategoriaEntidad(Categoria $categoria): void
+    {
+        $this->categoriaRepository->eliminar($categoria, true);
+    }
+
     public function armarPlayOff(Categoria $categoria): void
     {
         $grupos = $categoria->getGrupos();

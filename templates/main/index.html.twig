@@ -12,7 +12,11 @@
     <h1>Bienvenido al Sistema de Gestión de Torneo!!</h1>
     <h3>En esta página podrás ver los torneos que se están jugando y los que se jugarán próximamente.</h3>
     {% for torneo in torneos %}
-        <div><a href={{ path('app_main_torneo', {'ruta': torneo.ruta}) }}>{{ torneo.nombre }}</a></div>
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <a class="btn btn-primary" href="{{ path('app_main_torneo', {'ruta': torneo.ruta}) }}" role="button">
+                {{ torneo.nombre }}
+            </a>
+        </div>
     {% endfor %}
     {#}
     {% include "./componentes/fixture.html.twig" %}

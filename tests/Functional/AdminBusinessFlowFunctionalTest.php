@@ -157,6 +157,35 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertNotContains($status, [401, 403]);
     }
 
+    public function testAdminVeSedeYCanchaEnIndiceDePartidosSinAsignar(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-partidos-cancha', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_partidos_cancha_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $grupo = $this->crearGrupo($categoria, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'icl');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'icv');
+        $partido = $this->crearPartido($categoria, 654);
+        $partido->setGrupo($grupo)->setEquipoLocal($equipoLocal)->setEquipoVisitante($equipoVisitante);
+        $cancha = $this->crearCancha($torneo, $suffix);
+        $this->entityManager->flush();
+
+        $partidoNumero = $partido->getNumero();
+        self::assertNotNull($partidoNumero);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido');
+
+        self::assertResponseIsSuccessful();
+        $content = $this->client->getResponse()->getContent();
+        self::assertStringContainsString((string) $partidoNumero, $content);
+        self::assertStringContainsString($cancha->getSede()->getNombre(), $content);
+        self::assertStringContainsString($cancha->getNombre(), $content);
+    }
+
     public function testUsuarioSinRolAdminNoAccedeAIndiceDePartidos(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -507,6 +536,86 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertNull($eliminada);
     }
 
+    public function testUsuarioSinRolAdminNoAccedeAEditarSede(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-edit-sede', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_edit_sede_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+
+        $usuario = $this->crearUsuario('ft_user_edit_sede_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/editar');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeAEditarSede(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-edit-sede', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_edit_sede_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/editar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEliminarSede(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-del-sede', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_del_sede_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+        $sedeId = $sede->getId();
+        self::assertNotNull($sedeId);
+
+        $usuario = $this->crearUsuario('ft_user_del_sede_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sedeId . '/eliminar');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+
+        $this->entityManager->clear();
+        $sedePersistida = $this->entityManager->getRepository(Sede::class)->find($sedeId);
+        self::assertInstanceOf(Sede::class, $sedePersistida);
+    }
+
+    public function testAnonimoNoAccedeAEliminarSede(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-del-sede', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_del_sede_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+        $sedeId = $sede->getId();
+        self::assertNotNull($sedeId);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sedeId . '/eliminar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+
+        $this->entityManager->clear();
+        $sedePersistida = $this->entityManager->getRepository(Sede::class)->find($sedeId);
+        self::assertInstanceOf(Sede::class, $sedePersistida);
+    }
+
     public function testAdminCreaEquipoPorPostYSePersiste(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -645,6 +754,143 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertNull($eliminado);
     }
 
+    public function testAdminAccedeAIndiceDeEquipos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-index-equipo', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_index_equipo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString($torneo->getNombre(), $this->client->getResponse()->getContent());
+        self::assertStringContainsString($equipo->getNombre(), $this->client->getResponse()->getContent());
+    }
+
+    public function testAdminBajaEquipoYCancelaPartidosAsociados(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-baja-equipo', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_baja_equipo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'l');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'v');
+        $partido = $this->crearPartido($categoria, 501);
+        $equipoLocal->addPartidosLocal($partido);
+        $equipoVisitante->addPartidosVisitante($partido);
+        $this->entityManager->flush();
+
+        $equipoId = $equipoLocal->getId();
+        self::assertNotNull($equipoId);
+        $partidoId = $partido->getId();
+        self::assertNotNull($partidoId);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipoId . '/bajar');
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/');
+
+        $this->entityManager->clear();
+        $equipoBajado = $this->entityManager->getRepository(Equipo::class)->find($equipoId);
+        self::assertInstanceOf(Equipo::class, $equipoBajado);
+        self::assertSame('No_participa', $equipoBajado->getEstado());
+
+        $partidoCancelado = $this->entityManager->getRepository(Partido::class)->find($partidoId);
+        self::assertInstanceOf(Partido::class, $partidoCancelado);
+        self::assertSame('Cancelado', $partidoCancelado->getEstado());
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEditarEquipo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-edit-equipo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_edit_equipo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+
+        $usuario = $this->crearUsuario('ft_user_edit_equipo_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/editar');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeAEditarEquipo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-edit-equipo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_edit_equipo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/editar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEliminarEquipo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-del-equipo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_del_equipo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+        $equipoId = $equipo->getId();
+        self::assertNotNull($equipoId);
+
+        $usuario = $this->crearUsuario('ft_user_del_equipo_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipoId . '/eliminar');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+
+        $this->entityManager->clear();
+        $equipoPersistido = $this->entityManager->getRepository(Equipo::class)->find($equipoId);
+        self::assertInstanceOf(Equipo::class, $equipoPersistido);
+    }
+
+    public function testAnonimoNoAccedeAEliminarEquipo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-del-equipo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_del_equipo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+        $equipoId = $equipo->getId();
+        self::assertNotNull($equipoId);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipoId . '/eliminar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+
+        $this->entityManager->clear();
+        $equipoPersistido = $this->entityManager->getRepository(Equipo::class)->find($equipoId);
+        self::assertInstanceOf(Equipo::class, $equipoPersistido);
+    }
+
     public function testAdminNoEditaPartidoSiCanchaYHorarioYaOcupados(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -734,6 +980,51 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertInstanceOf(Partido::class, $noEditado);
         self::assertNull($noEditado->getCancha());
         self::assertNull($noEditado->getHorario());
+    }
+
+    public function testAdminEditaPartidoConDatosValidosYProgramaYActivaEquipos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-edit-partido-ok', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_edit_partido_ok_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'ol');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'ov');
+        $grupo = $this->crearGrupo($categoria, $suffix);
+        $partido = $this->crearPartido($categoria, 333);
+        $partido->setGrupo($grupo)->setEquipoLocal($equipoLocal)->setEquipoVisitante($equipoVisitante);
+        $cancha = $this->crearCancha($torneo, $suffix);
+        $this->entityManager->flush();
+
+        $partidoId = $partido->getId();
+        $equipoLocalId = $equipoLocal->getId();
+        $equipoVisitanteId = $equipoVisitante->getId();
+        self::assertNotNull($partidoId);
+        self::assertNotNull($equipoLocalId);
+        self::assertNotNull($equipoVisitanteId);
+
+        $this->client->loginUser($admin);
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/editar', [
+            'var_partidoId' => (string) $partidoId,
+            'var_cancha' => (string) $cancha->getId(),
+            'var_horario' => '2026-07-01 10:00',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+
+        $this->entityManager->clear();
+        $partidoProgramado = $this->entityManager->getRepository(Partido::class)->find($partidoId);
+        self::assertInstanceOf(Partido::class, $partidoProgramado);
+        self::assertSame('Programado', $partidoProgramado->getEstado());
+        self::assertNotNull($partidoProgramado->getCancha());
+        self::assertNotNull($partidoProgramado->getHorario());
+
+        $equipoLocalActualizado = $this->entityManager->getRepository(Equipo::class)->find($equipoLocalId);
+        $equipoVisitanteActualizado = $this->entityManager->getRepository(Equipo::class)->find($equipoVisitanteId);
+        self::assertInstanceOf(Equipo::class, $equipoLocalActualizado);
+        self::assertInstanceOf(Equipo::class, $equipoVisitanteActualizado);
     }
 
     public function testAdminGestionaCanchaPorPostYGet(): void
@@ -890,6 +1181,40 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testUsuarioSinRolAdminNoAccedeAGestionCancha(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-cancha', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_cancha_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+
+        $usuario = $this->crearUsuario('ft_user_cancha_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeAGestionCancha(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-cancha', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_cancha_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $sede = $this->crearSede($torneo, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/cancha/');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
     public function testAdminGestionaJugadorPorPostYGet(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -957,6 +1282,94 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->entityManager->clear();
         $jugadorEliminado = $this->entityManager->getRepository(Jugador::class)->find($jugadorId);
         self::assertNull($jugadorEliminado);
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEditarJugador(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-edit-jugador', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_edit_jugador_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+        $jugador = $this->crearJugador($equipo, $suffix);
+
+        $usuario = $this->crearUsuario('ft_user_edit_jugador_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugador->getId() . '/editar');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeAEditarJugador(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-edit-jugador', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_edit_jugador_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+        $jugador = $this->crearJugador($equipo, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugador->getId() . '/editar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEliminarJugador(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-del-jugador', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_del_jugador_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+        $jugador = $this->crearJugador($equipo, $suffix);
+        $jugadorId = $jugador->getId();
+        self::assertNotNull($jugadorId);
+
+        $usuario = $this->crearUsuario('ft_user_del_jugador_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugadorId . '/eliminar');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+
+        $this->entityManager->clear();
+        $jugadorPersistido = $this->entityManager->getRepository(Jugador::class)->find($jugadorId);
+        self::assertInstanceOf(Jugador::class, $jugadorPersistido);
+    }
+
+    public function testAnonimoNoAccedeAEliminarJugador(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-del-jugador', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_del_jugador_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipo = $this->crearEquipo($categoria, $suffix);
+        $jugador = $this->crearJugador($equipo, $suffix);
+        $jugadorId = $jugador->getId();
+        self::assertNotNull($jugadorId);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugadorId . '/eliminar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+
+        $this->entityManager->clear();
+        $jugadorPersistido = $this->entityManager->getRepository(Jugador::class)->find($jugadorId);
+        self::assertInstanceOf(Jugador::class, $jugadorPersistido);
     }
 
     public function testAdminNoCreaJugadorConDocumentoInvalido(): void
@@ -1181,6 +1594,21 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $status = $this->client->getResponse()->getStatusCode();
         self::assertContains($status, [200, 302]);
     }
+                public function testAdminAccedeAFormularioEditarSedePorGet(): void
+                {
+                    $suffix = substr(md5(uniqid('', true)), 0, 8);
+                    $ruta = $this->buildRuta('ft-admin-edit-sede-get', $suffix);
+
+                    $admin = $this->crearUsuario('ft_admin_edit_sede_get_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+                    $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+                    $sede = $this->crearSede($torneo, $suffix);
+
+                    $this->client->loginUser($admin);
+                    $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sede->getId() . '/editar');
+
+                    self::assertResponseIsSuccessful();
+                    self::assertStringContainsString((string) $sede->getNombre(), $this->client->getResponse()->getContent());
+                }
 
     public function testAdminCrearGrupoConCantidadInconsistenteRedirigeAFormulario(): void
     {
@@ -1212,6 +1640,19 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/crear');
     }
 
+                public function testAdminEliminarSedeInexistenteRedirigeALogin(): void
+                {
+                    $suffix = substr(md5(uniqid('', true)), 0, 8);
+                    $ruta = $this->buildRuta('ft-admin-del-sede-inx', $suffix);
+
+                    $admin = $this->crearUsuario('ft_admin_del_sede_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+                    $this->crearTorneo($admin, $ruta, $suffix);
+
+                    $this->client->loginUser($admin);
+                    $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/999999/eliminar');
+
+                    self::assertResponseRedirects('/login');
+                }
     public function testAdminPublicaArmarPlayoffYRedirigeAGrupos(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -1228,6 +1669,84 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/armarPlayoff');
 
         self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupos');
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeACrearGrupo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-grupo-crear', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_user_grupo_crear_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $usuario = $this->crearUsuario('ft_user_grupo_crear_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/crear');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeACrearGrupo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-grupo-crear', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_anon_grupo_crear_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/crear');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testUsuarioSinRolAdminNoPuedeArmarPlayoff(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-playoff-post', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_user_playoff_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $this->crearGrupo($categoria, $suffix);
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $usuario = $this->crearUsuario('ft_user_playoff_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/armarPlayoff');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoPuedeArmarPlayoff(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-playoff-post', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_anon_playoff_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $this->crearGrupo($categoria, $suffix);
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/armarPlayoff');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
     }
 
     public function testUsuarioSinRolAdminNoAccedeAGrupos(): void
@@ -1336,6 +1855,150 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/partido/crear');
         self::assertResponseIsSuccessful();
+    }
+
+    public function testAdminVeTiposFinalesPlayoffEnFormularioCreacionPartidos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-get-playoff-tipos', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_get_playoff_tipos_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $this->crearEquipo($categoria, $suffix . 'a');
+        $this->crearEquipo($categoria, $suffix . 'b');
+
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/crear', [
+            'cantidadGrupos' => '1',
+            'grupos' => [
+                [
+                    'nombre' => 'Grupo A',
+                    'cantidadEquipo' => '2',
+                    'clasificaOro' => '2',
+                    'clasificaPlata' => '0',
+                    'clasificaBronce' => '0',
+                ],
+            ],
+        ]);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/partido/crear');
+
+        self::assertResponseIsSuccessful();
+        $content = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Partidos Play Offs Oro', $content);
+        self::assertStringContainsString('Total de 2 Equipos', $content);
+    }
+
+    public function testAdminNoAccedeAFormularioCreacionPartidosConCategoriaInexistente(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-get-playoff-inx', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_get_playoff_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->crearTorneo($admin, $ruta, $suffix);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/999999/partido/crear');
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeACrearPartidoClasificatorio(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-get-playoff', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_user_get_playoff_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $this->crearGrupo($categoria, $suffix);
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $usuario = $this->crearUsuario('ft_user_get_playoff_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/partido/crear');
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeACrearPartidoClasificatorio(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-get-playoff', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_anon_get_playoff_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $this->crearGrupo($categoria, $suffix);
+        $categoriaId = $categoria->getId();
+        self::assertNotNull($categoriaId);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/partido/crear');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEditarPartido(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-edit-partido', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_user_edit_partido_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'ul');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'uv');
+        $partido = $this->crearPartido($categoria, 200);
+        $partido->setEquipoLocal($equipoLocal)->setEquipoVisitante($equipoVisitante);
+        $this->entityManager->flush();
+
+        $usuario = $this->crearUsuario('ft_user_edit_partido_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/editar', [
+            'var_partidoId' => (string) $partido->getId(),
+            'var_cancha' => (string) ($this->crearCancha($torneo, $suffix)->getId()),
+            'var_horario' => '2026-06-01 10:00',
+        ]);
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeAEditarPartido(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-edit-partido', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_anon_edit_partido_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'al');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'av');
+        $partido = $this->crearPartido($categoria, 201);
+        $partido->setEquipoLocal($equipoLocal)->setEquipoVisitante($equipoVisitante);
+        $this->entityManager->flush();
+        $canchaId = $this->crearCancha($torneo, $suffix)->getId();
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/editar', [
+            'var_partidoId' => (string) $partido->getId(),
+            'var_cancha' => (string) $canchaId,
+            'var_horario' => '2026-06-01 11:00',
+        ]);
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
     }
 
     public function testAdminCargaResultadoDePartidoYSeFinaliza(): void
@@ -1448,6 +2111,32 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testAdminAccedeAFormularioCargaResultadoPorGetConEquiposAsignados(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-get-resultado-eq', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_get_resultado_eq_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'rl');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'rv');
+        $partido = $this->crearPartido($categoria, 1221);
+        $partido->setEquipoLocal($equipoLocal)->setEquipoVisitante($equipoVisitante);
+        $this->entityManager->flush();
+
+        $partidoNumero = $partido->getNumero();
+        self::assertNotNull($partidoNumero);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/cargar_resultado');
+
+        self::assertResponseIsSuccessful();
+        $content = $this->client->getResponse()->getContent();
+        self::assertStringContainsString($equipoLocal->getNombre(), $content);
+        self::assertStringContainsString($equipoVisitante->getNombre(), $content);
+    }
+
     public function testAdminGeneraPdfDePartido(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -1470,6 +2159,36 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->client->loginUser($admin);
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/pdf');
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+    }
+
+    public function testAnonimoGeneraPdfDePartidoYRedirigeAIndice(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-pdf-partido', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_anon_pdf_partido_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $partido = $this->crearPartido($categoria, 301);
+        $partidoNumero = $partido->getNumero();
+        self::assertNotNull($partidoNumero);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/pdf');
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
+    }
+
+    public function testAnonimoPdfDePartidoInexistenteRedirigeAIndice(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-pdf-partido-inx', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_anon_pdf_partido_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->crearTorneo($admin, $ruta, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/999999/pdf');
+
         self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido');
     }
 
@@ -1551,6 +2270,31 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/cargar_resultado');
         self::assertResponseRedirects('/login');
+    }
+
+    public function testUsuarioSinRolAdminNoPuedeCargarResultadoDePartidoYVuelveATorneo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-res-partido', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_user_res_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'rl');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'rv');
+        $partido = $this->crearPartido($categoria, 88);
+        $partido->setEquipoLocal($equipoLocal)->setEquipoVisitante($equipoVisitante);
+        $this->entityManager->flush();
+
+        $partidoNumero = $partido->getNumero();
+        self::assertNotNull($partidoNumero);
+
+        $usuario = $this->crearUsuario('ft_user_res_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/' . $partidoNumero . '/cargar_resultado');
+
+        self::assertResponseRedirects('/torneo/' . $ruta);
     }
 
     public function testAdminEditaDisputaYCierraCategoria(): void
@@ -1851,6 +2595,112 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertSame($torneoBaseReglamento, $torneoSinCambios->getReglamento());
     }
 
+    public function testUsuarioSinRolAdminNoAccedeAEditarTorneo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-edit-torneo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_edit_torneo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+
+        $usuario = $this->crearUsuario('ft_user_edit_torneo_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/editar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testAnonimoNoAccedeAEditarTorneo(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-edit-torneo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_edit_torneo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/editar');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testAdminNoCreadorNoAccedeAEditarTorneoYRedirigeALogin(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-nocreador-edit-torneo', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_admin_creador_edit_torneo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->crearTorneo($adminCreador, $ruta, $suffix);
+
+        $adminNoCreador = $this->crearUsuario('ft_admin_nocreador_edit_torneo_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->client->loginUser($adminNoCreador);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/editar');
+
+        self::assertResponseRedirects('/login');
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAEditarReglamento(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-user-edit-regl', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_edit_regl_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+
+        $usuario = $this->crearUsuario('ft_user_edit_regl_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/editar/reglamento');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testAnonimoNoAccedeAEditarReglamento(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-anon-edit-regl', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_creator_anon_edit_regl_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($adminCreador, $ruta, $suffix);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/editar/reglamento');
+        $status = $this->client->getResponse()->getStatusCode();
+        if ($status === 302) {
+            self::assertResponseRedirects('/login');
+        } else {
+            self::assertContains($status, [401, 403]);
+        }
+    }
+
+    public function testAdminNoCreadorNoAccedeAEditarReglamentoYRedirigeALogin(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-nocreador-edit-regl', $suffix);
+
+        $adminCreador = $this->crearUsuario('ft_admin_creador_edit_regl_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->crearTorneo($adminCreador, $ruta, $suffix);
+
+        $adminNoCreador = $this->crearUsuario('ft_admin_nocreador_edit_regl_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->client->loginUser($adminNoCreador);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/editar/reglamento');
+
+        self::assertResponseRedirects('/login');
+    }
+
     public function testAdminEliminaTorneoYRedirigeAIndex(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -1868,6 +2718,69 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertNull($torneoEliminado);
     }
 
+    public function testAdminCreaTorneoConCategoriaYSedeEnMismoPost(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-create-torneo-rel', $suffix);
+        $admin = $this->crearUsuario('admin_torneo_crear_rel_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/nuevo', [
+            'nombre' => 'FT Torneo Rel ' . $suffix,
+            'ruta' => $ruta,
+            'descripcion' => 'Torneo con relaciones en post',
+            'fechaInicioTorneo' => '2026-03-01T10:00',
+            'fechaFinTorneo' => '2026-03-15T18:00',
+            'fechaInicioInscripcion' => '2026-02-01T10:00',
+            'fechaFinInscripcion' => '2026-02-20T18:00',
+            'categorias' => [
+                [
+                    'generoId' => 'Masculino',
+                    'categoriaNombre' => 'Cat Rel ' . $suffix,
+                    'categoriaNombreCorto' => 'CR' . strtoupper(substr($suffix, 0, 4)),
+                ],
+            ],
+            'sedes' => [
+                [
+                    'sedeNombre' => 'Sede Rel ' . $suffix,
+                    'sedeDireccion' => 'Direccion Rel 123',
+                ],
+            ],
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/');
+
+        $this->entityManager->clear();
+        $torneoCreado = $this->entityManager->getRepository(Torneo::class)->findOneBy(['ruta' => $ruta]);
+        self::assertInstanceOf(Torneo::class, $torneoCreado);
+
+        $categoriaCreada = $this->entityManager->getRepository(Categoria::class)->findOneBy([
+            'torneo' => $torneoCreado,
+            'nombre' => 'Cat Rel ' . $suffix,
+        ]);
+        self::assertInstanceOf(Categoria::class, $categoriaCreada);
+
+        $sedeCreada = $this->entityManager->getRepository(Sede::class)->findOneBy([
+            'torneo' => $torneoCreado,
+            'nombre' => 'Sede Rel ' . $suffix,
+        ]);
+        self::assertInstanceOf(Sede::class, $sedeCreada);
+    }
+
+    public function testAdminEliminarTorneoInexistenteRedirigeALogin(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-del-torneo-inx', $suffix);
+
+        $admin = $this->crearUsuario('admin_torneo_del_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->client->loginUser($admin);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/eliminar');
+
+        self::assertResponseRedirects('/login');
+    }
+
     public function testAdminAccedeAFormularioCrearUsuarioPorGet(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -1877,6 +2790,19 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->client->request('GET', '/admin/usuario/nuevo');
 
         self::assertResponseIsSuccessful();
+    }
+
+    public function testAdminAccedeAIndiceUsuariosYVeUsuarioCreado(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_index_ok_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $usuario = $this->crearUsuario('usuario_index_ok_' . $suffix, ['ROLE_USER']);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/usuario/');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString($usuario->getUsername(), $this->client->getResponse()->getContent());
     }
 
     public function testAdminCreaUsuarioYRedirigeAIndice(): void
@@ -2066,6 +2992,21 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         self::assertContains('ROLE_ADMIN', $usuarioEditado->getRoles());
     }
 
+    public function testAdminAccedeAFormularioEditarUsuarioPorGet(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_edit_get_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $usuarioObjetivo = $this->crearUsuario('usuario_obj_edit_get_' . $suffix, ['ROLE_USER']);
+        $usuarioObjetivoId = $usuarioObjetivo->getId();
+        self::assertNotNull($usuarioObjetivoId);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/usuario/editar/' . $usuarioObjetivoId);
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString($usuarioObjetivo->getUsername(), $this->client->getResponse()->getContent());
+    }
+
     public function testAdminEliminaUsuarioYRedirigeAIndice(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
@@ -2082,6 +3023,65 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->entityManager->clear();
         $usuarioEliminado = $this->entityManager->getRepository(Usuario::class)->find($usuarioObjetivoId);
         self::assertNull($usuarioEliminado);
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeAIndiceUsuarios(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $admin = $this->crearUsuario('admin_usuario_index_deny_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->crearUsuario('usuario_index_deny_' . $suffix, ['ROLE_USER']);
+
+        $usuario = $this->crearUsuario('usuario_index_deny_login_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/usuario/');
+        $status = $this->client->getResponse()->getStatusCode();
+        self::assertContains($status, [401, 403, 302]);
+    }
+
+    public function testAnonimoNoAccedeAIndiceUsuarios(): void
+    {
+        $this->client->request('GET', '/admin/usuario/');
+        $status = $this->client->getResponse()->getStatusCode();
+        self::assertContains($status, [401, 403, 302]);
+    }
+
+    public function testUsuarioSinRolAdminNoAccedeACrearUsuario(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+
+        $usuario = $this->crearUsuario('usuario_create_deny_' . $suffix, ['ROLE_USER']);
+        $this->client->loginUser($usuario);
+
+        $this->client->request('GET', '/admin/usuario/nuevo');
+        self::assertResponseRedirects('/');
+    }
+
+    public function testAnonimoNoAccedeACrearUsuario(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $this->crearUsuario('usuario_create_seed_' . $suffix, ['ROLE_USER']);
+
+        $this->client->request('GET', '/admin/usuario/nuevo');
+        self::assertResponseRedirects('/login');
+    }
+
+    public function testUsuarioSinRolUserNoAccedeACambiarPassword(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $usuario = $this->crearUsuario('usuario_sin_role_user_' . $suffix, ['ROLE_ADMIN']);
+
+        $this->client->loginUser($usuario);
+        $this->client->request('GET', '/admin/usuario/cambiar_password');
+
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
+    }
+
+    public function testAnonimoNoAccedeACambiarPassword(): void
+    {
+        $this->client->request('GET', '/admin/usuario/cambiar_password');
+
+        self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403, 302]);
     }
 
     public function testUsuarioCambiaPasswordYRedirigeAMain(): void
@@ -2107,9 +3107,15 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
 
     public function testAnonimoAccedeAMainIndex(): void
     {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-main-index', $suffix);
+        $admin = $this->crearUsuario('admin_main_index_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+
         $this->client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
+        self::assertStringContainsString($torneo->getNombre(), $this->client->getResponse()->getContent());
     }
 
     public function testUsuarioRecienCreadoVePantallaCambioPasswordEnMain(): void
@@ -2137,6 +3143,7 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->client->request('GET', '/torneo/' . $ruta . '?categoria=' . $categoriaId . '&equipo=999999');
 
         self::assertResponseIsSuccessful();
+        self::assertStringContainsString($torneo->getNombre(), $this->client->getResponse()->getContent());
     }
 
     public function testAnonimoAccedeAVistaCategoriaDeTorneo(): void
@@ -2146,13 +3153,14 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $admin = $this->crearUsuario('admin_main_cat_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
         $torneo = $this->crearTorneo($admin, $ruta, $suffix);
         $categoria = $this->crearCategoria($torneo, $suffix);
-        $this->crearGrupo($categoria, $suffix);
+        $grupo = $this->crearGrupo($categoria, $suffix);
         $categoriaId = $categoria->getId();
         self::assertNotNull($categoriaId);
 
         $this->client->request('GET', '/torneo/' . $ruta . '/categoria/' . $categoriaId);
 
         self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Volver', $this->client->getResponse()->getContent());
     }
 
     /**
@@ -2291,6 +3299,33 @@ class AdminBusinessFlowFunctionalTest extends WebTestCase
         $this->entityManager->flush();
 
         return $equipo;
+    }
+
+    private function crearJugador(Equipo $equipo, string $suffix): Jugador
+    {
+        $equipoId = $equipo->getId();
+        self::assertNotNull($equipoId);
+
+        /** @var Equipo|null $equipoGestionado */
+        $equipoGestionado = $this->entityManager->getRepository(Equipo::class)->find($equipoId);
+        self::assertInstanceOf(Equipo::class, $equipoGestionado);
+
+        $jugador = (new Jugador())
+            ->setEquipo($equipoGestionado)
+            ->setNombre('FT Jugador Base ' . $suffix)
+            ->setApellido('Test')
+            ->setTipoDocumento('DNI')
+            ->setNumeroDocumento('77' . substr($suffix, 0, 6))
+            ->setNacimiento(new \DateTimeImmutable('2000-01-01'))
+            ->setTipo('Jugador')
+            ->setResponsable(false)
+            ->setEmail('jugador-base+' . $suffix . '@example.com')
+            ->setCelular('2614440000');
+
+        $this->entityManager->persist($jugador);
+        $this->entityManager->flush();
+
+        return $jugador;
     }
 
     private function crearGrupo(Categoria $categoria, string $suffix): Grupo

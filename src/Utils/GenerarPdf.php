@@ -21,8 +21,9 @@ class GenerarPdf
 
     public function generarPdf(Partido $partido, string $ruta): void
     {
+        $projectDir = \dirname(__DIR__, 2);
         $filesystem = new Filesystem();
-        $torneoPath = './assets/planillas/' . $ruta;
+        $torneoPath = $projectDir . '/public/assets/planillas/' . $ruta;
         $pathQr = $torneoPath . '/qr/';
         $pathPdf = $torneoPath . '/pdf/';
 
@@ -63,7 +64,7 @@ class GenerarPdf
         $pdf->AddPage();
         $pdf->SetMargins(0, 0, 0, true);
         $pdf->SetAutoPageBreak(false, 0);
-        $pdf->Image('./assets/img/planilla.png', 0, 0, 310, 215, '', '', '', true, 300, '', false, false, 0);
+        $pdf->Image($projectDir . '/public/assets/img/planilla.png', 0, 0, 310, 215, '', '', '', true, 300, '', false, false, 0);
         $pdf->Image($pathQr . 'partido-' . $partido->getNumero() . '.png', 260, 4, 29, 29, '', '', '', true, 300, '', false, false, 0);
         
 
@@ -160,11 +161,6 @@ class GenerarPdf
         //$pdf->SetXY(101, 104.5);
         //$pdf->Write(0, $partido->getEquipoVisitante()->getNombre());
 
-        $tempPdfPath = __DIR__ . '/partido-' . $partido->getNumero() . '.pdf';
-        $pdf->Output($tempPdfPath, 'F');
-        $filesystem->rename(
-            $tempPdfPath,
-            $pathPdf . 'partido-' . $partido->getNumero() . '.pdf'
-        );
+        $pdf->Output($pathPdf . 'partido-' . $partido->getNumero() . '.pdf', 'F');
     }
 }

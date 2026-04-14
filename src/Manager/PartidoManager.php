@@ -206,11 +206,22 @@ class PartidoManager
     {
         $horario = new \DateTimeImmutable(substr_replace($horario, '00', -2));
 
+        $partido = $this->obtenerPartidoxId($partidoId);
+        $torneo = $partido->getCategoria()?->getTorneo();
+        $inicioTorneo = $torneo?->getFechaInicioTorneo();
+
+        if (
+            $inicioTorneo !== null
+            && !$this->partidoRepository->existenOtrosPartidosProgramadosXTorneo($ruta, $partidoId)
+            && $horario->format('Y-m-d H:i') !== $inicioTorneo->format('Y-m-d H:i')
+        ) {
+            throw new AppException('El primer partido del torneo debe programarse en la fecha y hora de inicio del torneo: ' . $inicioTorneo->format('d/m/Y H:i'));
+        }
+
         if ($this->partidoRepository->buscarPartidoXCanchaHorario($ruta, $partidoId, $canchaId, $horario)) {
             throw new AppException('Ya existe un partido programado en esa cancha y horario');
         }
 
-        $partido = $this->obtenerPartidoxId($partidoId);
         $partido->setCancha($this->canchaManager->obtenerCancha($canchaId));
         $partido->setHorario($horario);
         $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);

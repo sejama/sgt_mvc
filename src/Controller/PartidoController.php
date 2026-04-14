@@ -8,12 +8,15 @@ use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TorneoManager;
 use App\Security\Voter\PartidoVoter;
+use App\Utils\GenerarPdf;
 use App\Entity\Usuario;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -188,6 +191,7 @@ class PartidoController extends AbstractController
         string $ruta,
         Request $request,
         PartidoManager $partidoManager,
+        GenerarPdf $generarPdf,
         LoggerInterface $logger
     ): Response {
         try {
@@ -196,6 +200,8 @@ class PartidoController extends AbstractController
             $horario = $request->request->get('var_horario');
 
             $partidoManager->editarPartido($ruta, $partidoId, $cancha, $horario);
+            $partido = $partidoManager->obtenerPartidoxId($partidoId);
+            $generarPdf->generarPdf($partido, $ruta);
 
             $this->addFlash('success', 'Partido editado correctamente.');
             $logger->info('Partido editado: ' . $partidoId . ', por el usuario: ' . $this->getLogUserId());
@@ -218,23 +224,35 @@ class PartidoController extends AbstractController
         string $ruta,
         int $partidoNumero,
         PartidoManager $partidoManager,
+        GenerarPdf $generarPdf,
         LoggerInterface $logger
     ): Response {
         try {
-            $partidoManager->obtenerPartido($ruta, $partidoNumero);
-            $this->addFlash('warning', 'La generación de PDF fue desactivada.');
-            $logger->info('Intento de generar PDF desactivado para el partido: ' . $partidoNumero);
-            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
+            $partido = $partidoManager->obtenerPartido($ruta, $partidoNumero);
+            $generarPdf->generarPdf($partido, $ruta);
+            $pdfPath = $this->getParameter('kernel.project_dir') . '/public/assets/planillas/' . $ruta . '/pdf/partido-' . $partidoNumero . '.pdf';
+
+            $logger->info('PDF generado y visualizado para el partido: ' . $partidoNumero . ', por el usuario: ' . $this->getLogUserId());
+
+            $response = new BinaryFileResponse($pdfPath);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'partido-' . $partidoNumero . '.pdf');
+
+            return $response;
         } catch (AppException $ae) {
-            // Handle the exception
-            $this->addFlash('error', $ae->getMessage());
             $logger->error('Error al generar PDF del partido: ' . $ae->getMessage());
-            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
+            return $this->redirectToRoute('app_error_page', [
+                'status' => 400,
+                'title' => 'Error al generar PDF',
+                'message' => $ae->getMessage(),
+            ]);
         } catch (Throwable $e) {
-            // Handle the exception
-            $this->addFlash('error', 'Ocurrió un error al cargar el partido ' . $e);
             $logger->error('Error al generar PDF del partido: ' . $e);
-            return $this->redirectToRoute('admin_partido_index', ['ruta' => $ruta]);
+            return $this->redirectToRoute('app_error_page', [
+                'status' => 500,
+                'title' => 'Error al generar PDF',
+                'message' => 'Ocurrió un error al cargar el partido.',
+            ]);
         }
     }
 
@@ -281,10 +299,11 @@ class PartidoController extends AbstractController
                 return $this->redirectToRoute('security_login');
             }
 
-            // Redirigir al app_main_torneo con un mensaje de error
-            $this->addFlash('error', 'No tienes permiso para cargar el resultado de este partido.');
             $logger->error('Acceso denegado al cargar resultado del partido: ' . $partidoNumero . ', por el usuario: ' . $this->getLogUserId());
-            return $this->redirectToRoute('app_main_torneo', ['ruta' => $ruta]);
+            return $this->redirectToRoute('app_error_forbidden', [
+                'title' => 'No autorizado',
+                'message' => 'No tienes permiso para cargar el resultado de este partido.',
+            ]);
         } catch (AppException $ae) {
             // Handle the exception
             $this->addFlash('error', $ae->getMessage());
