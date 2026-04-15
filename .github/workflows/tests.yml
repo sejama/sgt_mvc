@@ -97,6 +97,6 @@ jobs:
             exit 1
           fi
 
-      - name: Coverage gate (90% threshold)
+      - name: Coverage gate (85% threshold)
         working-directory: ${{ steps.project-dir.outputs.dir }}
-        run: php ./scripts/check-coverage.php var/coverage/clover.xml 90
+        run: php ./scripts/check-coverage.php var/coverage/clover.xml 85

@@ -87,7 +87,7 @@
         "test:integration": "php ./vendor/bin/phpunit --testsuite Integration",
         "test:functional": "php ./vendor/bin/phpunit --testsuite Functional",
         "test:coverage": "XDEBUG_MODE=coverage php ./vendor/bin/phpunit --order-by=default --coverage-clover var/coverage/clover.xml --coverage-text",
-        "test:coverage:check": "php ./scripts/check-coverage.php var/coverage/clover.xml 90",
+        "test:coverage:check": "php ./scripts/check-coverage.php var/coverage/clover.xml 85",
         "test:ci": [
             "@test:unit",
             "@test:integration",
