@@ -75,6 +75,6 @@ jobs:
         working-directory: ${{ steps.project-dir.outputs.dir }}
         run: composer test:coverage
 
-      - name: Coverage gate (temporary threshold)
+      - name: Coverage gate (90% threshold)
         working-directory: ${{ steps.project-dir.outputs.dir }}
-        run: php ./scripts/check-coverage.php var/coverage/clover.xml 25
+        run: php ./scripts/check-coverage.php var/coverage/clover.xml 90
