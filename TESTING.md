@@ -30,10 +30,7 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 
 - Workflow: .github/workflows/tests.yml
 - Ejecuta base de datos MySQL para entorno test, migraciones y luego composer test:ci.
-- Estado actual (temporal):
-	- El gate de cobertura se evalua contra 90%.
-	- Si queda por debajo, el job no se bloquea, pero emite warning en GitHub Actions.
-- Objetivo de corto plazo: volver a gate bloqueante cuando la cobertura global sea estable >= 90% en corridas consecutivas.
+- El pipeline falla si la cobertura global queda por debajo de 90%.
 
 ## Convenciones por tipo de prueba
 
@@ -68,8 +65,7 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 ## Criterios de merge
 
 - Todas las suites en verde.
-- Cobertura global ideal >= 90%.
-- Mientras el gate este en modo no bloqueante, registrar warning de cobertura como deuda tecnica en el PR.
+- Cobertura global >= 90%.
 - Sin deprecations nuevas en test.
 - Prueba funcional para cambios en controllers o seguridad.
 - Prueba de integracion para cambios en repositorios/consultas.
