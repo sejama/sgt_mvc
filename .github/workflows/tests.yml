@@ -51,7 +51,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          coverage: xdebug
+          coverage: pcov
           tools: composer:v2
 
       - name: Install dependencies
@@ -64,22 +64,15 @@ jobs:
           php bin/console doctrine:database:create --if-not-exists --env=test --no-interaction
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
-      - name: Run test suites
+      - name: Run tests with coverage (single pass)
         working-directory: ${{ steps.project-dir.outputs.dir }}
         run: |
-          composer test:unit
-          composer test:integration
-          composer test:functional
-
-      - name: Generate coverage report
-        working-directory: ${{ steps.project-dir.outputs.dir }}
-        run: |
-          if php -m | grep -qi xdebug; then
+          if php -m | grep -qi pcov; then
+            echo "Usando PCOV para cobertura"
+            php -d pcov.enabled=1 -d pcov.directory=src -d pcov.exclude="~vendor~" ./vendor/bin/phpunit --order-by=default --coverage-clover var/coverage/clover.xml --coverage-text
+          elif php -m | grep -qi xdebug; then
             echo "Usando Xdebug para cobertura"
             composer test:coverage
-          elif php -m | grep -qi pcov; then
-            echo "Usando PCOV para cobertura"
-            php -d pcov.enabled=1 ./vendor/bin/phpunit --order-by=default --coverage-clover var/coverage/clover.xml --coverage-text
           else
             echo "No hay driver de cobertura disponible (xdebug/pcov)."
             php -v

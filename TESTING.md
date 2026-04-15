@@ -30,6 +30,8 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 
 - Workflow: .github/workflows/tests.yml
 - Ejecuta base de datos MySQL para entorno test, migraciones y luego composer test:ci.
+- Cobertura en CI: se prioriza PCOV (mas rapido) y se usa Xdebug como fallback.
+- En PCOV se limita el escaneo a src para reducir overhead sin cambiar el umbral ni el alcance de tests.
 - Estado actual (temporal):
 	- El gate de cobertura se evalua contra 90%.
 	- Si queda por debajo, el job no se bloquea, pero emite warning en GitHub Actions.
@@ -73,6 +75,7 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 - Sin deprecations nuevas en test.
 - Prueba funcional para cambios en controllers o seguridad.
 - Prueba de integracion para cambios en repositorios/consultas.
+- Revisar tendencia de tiempos contra tests/TEST_BENCHMARK_BASELINE.md cuando se toquen suites grandes.
 
 ## Siguientes prioridades en este proyecto
 
