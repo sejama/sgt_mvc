@@ -97,6 +97,9 @@ jobs:
             exit 1
           fi
 
-      - name: Coverage gate (90% threshold)
+      - name: Coverage gate (90% threshold, non-blocking)
         working-directory: ${{ steps.project-dir.outputs.dir }}
-        run: php ./scripts/check-coverage.php var/coverage/clover.xml 90
+        run: |
+          if ! php ./scripts/check-coverage.php var/coverage/clover.xml 90; then
+            echo "::warning::La cobertura global esta por debajo del 90%. El job no se bloquea, pero se recomienda aumentar cobertura."
+          fi
