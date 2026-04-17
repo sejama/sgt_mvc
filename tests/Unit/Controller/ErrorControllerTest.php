@@ -29,15 +29,16 @@ class ErrorControllerTest extends TestCase
     public function testForbiddenUsaValoresPorDefecto(): void
     {
         $controller = new TestableErrorController();
-        $request = Request::create('/no-autorizado', 'GET');
 
-        $response = $controller->forbidden($request);
+        $response = $controller->forbidden();
 
         self::assertInstanceOf(Response::class, $response);
         self::assertSame(403, $response->getStatusCode());
-        self::assertSame('error/forbidden.html.twig', $controller->lastTemplate);
+        self::assertSame('error/index.html.twig', $controller->lastTemplate);
+        self::assertSame(403, $controller->lastParameters['status']);
         self::assertSame('No autorizado', $controller->lastParameters['title']);
-        self::assertSame('No tienes permisos para acceder a este recurso.', $controller->lastParameters['message']);
+        self::assertSame('No autorizado', $controller->lastParameters['message']);
+        self::assertSame('warning', $controller->lastParameters['badgeClass']);
     }
 }
 

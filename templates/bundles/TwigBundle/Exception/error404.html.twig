@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pagina no encontrada{% endblock %}
+
+{% block body %}
+{{ include('error/_error_card.html.twig', {
+    status: 404,
+    title: 'Pagina no encontrada',
+    message: 'Pagina no encontrada.',
+    badgeClass: 'secondary'
+}) }}
+{% endblock %}

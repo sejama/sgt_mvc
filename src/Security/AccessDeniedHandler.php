@@ -16,10 +16,7 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
 
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?RedirectResponse
     {
-        $url = $this->urlGenerator->generate('app_error_forbidden', [
-            'title' => 'No autorizado',
-            'message' => 'No tienes permisos para acceder a este recurso.',
-        ]);
+        $url = $this->urlGenerator->generate('app_error_forbidden');
 
         return new RedirectResponse($url);
     }

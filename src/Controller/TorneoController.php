@@ -7,6 +7,7 @@ use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\SedeManager;
 use App\Manager\TorneoManager;
+use App\Entity\Usuario;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,15 +18,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
 #[Route('/admin/torneo')]
-#[IsGranted('ROLE_ADMIN', statusCode: 401, message: 'No autorizado.')]
+#[IsGranted('ROLE_ADMIN')]
 class TorneoController extends AbstractController
 {
     #[Route('/', name: 'admin_torneo_index', methods: ['GET'])]
     public function index(
         TorneoManager $torneoManager
     ): Response {
-        if ($this->getUser() !== null) {
-            $torneos = $torneoManager->obtenerTorneosXCreador((int)$this->getUser()->getId());
+        $user = $this->getUser();
+        if ($user instanceof Usuario) {
+            $torneos = $torneoManager->obtenerTorneosXCreador((int)$user->getId());
             return $this->render(
                 'torneo/index.html.twig',
                 [
@@ -158,9 +160,10 @@ class TorneoController extends AbstractController
         SedeManager $sedeManager,
         LoggerInterface $logger
     ): Response {
-        if ($this->getUser() !== null) {
+        $user = $this->getUser();
+        if ($user instanceof Usuario) {
             $torneo = $torneoManager->obtenerTorneo($ruta);
-            if ($torneo->getCreador()->getId() === $this->getUser()->getId()) {
+            if ($torneo->getCreador()->getId() === $user->getId()) {
                 if ($request->isMethod('POST')) {
                     try {
                         // Handle the submission of the form
@@ -210,6 +213,8 @@ class TorneoController extends AbstractController
             }
             return $this->redirectToRoute('security_login');
         }
+
+        return $this->redirectToRoute('security_login');
     }
 
     #[Route('/{ruta}/editar/reglamento', name: 'admin_torneo_editar_reglamento', methods: ['GET', 'POST'])]
@@ -219,9 +224,10 @@ class TorneoController extends AbstractController
         Request $request,
         LoggerInterface $logger
     ): Response {
-        if ($this->getUser() !== null) {
+        $user = $this->getUser();
+        if ($user instanceof Usuario) {
             $torneo = $torneoManager->obtenerTorneo($ruta);
-            if ($torneo->getCreador()->getId() === $this->getUser()->getId()) {
+            if ($torneo->getCreador()->getId() === $user->getId()) {
                 if ($request->isMethod('POST')) {
                     try {
                         $reglamento = $request->request->get('reglamento');

@@ -65,14 +65,14 @@ class SecurityAccessFunctionalTest extends WebTestCase
         self::assertContains($statusCode, [401, 403]);
     }
 
-    public function testUsuarioSinRolAdminRecibe401EnAdminTorneo(): void
+    public function testUsuarioSinRolAdminRecibe403EnAdminTorneo(): void
     {
         $usuario = $this->crearUsuario(['ROLE_USER']);
         $this->client->loginUser($usuario);
 
         $this->client->request('GET', '/admin/torneo/');
 
-        self::assertResponseStatusCodeSame(401);
+        self::assertResponseStatusCodeSame(403);
     }
 
     public function testUsuarioAdminAccedeAAdminUsuarioIndex(): void

@@ -17,13 +17,27 @@ class ErrorController extends AbstractController
             $status = 400;
         }
 
-        $title = trim((string) $request->query->get('title', 'Error'));
-        $message = trim((string) $request->query->get('message', 'Ha ocurrido un error inesperado.'));
+        if ($status === 404) {
+            $title = 'Pagina no encontrada';
+            $message = 'Pagina no encontrada';
+            $badgeClass = 'secondary';
+        } elseif ($status === 401 || $status === 403) {
+            $title = 'No autorizado';
+            $message = 'No autorizado';
+            $badgeClass = 'warning';
+        } else {
+            $title = trim((string) $request->query->get('title', 'Error'));
+            $message = trim((string) $request->query->get('message', 'Ha ocurrido un error inesperado.'));
+            $title = $title !== '' ? $title : 'Error';
+            $message = $message !== '' ? $message : 'Ha ocurrido un error inesperado.';
+            $badgeClass = 'secondary';
+        }
 
         $response = $this->render('error/index.html.twig', [
             'status' => $status,
-            'title' => $title !== '' ? $title : 'Error',
-            'message' => $message !== '' ? $message : 'Ha ocurrido un error inesperado.',
+            'title' => $title,
+            'message' => $message,
+            'badgeClass' => $badgeClass,
         ]);
         $response->setStatusCode($status);
 
@@ -31,14 +45,13 @@ class ErrorController extends AbstractController
     }
 
     #[Route('/no-autorizado', name: 'app_error_forbidden', methods: ['GET'])]
-    public function forbidden(Request $request): Response
+    public function forbidden(): Response
     {
-        $title = trim((string) $request->query->get('title', 'No autorizado'));
-        $message = trim((string) $request->query->get('message', 'No tienes permisos para acceder a este recurso.'));
-
-        $response = $this->render('error/forbidden.html.twig', [
-            'title' => $title !== '' ? $title : 'No autorizado',
-            'message' => $message !== '' ? $message : 'No tienes permisos para acceder a este recurso.',
+        $response = $this->render('error/index.html.twig', [
+            'status' => 403,
+            'title' => 'No autorizado',
+            'message' => 'No autorizado',
+            'badgeClass' => 'warning',
         ]);
         $response->setStatusCode(403);
 

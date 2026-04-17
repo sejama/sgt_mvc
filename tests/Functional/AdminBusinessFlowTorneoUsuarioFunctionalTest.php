@@ -4,20 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Entity\Cancha;
 use App\Entity\Categoria;
-use App\Entity\Equipo;
-use App\Entity\Grupo;
-use App\Entity\Jugador;
-use App\Entity\Partido;
 use App\Entity\Sede;
 use App\Entity\Torneo;
 use App\Entity\Usuario;
-use App\Enum\EstadoPartido;
-use App\Enum\Genero;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 class AdminBusinessFlowTorneoUsuarioFunctionalTest extends AdminBusinessFlowFunctionalTestCase
 {
@@ -39,7 +29,7 @@ class AdminBusinessFlowTorneoUsuarioFunctionalTest extends AdminBusinessFlowFunc
         $this->client->loginUser($usuario);
         $this->client->request('GET', '/admin/torneo/nuevo');
 
-        self::assertResponseStatusCodeSame(401);
+        self::assertResponseStatusCodeSame(403);
     }
 
     public function testAdminAccedeAFormularioCreacionTorneosPorGet(): void

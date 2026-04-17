@@ -18,10 +18,7 @@ class AccessDeniedHandlerTest extends TestCase
         $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $urlGenerator->expects($this->once())
             ->method('generate')
-            ->with('app_error_forbidden', [
-                'title' => 'No autorizado',
-                'message' => 'No tienes permisos para acceder a este recurso.',
-            ])
+            ->with('app_error_forbidden')
             ->willReturn('/error/forbidden');
 
         $handler = new AccessDeniedHandler($urlGenerator);
