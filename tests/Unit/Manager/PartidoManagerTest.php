@@ -16,11 +16,13 @@ use App\Entity\Usuario;
 use App\Enum\EstadoEquipo;
 use App\Enum\EstadoPartido;
 use App\Enum\Genero;
+use App\Enum\TipoPartido;
 use App\Exception\AppException;
 use App\Manager\CanchaManager;
 use App\Manager\GrupoManager;
 use App\Manager\PartidoManager;
 use App\Manager\ValidadorPartidoManager;
+use App\Repository\CategoriaRepository;
 use App\Repository\EquipoRepository;
 use App\Repository\PartidoConfigRepository;
 use App\Repository\PartidoRepository;
@@ -71,6 +73,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $canchaManager,
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -111,6 +114,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -170,6 +174,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -215,6 +220,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -247,6 +253,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -272,6 +279,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -372,6 +380,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $canchaManager,
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $equipoRepository,
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -430,6 +439,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $equipoRepository,
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
@@ -450,6 +460,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
@@ -493,6 +504,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
@@ -528,6 +540,7 @@ class PartidoManagerTest extends TestCase
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
             $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
@@ -560,6 +573,188 @@ class PartidoManagerTest extends TestCase
 
         $this->assertSame($equipoVisitante, $partidoSiguiente->getEquipoVisitante());
         $this->assertSame($equipoLocal, $partidoSiguiente->getEquipoLocal());
+    }
+
+    public function testCrearPartidoManualConConfiguracionPorGrupos(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+        $this->setEntityId($categoria, 10);
+
+        $grupo1 = (new Grupo())->setNombre('A')->setCategoria($categoria);
+        $grupo2 = (new Grupo())->setNombre('B')->setCategoria($categoria);
+        $this->setEntityId($grupo1, 21);
+        $this->setEntityId($grupo2, 22);
+
+        $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC')->setCategoria($categoria);
+        $equipoVisitante = (new Equipo())->setNombre('Visita')->setNombreCorto('VIS')->setCategoria($categoria);
+        $this->setEntityId($equipoLocal, 31);
+        $this->setEntityId($equipoVisitante, 32);
+
+        $categoriaRepository->expects($this->once())
+            ->method('find')
+            ->with(10)
+            ->willReturn($categoria);
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('find')
+            ->withConsecutive([31], [32])
+            ->willReturnOnConsecutiveCalls($equipoLocal, $equipoVisitante);
+
+        $grupoManager->expects($this->exactly(2))
+            ->method('obtenerGrupo')
+            ->withConsecutive([21], [22])
+            ->willReturnOnConsecutiveCalls($grupo1, $grupo2);
+
+        $partidoRepository->expects($this->once())
+            ->method('buscarPartidosXTorneo')
+            ->with('ruta-test')
+            ->willReturn([]);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->isInstanceOf(Partido::class));
+
+        $partidoConfigRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->callback(function (PartidoConfig $config) use ($grupo1, $grupo2): bool {
+                return $config->getNombre() === 'Semi Final Oro'
+                    && $config->getGrupoEquipo1() === $grupo1
+                    && $config->getGrupoEquipo2() === $grupo2
+                    && $config->getPosicionEquipo1() === 1
+                    && $config->getPosicionEquipo2() === 2;
+            }));
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $categoriaRepository,
+            $equipoRepository,
+            $partidoRepository,
+            $partidoConfigRepository,
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $partido = $manager->crearPartidoManual('ruta-test', [
+            'crear_categoriaId' => '10',
+            'crear_tipo' => TipoPartido::ELIMINATORIO->value,
+            'crear_equipoLocalId' => '31',
+            'crear_equipoVisitanteId' => '32',
+            'crear_usarConfig' => '1',
+            'crear_config_nombre' => 'Semi Final Oro',
+            'crear_config_origen' => 'grupos',
+            'crear_config_grupoEquipo1Id' => '21',
+            'crear_config_posicionEquipo1' => '1',
+            'crear_config_grupoEquipo2Id' => '22',
+            'crear_config_posicionEquipo2' => '2',
+        ]);
+
+        $this->assertSame(1, $partido->getNumero());
+        $this->assertSame(TipoPartido::ELIMINATORIO->value, $partido->getTipo());
+        $this->assertSame($categoria, $partido->getCategoria());
+        $this->assertSame($equipoLocal, $partido->getEquipoLocal());
+        $this->assertSame($equipoVisitante, $partido->getEquipoVisitante());
+    }
+
+    public function testEditarPartidoManualConConfiguracionPorGanadores(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::FEMENINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+        $this->setEntityId($categoria, 77);
+
+        $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC')->setCategoria($categoria);
+        $equipoVisitante = (new Equipo())->setNombre('Visita')->setNombreCorto('VIS')->setCategoria($categoria);
+        $this->setEntityId($equipoLocal, 101);
+        $this->setEntityId($equipoVisitante, 102);
+
+        $partido = (new Partido())
+            ->setCategoria($categoria)
+            ->setTipo(TipoPartido::CLASIFICATORIO->value)
+            ->setEstado(EstadoPartido::BORRADOR->value)
+            ->setNumero(9);
+        $this->setEntityId($partido, 88);
+
+        $ganador1 = (new Partido())->setNumero(3);
+        $ganador2 = (new Partido())->setNumero(4);
+        $this->setEntityId($ganador1, 301);
+        $this->setEntityId($ganador2, 302);
+
+        $partidoRepository->expects($this->exactly(3))
+            ->method('find')
+            ->withConsecutive([88], [301], [302])
+            ->willReturnOnConsecutiveCalls($partido, $ganador1, $ganador2);
+
+        $categoriaRepository->expects($this->once())
+            ->method('find')
+            ->with(77)
+            ->willReturn($categoria);
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('find')
+            ->withConsecutive([101], [102])
+            ->willReturnOnConsecutiveCalls($equipoLocal, $equipoVisitante);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($partido);
+
+        $partidoConfigRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->callback(function (PartidoConfig $config) use ($partido, $ganador1, $ganador2): bool {
+                return $config->getPartido() === $partido
+                    && $config->getNombre() === 'Final Oro'
+                    && $config->getGanadorPartido1() === $ganador1
+                    && $config->getGanadorPartido2() === $ganador2;
+            }));
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $this->createMock(GrupoManager::class),
+            $categoriaRepository,
+            $equipoRepository,
+            $partidoRepository,
+            $partidoConfigRepository,
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $editado = $manager->editarPartidoManual('ruta-test', [
+            'editar_partidoId' => '88',
+            'editar_categoriaId' => '77',
+            'editar_tipo' => TipoPartido::ELIMINATORIO->value,
+            'editar_equipoLocalId' => '101',
+            'editar_equipoVisitanteId' => '102',
+            'editar_usarConfig' => '1',
+            'editar_config_nombre' => 'Final Oro',
+            'editar_config_origen' => 'ganadores',
+            'editar_config_ganadorPartido1Id' => '301',
+            'editar_config_ganadorPartido2Id' => '302',
+        ]);
+
+        $this->assertSame($partido, $editado);
+        $this->assertSame(TipoPartido::ELIMINATORIO->value, $partido->getTipo());
+        $this->assertSame($equipoLocal, $partido->getEquipoLocal());
+        $this->assertSame($equipoVisitante, $partido->getEquipoVisitante());
     }
 
     private function setEntityId(object $entity, int $id): void

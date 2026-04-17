@@ -7,20 +7,122 @@ namespace App\Tests\Functional;
 use App\Entity\Cancha;
 use App\Entity\Categoria;
 use App\Entity\Equipo;
-use App\Entity\Grupo;
-use App\Entity\Jugador;
 use App\Entity\Partido;
+use App\Entity\PartidoConfig;
 use App\Entity\Sede;
-use App\Entity\Torneo;
-use App\Entity\Usuario;
-use App\Enum\EstadoPartido;
-use App\Enum\Genero;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 class AdminBusinessFlowPartidoFunctionalTest extends AdminBusinessFlowFunctionalTestCase
 {
+    public function testAdminAccedeAPantallaGestionManualPartido(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-gestion-partido', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_gestion_partido_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $this->crearCategoria($torneo, $suffix);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/partido/gestionar');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Gestion manual de partidos', (string) $this->client->getResponse()->getContent());
+    }
+
+    public function testAdminCreaYEditaPartidoManualConConfiguracion(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-crear-editar-manual', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_crear_editar_manual_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $grupoA = $this->crearGrupo($categoria, $suffix . 'a');
+        $grupoB = $this->crearGrupo($categoria, $suffix . 'b');
+        $equipoLocal = $this->crearEquipo($categoria, $suffix . 'loc');
+        $equipoVisitante = $this->crearEquipo($categoria, $suffix . 'vis');
+
+        $categoriaId = $categoria->getId();
+        $grupoAId = $grupoA->getId();
+        $grupoBId = $grupoB->getId();
+        $equipoLocalId = $equipoLocal->getId();
+        $equipoVisitanteId = $equipoVisitante->getId();
+
+        self::assertNotNull($categoriaId);
+        self::assertNotNull($grupoAId);
+        self::assertNotNull($grupoBId);
+        self::assertNotNull($equipoLocalId);
+        self::assertNotNull($equipoVisitanteId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/gestionar', [
+            'accion' => 'crear',
+            'crear_categoriaId' => (string) $categoriaId,
+            'crear_tipo' => 'Eliminatorio',
+            'crear_equipoLocalId' => (string) $equipoLocalId,
+            'crear_equipoVisitanteId' => (string) $equipoVisitanteId,
+            'crear_usarConfig' => '1',
+            'crear_config_nombre' => 'Semifinal Oro',
+            'crear_config_origen' => 'grupos',
+            'crear_config_grupoEquipo1Id' => (string) $grupoAId,
+            'crear_config_posicionEquipo1' => '1',
+            'crear_config_grupoEquipo2Id' => (string) $grupoBId,
+            'crear_config_posicionEquipo2' => '2',
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido/gestionar');
+
+        $this->entityManager->clear();
+        $partidoManual = $this->entityManager->getRepository(Partido::class)->findOneBy([
+            'categoria' => $categoria,
+            'numero' => 1,
+        ]);
+
+        self::assertInstanceOf(Partido::class, $partidoManual);
+        self::assertSame('Eliminatorio', $partidoManual->getTipo());
+
+        $configManual = $this->entityManager->getRepository(PartidoConfig::class)->findOneBy(['partido' => $partidoManual]);
+        self::assertInstanceOf(PartidoConfig::class, $configManual);
+        self::assertSame('Semifinal Oro', $configManual->getNombre());
+
+        $partidoBase1 = $this->crearPartido($categoria, 2);
+        $partidoBase2 = $this->crearPartido($categoria, 3);
+        $partidoManualId = $partidoManual->getId();
+        $partidoBase1Id = $partidoBase1->getId();
+        $partidoBase2Id = $partidoBase2->getId();
+
+        self::assertNotNull($partidoManualId);
+        self::assertNotNull($partidoBase1Id);
+        self::assertNotNull($partidoBase2Id);
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/partido/gestionar', [
+            'accion' => 'editar',
+            'editar_partidoId' => (string) $partidoManualId,
+            'editar_categoriaId' => (string) $categoriaId,
+            'editar_tipo' => 'Eliminatorio',
+            'editar_equipoLocalId' => (string) $equipoLocalId,
+            'editar_equipoVisitanteId' => (string) $equipoVisitanteId,
+            'editar_usarConfig' => '1',
+            'editar_config_nombre' => 'Final Oro',
+            'editar_config_origen' => 'ganadores',
+            'editar_config_ganadorPartido1Id' => (string) $partidoBase1Id,
+            'editar_config_ganadorPartido2Id' => (string) $partidoBase2Id,
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/partido/gestionar');
+
+        $this->entityManager->clear();
+        $partidoEditado = $this->entityManager->getRepository(Partido::class)->find($partidoManualId);
+        self::assertInstanceOf(Partido::class, $partidoEditado);
+
+        $configEditada = $this->entityManager->getRepository(PartidoConfig::class)->findOneBy(['partido' => $partidoEditado]);
+        self::assertInstanceOf(PartidoConfig::class, $configEditada);
+        self::assertSame('Final Oro', $configEditada->getNombre());
+        self::assertSame($partidoBase1Id, $configEditada->getGanadorPartido1()?->getId());
+        self::assertSame($partidoBase2Id, $configEditada->getGanadorPartido2()?->getId());
+    }
+
     public function testAdminNoEditaPartidoSiCanchaYHorarioYaOcupados(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);

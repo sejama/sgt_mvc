@@ -1,0 +1,424 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+
+    <h1>SGT - Gestion manual de partidos</h1>
+    <a href="{{ path('admin_partido_index', { 'ruta': torneo.ruta }) }}" class="btn btn-secondary mb-3">Volver a programacion</a>
+
+    <div class="mb-4">
+        <div class="btn-group" role="group" aria-label="Modo de gestion">
+            <button type="button" class="btn btn-primary" id="btn_modo_nuevo">Nuevo</button>
+            <button type="button" class="btn btn-outline-primary" id="btn_modo_editar">Editar</button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12" id="panel_nuevo">
+            <div class="card">
+                <div class="card-header">Agregar partido</div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}">
+                        <input type="hidden" name="accion" value="crear">
+
+                        <div class="mb-3">
+                            <label class="form-label">Categoria</label>
+                            <select class="form-select" name="crear_categoriaId" required>
+                                <option value="">Seleccionar</option>
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" name="crear_tipo" required>
+                                <option value="">Seleccionar</option>
+                                {% for tipo in tiposPartido %}
+                                    <option value="{{ tipo }}">{{ tipo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Grupo (solo clasificatorio)</label>
+                            <select class="form-select" name="crear_grupoId">
+                                <option value="">Sin grupo</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for grupo in categoria.grupos %}
+                                            <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Equipo local</label>
+                            <select class="form-select" name="crear_equipoLocalId">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for equipo in categoria.equipos %}
+                                            <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Equipo visitante</label>
+                            <select class="form-select" name="crear_equipoVisitanteId">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for equipo in categoria.equipos %}
+                                            <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="crear_usarConfig" name="crear_usarConfig" value="1">
+                            <label class="form-check-label" for="crear_usarConfig">Agregar configuracion de instancia</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de instancia/configuracion</label>
+                            <input type="text" class="form-control" name="crear_config_nombre" placeholder="Ej: Semi Final Oro">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Origen de configuracion</label>
+                            <select class="form-select" name="crear_config_origen">
+                                <option value="">Sin origen</option>
+                                <option value="grupos">Grupos y posiciones</option>
+                                <option value="ganadores">Ganadores de partidos</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Grupo equipo 1</label>
+                            <select class="form-select" name="crear_config_grupoEquipo1Id">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for grupo in categoria.grupos %}
+                                            <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Posicion equipo 1</label>
+                            <input type="number" min="1" class="form-control" name="crear_config_posicionEquipo1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Grupo equipo 2</label>
+                            <select class="form-select" name="crear_config_grupoEquipo2Id">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for grupo in categoria.grupos %}
+                                            <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Posicion equipo 2</label>
+                            <input type="number" min="1" class="form-control" name="crear_config_posicionEquipo2">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Partido origen 1 (ganador)</label>
+                            <select class="form-select" name="crear_config_ganadorPartido1Id">
+                                <option value="">Sin definir</option>
+                                {% for partido in partidos %}
+                                    <option value="{{ partido.id }}">#{{ partido.numero }} - {{ partido.categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Partido origen 2 (ganador)</label>
+                            <select class="form-select" name="crear_config_ganadorPartido2Id">
+                                <option value="">Sin definir</option>
+                                {% for partido in partidos %}
+                                    <option value="{{ partido.id }}">#{{ partido.numero }} - {{ partido.categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" type="submit">Agregar partido</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 d-none" id="panel_editar">
+            <div class="card">
+                <div class="card-header">Editar partido</div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}">
+                        <input type="hidden" name="accion" value="editar">
+
+                        <div class="mb-3">
+                            <label class="form-label">Partido</label>
+                            <select class="form-select" name="editar_partidoId" id="editar_partidoId" required>
+                                <option value="">Seleccionar</option>
+                                {% for partido in partidos %}
+                                    <option value="{{ partido.id }}">#{{ partido.numero }} - {{ partido.categoria.nombre }} - {{ partido.tipo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Categoria</label>
+                            <select class="form-select" name="editar_categoriaId" id="editar_categoriaId" required>
+                                <option value="">Seleccionar</option>
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" name="editar_tipo" id="editar_tipo" required>
+                                <option value="">Seleccionar</option>
+                                {% for tipo in tiposPartido %}
+                                    <option value="{{ tipo }}">{{ tipo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Grupo (solo clasificatorio)</label>
+                            <select class="form-select" name="editar_grupoId" id="editar_grupoId">
+                                <option value="">Sin grupo</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for grupo in categoria.grupos %}
+                                            <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Equipo local</label>
+                            <select class="form-select" name="editar_equipoLocalId" id="editar_equipoLocalId">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for equipo in categoria.equipos %}
+                                            <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Equipo visitante</label>
+                            <select class="form-select" name="editar_equipoVisitanteId" id="editar_equipoVisitanteId">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for equipo in categoria.equipos %}
+                                            <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="editar_usarConfig" name="editar_usarConfig" value="1">
+                            <label class="form-check-label" for="editar_usarConfig">Actualizar configuracion de instancia</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de instancia/configuracion</label>
+                            <input type="text" class="form-control" name="editar_config_nombre" id="editar_config_nombre" placeholder="Ej: Semi Final Oro">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Origen de configuracion</label>
+                            <select class="form-select" name="editar_config_origen" id="editar_config_origen">
+                                <option value="">Sin origen</option>
+                                <option value="grupos">Grupos y posiciones</option>
+                                <option value="ganadores">Ganadores de partidos</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Grupo equipo 1</label>
+                            <select class="form-select" name="editar_config_grupoEquipo1Id" id="editar_config_grupoEquipo1Id">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for grupo in categoria.grupos %}
+                                            <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Posicion equipo 1</label>
+                            <input type="number" min="1" class="form-control" name="editar_config_posicionEquipo1" id="editar_config_posicionEquipo1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Grupo equipo 2</label>
+                            <select class="form-select" name="editar_config_grupoEquipo2Id" id="editar_config_grupoEquipo2Id">
+                                <option value="">Sin definir</option>
+                                {% for categoria in categorias %}
+                                    <optgroup label="{{ categoria.nombre }}">
+                                        {% for grupo in categoria.grupos %}
+                                            <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Posicion equipo 2</label>
+                            <input type="number" min="1" class="form-control" name="editar_config_posicionEquipo2" id="editar_config_posicionEquipo2">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Partido origen 1 (ganador)</label>
+                            <select class="form-select" name="editar_config_ganadorPartido1Id" id="editar_config_ganadorPartido1Id">
+                                <option value="">Sin definir</option>
+                                {% for partido in partidos %}
+                                    <option value="{{ partido.id }}">#{{ partido.numero }} - {{ partido.categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Partido origen 2 (ganador)</label>
+                            <select class="form-select" name="editar_config_ganadorPartido2Id" id="editar_config_ganadorPartido2Id">
+                                <option value="">Sin definir</option>
+                                {% for partido in partidos %}
+                                    <option value="{{ partido.id }}">#{{ partido.numero }} - {{ partido.categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" type="submit">Guardar cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="partidos-payload" type="application/json">{{ partidosPayload|json_encode|raw }}</script>
+    <script>
+        (function () {
+            const btnModoNuevo = document.getElementById('btn_modo_nuevo');
+            const btnModoEditar = document.getElementById('btn_modo_editar');
+            const panelNuevo = document.getElementById('panel_nuevo');
+            const panelEditar = document.getElementById('panel_editar');
+            const payloadEl = document.getElementById('partidos-payload');
+            const partidos = payloadEl ? JSON.parse(payloadEl.textContent || '[]') : [];
+            const porId = {};
+            partidos.forEach((p) => {
+                porId[String(p.id)] = p;
+            });
+
+            const selectPartido = document.getElementById('editar_partidoId');
+            if (!selectPartido) {
+                return;
+            }
+
+            function mostrarNuevo() {
+                panelNuevo.classList.remove('d-none');
+                panelEditar.classList.add('d-none');
+                btnModoNuevo.classList.remove('btn-outline-primary');
+                btnModoNuevo.classList.add('btn-primary');
+                btnModoEditar.classList.remove('btn-primary');
+                btnModoEditar.classList.add('btn-outline-primary');
+            }
+
+            function mostrarEditar() {
+                panelEditar.classList.remove('d-none');
+                panelNuevo.classList.add('d-none');
+                btnModoEditar.classList.remove('btn-outline-primary');
+                btnModoEditar.classList.add('btn-primary');
+                btnModoNuevo.classList.remove('btn-primary');
+                btnModoNuevo.classList.add('btn-outline-primary');
+            }
+
+            function setValue(id, value) {
+                const el = document.getElementById(id);
+                if (!el) {
+                    return;
+                }
+
+                if (el.type === 'checkbox') {
+                    el.checked = Boolean(value);
+                    return;
+                }
+
+                el.value = value === null || value === undefined ? '' : String(value);
+            }
+
+            function recargarFormularioEdicion(partidoId) {
+                const partido = porId[String(partidoId)];
+                if (!partido) {
+                    return;
+                }
+
+                setValue('editar_categoriaId', partido.categoriaId);
+                setValue('editar_tipo', partido.tipo);
+                setValue('editar_grupoId', partido.grupoId);
+                setValue('editar_equipoLocalId', partido.equipoLocalId);
+                setValue('editar_equipoVisitanteId', partido.equipoVisitanteId);
+                setValue('editar_usarConfig', partido.usarConfig);
+                setValue('editar_config_nombre', partido.configNombre);
+                setValue('editar_config_origen', partido.configOrigen);
+                setValue('editar_config_grupoEquipo1Id', partido.configGrupoEquipo1Id);
+                setValue('editar_config_posicionEquipo1', partido.configPosicionEquipo1);
+                setValue('editar_config_grupoEquipo2Id', partido.configGrupoEquipo2Id);
+                setValue('editar_config_posicionEquipo2', partido.configPosicionEquipo2);
+                setValue('editar_config_ganadorPartido1Id', partido.configGanadorPartido1Id);
+                setValue('editar_config_ganadorPartido2Id', partido.configGanadorPartido2Id);
+            }
+
+            selectPartido.addEventListener('change', (event) => {
+                recargarFormularioEdicion(event.target.value);
+            });
+
+            btnModoNuevo.addEventListener('click', mostrarNuevo);
+            btnModoEditar.addEventListener('click', mostrarEditar);
+
+            if (selectPartido.value) {
+                recargarFormularioEdicion(selectPartido.value);
+            }
+
+            mostrarNuevo();
+        })();
+    </script>
+{% endblock %}

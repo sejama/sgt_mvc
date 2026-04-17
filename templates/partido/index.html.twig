@@ -13,6 +13,7 @@
     {% set esPrimerPartido = partidosProgramados|length == 0 %}
     <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
     <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}" class="btn btn-primary">Agregar/Editar partido</a>
     <h3>Partidos clasificatorios</h3>
     {% if partidosSinAsignar['clasificatorios']|length == 0 %}
         <div class="alert alert-warning" role="alert">

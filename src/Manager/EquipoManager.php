@@ -50,11 +50,11 @@ class EquipoManager
     ): Equipo {
 
         if ($this->equipoRepository->findOneBy(['categoria' => $categoria, 'nombre' => $nombre])) {
-            throw new AppException('Ya existe un equipo con ese nombre');
+            throw new AppException('Ya existe un equipo con ese nombre en esta categoría');
         }
 
         if ($this->equipoRepository->findOneBy(['categoria' => $categoria, 'nombreCorto' => $nombreCorto])) {
-            throw new AppException('Ya existe un equipo con ese nombre corto');
+            throw new AppException('Ya existe un equipo con ese nombre corto en esta categoría');
         }
 
         $this->validadorManager->validarEquipo(
@@ -94,13 +94,13 @@ class EquipoManager
         if ($equipo->getNombre() !== $nombre 
             && $this->equipoRepository->findOneBy(['categoria' => $equipo->getCategoria(), 'nombre' => $nombre])
         ) {
-            throw new AppException('Ya existe un equipo con ese nombre');
+            throw new AppException('Ya existe un equipo con ese nombre en esta categoría');
         }
 
         if ($equipo->getNombreCorto() !== $nombreCorto 
             && $this->equipoRepository->findOneBy(['categoria' => $equipo->getCategoria(), 'nombreCorto' => $nombreCorto])
         ) {
-            throw new AppException('Ya existe un equipo con ese nombre corto');
+            throw new AppException('Ya existe un equipo con ese nombre corto en esta categoría');
         }
 
         $this->validadorManager->validarEquipo(

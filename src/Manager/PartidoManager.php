@@ -6,9 +6,11 @@ use App\Entity\Categoria;
 use App\Entity\Grupo;
 use App\Entity\Partido;
 use App\Entity\PartidoConfig;
+use App\Enum\TipoPartido;
 use App\Exception\AppException;
 use App\Manager\CanchaManager;
 use App\Manager\ValidadorPartidoManager;
+use App\Repository\CategoriaRepository;
 use App\Repository\EquipoRepository;
 use App\Repository\PartidoConfigRepository;
 use App\Repository\PartidoRepository;
@@ -18,6 +20,7 @@ class PartidoManager
     public function __construct(
         private CanchaManager $canchaManager,
         private GrupoManager $grupoManager,
+        private CategoriaRepository $categoriaRepository,
         private EquipoRepository $equipoRepository,
         private PartidoRepository $partidoRepository,
         private PartidoConfigRepository $partidoConfigRepository,
@@ -245,6 +248,212 @@ class PartidoManager
             }
         }
 
+    }
+
+    public function crearPartidoManual(string $ruta, array $data): Partido
+    {
+        $categoria = $this->obtenerCategoriaDesdeData($data, 'crear_categoriaId', $ruta);
+        $tipo = $this->obtenerTipoDesdeData($data, 'crear_tipo');
+        $grupo = $this->obtenerGrupoDesdeData($data, 'crear_grupoId', $categoria);
+        [$equipoLocal, $equipoVisitante] = $this->obtenerEquiposDesdeData($data, 'crear_equipoLocalId', 'crear_equipoVisitanteId', $categoria);
+
+        if ($tipo === TipoPartido::CLASIFICATORIO->value && $grupo === null) {
+            throw new AppException('Para un partido clasificatorio debe seleccionar un grupo.');
+        }
+
+        $partido = new Partido();
+        $partido->setCancha(null);
+        $partido->setHorario(null);
+        $partido->setCategoria($categoria);
+        $partido->setGrupo($tipo === TipoPartido::CLASIFICATORIO->value ? $grupo : null);
+        $partido->setEstado(\App\Enum\EstadoPartido::BORRADOR->value);
+        $partido->setTipo($tipo);
+        $partido->setEquipoLocal($equipoLocal);
+        $partido->setEquipoVisitante($equipoVisitante);
+        $partido->setNumero($this->obtenerSiguienteNumeroPartido($ruta));
+
+        $this->partidoRepository->guardar($partido);
+
+        $usarConfig = isset($data['crear_usarConfig']) && $data['crear_usarConfig'] === '1';
+        if ($usarConfig) {
+            $this->sincronizarConfiguracionPartido($partido, $data, 'crear_');
+        }
+
+        return $partido;
+    }
+
+    public function editarPartidoManual(string $ruta, array $data): Partido
+    {
+        $partidoId = (int)($data['editar_partidoId'] ?? 0);
+        if ($partidoId <= 0) {
+            throw new AppException('Debe seleccionar un partido para editar.');
+        }
+
+        $partido = $this->obtenerPartidoxId($partidoId);
+        if ($partido->getCategoria()?->getTorneo()?->getRuta() !== $ruta) {
+            throw new AppException('El partido no pertenece al torneo seleccionado.');
+        }
+
+        $categoria = $this->obtenerCategoriaDesdeData($data, 'editar_categoriaId', $ruta);
+        $tipo = $this->obtenerTipoDesdeData($data, 'editar_tipo');
+        $grupo = $this->obtenerGrupoDesdeData($data, 'editar_grupoId', $categoria);
+        [$equipoLocal, $equipoVisitante] = $this->obtenerEquiposDesdeData($data, 'editar_equipoLocalId', 'editar_equipoVisitanteId', $categoria);
+
+        if ($tipo === TipoPartido::CLASIFICATORIO->value && $grupo === null) {
+            throw new AppException('Para un partido clasificatorio debe seleccionar un grupo.');
+        }
+
+        $partido->setCategoria($categoria);
+        $partido->setTipo($tipo);
+        $partido->setGrupo($tipo === TipoPartido::CLASIFICATORIO->value ? $grupo : null);
+        $partido->setEquipoLocal($equipoLocal);
+        $partido->setEquipoVisitante($equipoVisitante);
+
+        $this->partidoRepository->guardar($partido);
+
+        $usarConfig = isset($data['editar_usarConfig']) && $data['editar_usarConfig'] === '1';
+        if ($usarConfig) {
+            $this->sincronizarConfiguracionPartido($partido, $data, 'editar_');
+        }
+
+        return $partido;
+    }
+
+    private function obtenerSiguienteNumeroPartido(string $ruta): int
+    {
+        return count($this->obtenerPartidosXTorneo($ruta)) + 1;
+    }
+
+    private function obtenerCategoriaDesdeData(array $data, string $key, string $ruta): Categoria
+    {
+        $categoriaId = (int)($data[$key] ?? 0);
+        if ($categoriaId <= 0) {
+            throw new AppException('Debe seleccionar una categoría válida.');
+        }
+
+        $categoria = $this->categoriaRepository->find($categoriaId);
+
+        if (!$categoria instanceof Categoria) {
+            throw new AppException('No se encontró la categoría seleccionada.');
+        }
+
+        if ($categoria->getTorneo()?->getRuta() !== $ruta) {
+            throw new AppException('La categoría seleccionada no pertenece al torneo actual.');
+        }
+
+        return $categoria;
+    }
+
+    private function obtenerTipoDesdeData(array $data, string $key): string
+    {
+        $tipo = (string)($data[$key] ?? '');
+        if (!in_array($tipo, TipoPartido::getValues(), true)) {
+            throw new AppException('Debe seleccionar un tipo de partido válido.');
+        }
+
+        return $tipo;
+    }
+
+    private function obtenerGrupoDesdeData(array $data, string $key, Categoria $categoria): ?Grupo
+    {
+        $grupoId = (int)($data[$key] ?? 0);
+        if ($grupoId <= 0) {
+            return null;
+        }
+
+        $grupo = $this->grupoManager->obtenerGrupo($grupoId);
+        if ($grupo->getCategoria()?->getId() !== $categoria->getId()) {
+            throw new AppException('El grupo seleccionado no pertenece a la categoría elegida.');
+        }
+
+        return $grupo;
+    }
+
+    private function obtenerEquiposDesdeData(array $data, string $keyLocal, string $keyVisitante, Categoria $categoria): array
+    {
+        $localId = (int)($data[$keyLocal] ?? 0);
+        $visitanteId = (int)($data[$keyVisitante] ?? 0);
+
+        if ($localId > 0 && $visitanteId > 0 && $localId === $visitanteId) {
+            throw new AppException('El equipo local y visitante no pueden ser el mismo.');
+        }
+
+        $equipoLocal = $localId > 0 ? $this->equipoRepository->find($localId) : null;
+        $equipoVisitante = $visitanteId > 0 ? $this->equipoRepository->find($visitanteId) : null;
+
+        if ($equipoLocal !== null && $equipoLocal->getCategoria()?->getId() !== $categoria->getId()) {
+            throw new AppException('El equipo local no pertenece a la categoría seleccionada.');
+        }
+
+        if ($equipoVisitante !== null && $equipoVisitante->getCategoria()?->getId() !== $categoria->getId()) {
+            throw new AppException('El equipo visitante no pertenece a la categoría seleccionada.');
+        }
+
+        return [$equipoLocal, $equipoVisitante];
+    }
+
+    private function sincronizarConfiguracionPartido(Partido $partido, array $data, string $prefix): void
+    {
+        $nombre = trim((string)($data[$prefix . 'config_nombre'] ?? ''));
+        if ($nombre === '') {
+            throw new AppException('Debe indicar el nombre de instancia/configuración del partido.');
+        }
+
+        $origen = (string)($data[$prefix . 'config_origen'] ?? '');
+        if (!in_array($origen, ['grupos', 'ganadores'], true)) {
+            throw new AppException('Debe seleccionar un origen de configuración válido.');
+        }
+
+        $partidoConfig = $partido->getPartidoConfig() ?? new PartidoConfig();
+        $partidoConfig->setPartido($partido);
+        $partidoConfig->setNombre($nombre);
+        $partidoConfig->setGrupoEquipo1(null);
+        $partidoConfig->setPosicionEquipo1(null);
+        $partidoConfig->setGrupoEquipo2(null);
+        $partidoConfig->setPosicionEquipo2(null);
+        $partidoConfig->setGanadorPartido1(null);
+        $partidoConfig->setGanadorPartido2(null);
+
+        if ($origen === 'grupos') {
+            $grupoEquipo1Id = (int)($data[$prefix . 'config_grupoEquipo1Id'] ?? 0);
+            $grupoEquipo2Id = (int)($data[$prefix . 'config_grupoEquipo2Id'] ?? 0);
+            $posicion1 = (int)($data[$prefix . 'config_posicionEquipo1'] ?? 0);
+            $posicion2 = (int)($data[$prefix . 'config_posicionEquipo2'] ?? 0);
+
+            if ($grupoEquipo1Id <= 0 || $grupoEquipo2Id <= 0 || $posicion1 <= 0 || $posicion2 <= 0) {
+                throw new AppException('Debe completar grupos y posiciones para la configuración por grupos.');
+            }
+
+            $partidoConfig->setGrupoEquipo1($this->grupoManager->obtenerGrupo($grupoEquipo1Id));
+            $partidoConfig->setGrupoEquipo2($this->grupoManager->obtenerGrupo($grupoEquipo2Id));
+            $partidoConfig->setPosicionEquipo1($posicion1);
+            $partidoConfig->setPosicionEquipo2($posicion2);
+        }
+
+        if ($origen === 'ganadores') {
+            $ganadorPartido1Id = (int)($data[$prefix . 'config_ganadorPartido1Id'] ?? 0);
+            $ganadorPartido2Id = (int)($data[$prefix . 'config_ganadorPartido2Id'] ?? 0);
+
+            if ($ganadorPartido1Id <= 0 || $ganadorPartido2Id <= 0) {
+                throw new AppException('Debe seleccionar ambos partidos de origen para la configuración por ganadores.');
+            }
+
+            if ($ganadorPartido1Id === $partido->getId() || $ganadorPartido2Id === $partido->getId()) {
+                throw new AppException('Un partido no puede depender de sí mismo en la configuración.');
+            }
+
+            $ganadorPartido1 = $this->partidoRepository->find($ganadorPartido1Id);
+            $ganadorPartido2 = $this->partidoRepository->find($ganadorPartido2Id);
+
+            if ($ganadorPartido1 === null || $ganadorPartido2 === null) {
+                throw new AppException('No se pudieron obtener los partidos de origen para la configuración.');
+            }
+
+            $partidoConfig->setGanadorPartido1($ganadorPartido1);
+            $partidoConfig->setGanadorPartido2($ganadorPartido2);
+        }
+
+        $this->partidoConfigRepository->guardar($partidoConfig);
     }
 
     public function cargarResultado(Partido $partido, array $resultadoLocal, array $resultadoVisitante): void

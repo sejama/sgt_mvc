@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Exception\AppException;
+use App\Enum\TipoPartido;
 use App\Manager\CategoriaManager;
 use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
@@ -10,7 +11,6 @@ use App\Manager\TorneoManager;
 use App\Security\Voter\PartidoVoter;
 use App\Utils\GenerarPdf;
 use App\Entity\Usuario;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -183,6 +183,97 @@ class PartidoController extends AbstractController
             'canchas' => $sedesCanchas,
             ]
         );
+    }
+
+    #[Route('/partido/gestionar', name: 'admin_partido_gestionar', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function gestionarPartido(
+        string $ruta,
+        Request $request,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        PartidoManager $partidoManager,
+        LoggerInterface $logger
+    ): Response {
+        try {
+            if ($request->isMethod('POST')) {
+                $accion = (string)$request->request->get('accion', '');
+
+                if ($accion === 'crear') {
+                    $partido = $partidoManager->crearPartidoManual($ruta, $request->request->all());
+                    $this->addFlash('success', 'Partido creado correctamente.');
+                    $logger->info('Partido creado manualmente: ' . $partido->getId() . ', por el usuario: ' . $this->getLogUserId());
+                } elseif ($accion === 'editar') {
+                    $partido = $partidoManager->editarPartidoManual($ruta, $request->request->all());
+                    $this->addFlash('success', 'Partido editado correctamente.');
+                    $logger->info('Partido editado manualmente: ' . $partido->getId() . ', por el usuario: ' . $this->getLogUserId());
+                } else {
+                    throw new AppException('Acción de gestión de partido inválida.');
+                }
+
+                return $this->redirectToRoute('admin_partido_gestionar', ['ruta' => $ruta]);
+            }
+
+            $torneo = $torneoManager->obtenerTorneo($ruta);
+            $categorias = $categoriaManager->obtenerCategoriasPorTorneo($torneo);
+            $partidos = $partidoManager->obtenerPartidosXTorneo($ruta);
+            $partidosPayload = [];
+
+            foreach ($partidos as $partido) {
+                $config = $partido->getPartidoConfig();
+                $origenConfig = '';
+
+                if (
+                    $config !== null
+                    && $config->getGrupoEquipo1() !== null
+                    && $config->getGrupoEquipo2() !== null
+                ) {
+                    $origenConfig = 'grupos';
+                } elseif (
+                    $config !== null
+                    && $config->getGanadorPartido1() !== null
+                    && $config->getGanadorPartido2() !== null
+                ) {
+                    $origenConfig = 'ganadores';
+                }
+
+                $partidosPayload[] = [
+                    'id' => $partido->getId(),
+                    'categoriaId' => $partido->getCategoria()?->getId(),
+                    'tipo' => $partido->getTipo(),
+                    'grupoId' => $partido->getGrupo()?->getId(),
+                    'equipoLocalId' => $partido->getEquipoLocal()?->getId(),
+                    'equipoVisitanteId' => $partido->getEquipoVisitante()?->getId(),
+                    'usarConfig' => $config !== null,
+                    'configNombre' => $config?->getNombre(),
+                    'configOrigen' => $origenConfig,
+                    'configGrupoEquipo1Id' => $config?->getGrupoEquipo1()?->getId(),
+                    'configPosicionEquipo1' => $config?->getPosicionEquipo1(),
+                    'configGrupoEquipo2Id' => $config?->getGrupoEquipo2()?->getId(),
+                    'configPosicionEquipo2' => $config?->getPosicionEquipo2(),
+                    'configGanadorPartido1Id' => $config?->getGanadorPartido1()?->getId(),
+                    'configGanadorPartido2Id' => $config?->getGanadorPartido2()?->getId(),
+                ];
+            }
+
+            return $this->render('partido/gestion.html.twig', [
+                'torneo' => $torneo,
+                'categorias' => $categorias,
+                'partidos' => $partidos,
+                'tiposPartido' => TipoPartido::getValues(),
+                'partidosPayload' => $partidosPayload,
+            ]);
+        } catch (AppException $ae) {
+            $this->addFlash('error', $ae->getMessage());
+            $logger->error('Error en gestión manual de partidos: ' . $ae->getMessage());
+
+            return $this->redirectToRoute('admin_partido_gestionar', ['ruta' => $ruta]);
+        } catch (Throwable $e) {
+            $this->addFlash('error', 'Ocurrió un error al gestionar el partido: ' . $e->getMessage());
+            $logger->error('Error en gestión manual de partidos: ' . $e->getMessage());
+
+            return $this->redirectToRoute('admin_partido_gestionar', ['ruta' => $ruta]);
+        }
     }
 
     #[Route('/partido/editar', name: 'admin_partido_editar', methods: ['POST'])]
