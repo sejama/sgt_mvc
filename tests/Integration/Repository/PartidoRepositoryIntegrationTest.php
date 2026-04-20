@@ -8,6 +8,74 @@ use App\Entity\Partido;
 
 class PartidoRepositoryIntegrationTest extends PartidoRepositoryIntegrationTestCase
 {
+    public function testObtenerMaxNumeroPartidoXTorneoRetornaCeroSinPartidos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-partido-max-vacio', $suffix);
+
+        $creador = $this->crearUsuario('it_partido_max_vacio_user_' . $suffix);
+        $this->crearTorneo($creador, $ruta, $suffix);
+
+        $maximo = $this->partidoRepository->obtenerMaxNumeroPartidoXTorneo($ruta);
+
+        self::assertSame(0, $maximo);
+    }
+
+    public function testObtenerMaxNumeroPartidoXTorneoRetornaMayorNumero(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-partido-max', $suffix);
+
+        $creador = $this->crearUsuario('it_partido_max_user_' . $suffix);
+        $torneo = $this->crearTorneo($creador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+
+        $partidoA = (new Partido())
+            ->setCategoria($categoria)
+            ->setNumero(3)
+            ->setTipo('clasificatorio')
+            ->setEstado('Pendiente');
+
+        $partidoB = (new Partido())
+            ->setCategoria($categoria)
+            ->setNumero(9)
+            ->setTipo('clasificatorio')
+            ->setEstado('Pendiente');
+
+        $this->partidoRepository->guardar($partidoA, true);
+        $this->partidoRepository->guardar($partidoB, true);
+
+        $maximo = $this->partidoRepository->obtenerMaxNumeroPartidoXTorneo($ruta);
+
+        self::assertSame(9, $maximo);
+    }
+
+    public function testReservarRangoNumerosXTorneoCantidadInvalidaLanzaExcepcion(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('La cantidad de numeros a reservar debe ser mayor a cero.');
+
+        $this->partidoRepository->reservarRangoNumerosXTorneo('ruta-inexistente', 0);
+    }
+
+    public function testReservarRangoNumerosXTorneoSinTorneoLanzaExcepcion(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No se encontro torneo para reservar numeracion de partidos.');
+
+        $this->partidoRepository->reservarRangoNumerosXTorneo('ruta-inexistente', 1);
+    }
+
+    public function testEjecutarEnTransaccionPropagaExcepcionDelCallback(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('error controlado');
+
+        $this->partidoRepository->ejecutarEnTransaccion(static function (): void {
+            throw new \RuntimeException('error controlado');
+        });
+    }
+
     public function testEjecutarEnTransaccionRetornaValorDelCallback(): void
     {
         $resultado = $this->partidoRepository->ejecutarEnTransaccion(static fn (): int => 42);
