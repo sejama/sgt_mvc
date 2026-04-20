@@ -36,10 +36,9 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 - Ejecuta tambien chequeos de calidad estatica (composer phpstan y composer phpcs) en modo no bloqueante, emitiendo warning si fallan.
 - Cobertura en CI: se prioriza PCOV (mas rapido) y se usa Xdebug como fallback.
 - En PCOV se limita el escaneo a src para reducir overhead sin cambiar el umbral ni el alcance de tests.
-- Estado actual (temporal):
+- Estado actual:
 	- El gate de cobertura se evalua contra 90%.
-	- Si queda por debajo, el job no se bloquea, pero emite warning en GitHub Actions.
-- Objetivo de corto plazo: volver a gate bloqueante cuando la cobertura global sea estable >= 90% en corridas consecutivas.
+	- Si queda por debajo, el job falla (bloqueante).
 
 ## Convenciones por tipo de prueba
 
@@ -75,7 +74,7 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 
 - Todas las suites en verde.
 - Cobertura global ideal >= 90%.
-- Mientras el gate este en modo no bloqueante, registrar warning de cobertura como deuda tecnica en el PR.
+- El gate de cobertura es bloqueante en 90% y debe pasar para mergear.
 - Sin deprecations nuevas en test.
 - Prueba funcional para cambios en controllers o seguridad.
 - Prueba de integracion para cambios en repositorios/consultas.
