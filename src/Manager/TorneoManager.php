@@ -9,6 +9,7 @@ use App\Entity\Usuario;
 use App\Enum\EstadoTorneo;
 use App\Exception\AppException;
 use App\Repository\TorneoRepository;
+use App\Utils\RichTextSanitizer;
 
 class TorneoManager
 {
@@ -127,7 +128,7 @@ class TorneoManager
 
     public function editarReglamento(Torneo $torneo, string $reglamento): Torneo
     {
-        $torneo->setReglamento($reglamento);
+        $torneo->setReglamento(RichTextSanitizer::sanitize($reglamento));
         $this->torneoRepository->guardar($torneo, true);
 
         return $torneo;

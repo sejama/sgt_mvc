@@ -12,6 +12,7 @@ use App\Enum\EstadoGrupo;
 use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Repository\PartidoRepository;
+use App\Utils\RichTextSanitizer;
 
 class CategoriaManager
 {
@@ -102,7 +103,7 @@ class CategoriaManager
 
     public function editarDisputa(Categoria $categoria, string $disputa): void
     {
-        $categoria->setDisputa($disputa);
+        $categoria->setDisputa(RichTextSanitizer::sanitize($disputa));
         $this->categoriaRepository->guardar($categoria, true);
     }
 

@@ -168,4 +168,36 @@ class CategoriaManagerTest extends TestCase
         $this->expectExceptionMessage('Ya existe una categoría con ese nombre corto');
         $categoriaManager->crearCategoria($torneo, 'Masculino', 'nombre', 'nc');
     }
+
+    public function testEditarDisputaSanitizaHtmlPeligroso(): void
+    {
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
+
+        $categoriaManager = new CategoriaManager(
+            $categoriaRepository,
+            $partidoRepository,
+            $validadorManager,
+            $tablaManager
+        );
+
+        $categoria = new Categoria();
+
+        $categoriaRepository->expects($this->once())
+            ->method('guardar')
+            ->with($categoria, true);
+
+        $categoriaManager->editarDisputa(
+            $categoria,
+            '<div class="ql-align-center" style="color: rgb(255, 0, 0); position: absolute" onmouseover="x()">Regla</div><iframe src="https://evil.local"></iframe>'
+        );
+
+        $this->assertStringNotContainsString('onmouseover', (string) $categoria->getDisputa());
+        $this->assertStringNotContainsString('<iframe', (string) $categoria->getDisputa());
+        $this->assertStringContainsString('ql-align-center', (string) $categoria->getDisputa());
+        $this->assertStringContainsString('color: rgb(255, 0, 0)', (string) $categoria->getDisputa());
+        $this->assertStringNotContainsString('position: absolute', (string) $categoria->getDisputa());
+    }
 }

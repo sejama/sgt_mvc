@@ -231,4 +231,30 @@ class TorneoManagerTest extends TestCase
 
         $this->assertInstanceOf(Torneo::class, $torneo);
     }
+
+    public function testEditarReglamentoSanitizaHtmlPeligroso(): void
+    {
+        $torneoRepository = $this->createMock(TorneoRepository::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+        $torneoManager = new TorneoManager(
+            $torneoRepository,
+            $validadorManager,
+        );
+
+        $torneo = new Torneo();
+
+        $torneoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($torneo, true);
+
+        $torneoManager->editarReglamento(
+            $torneo,
+            '<p onclick="alert(1)">Texto</p><script>alert(1)</script><a href="javascript:alert(2)">Link</a>'
+        );
+
+        $this->assertStringNotContainsString('onclick', (string) $torneo->getReglamento());
+        $this->assertStringNotContainsString('<script', (string) $torneo->getReglamento());
+        $this->assertStringNotContainsString('javascript:', (string) $torneo->getReglamento());
+        $this->assertStringContainsString('<p>Texto</p>', (string) $torneo->getReglamento());
+    }
 }
