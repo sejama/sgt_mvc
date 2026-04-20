@@ -469,6 +469,10 @@ class PartidoManagerTest extends TestCase
             ->willReturn(1);
 
         $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $partidoRepository->expects($this->once())
             ->method('guardar')
             ->with($this->isInstanceOf(Partido::class), false);
 
@@ -527,6 +531,10 @@ class PartidoManagerTest extends TestCase
             ->method('reservarRangoNumerosXTorneo')
             ->with('ruta-test', 1)
             ->willReturn(8);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
@@ -727,6 +735,10 @@ class PartidoManagerTest extends TestCase
             ->willReturn(1);
 
         $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $partidoRepository->expects($this->once())
             ->method('guardar')
             ->with($this->isInstanceOf(Partido::class));
 
@@ -810,6 +822,10 @@ class PartidoManagerTest extends TestCase
             ->method('reservarRangoNumerosXTorneo')
             ->with('ruta-test', 1)
             ->willReturn(13);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
