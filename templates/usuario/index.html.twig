@@ -40,7 +40,10 @@
                         </td>
                         <td>
                             <a href="{{ path('admin_usuario_editar', {'id': user.id}) }}" class="btn btn-info">Editar</a>
-                            <a class="btn btn-danger" id="btnEliminarUsuario{{ user.id }}">Eliminar</a>
+                            <form action="{{ path('admin_usuario_eliminar', {'id': user.id}) }}" method="post" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_usuario_' ~ user.id) }}">
+                                <button type="button" class="btn btn-danger js-confirm-action" data-modal-title="Eliminar Usuario" data-modal-text="¿Está seguro que desea eliminar al usuario?">Eliminar</button>
+                            </form>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -50,15 +53,18 @@
     {% include "./componentes/modal.html.twig" %}
 
     <script>
-        btnEliminarUsuarios = document.querySelectorAll('[id^="btnEliminarUsuario"]');
-        btnEliminarUsuarios.forEach((btn) => {
-            let index = btn.id.replace('btnEliminarUsuario', '');
+        document.querySelectorAll('.js-confirm-action').forEach((btn) => {
             btn.addEventListener('click', () => {
-                crearModal('Eliminar Usuario', '¿Está seguro que desea eliminar al usuario?');
-                document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('admin_usuario_eliminar', {'id': 'ID'}) }}`.replace('ID', index);
-                });
-                
+                const form = btn.closest('form');
+                if (!form) {
+                    return;
+                }
+
+                crearModal(
+                    btn.dataset.modalTitle || 'Confirmar acción',
+                    btn.dataset.modalText || '¿Está seguro que desea continuar?',
+                    () => form.submit()
+                );
             });
         });
     </script>

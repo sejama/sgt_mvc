@@ -26,39 +26,18 @@
 {% include "./componentes/modal.html.twig" %}
 
 <script>
-    btnEliminarTorneos = document.querySelectorAll('[id^="btnEliminarTorneo"]');
-    btnEliminarTorneos.forEach((btn) => {
-        let ruta = btn.id.replace('btnEliminarTorneo', '');
+    document.querySelectorAll('.js-confirm-action').forEach((btn) => {
         btn.addEventListener('click', () => {
-            crearModal('Eliminar Torneo', '¿Está seguro que desea eliminar al torneo?');
-            document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('admin_torneo_eliminar', {'ruta': 'RUTA' }) }}`.replace('RUTA', ruta);
-            });
-        });
-    });
-    btnEliminarCategorias = document.querySelectorAll('[id^="btnEliminarCategoria"]');
-    btnEliminarCategorias.forEach((btn) => {
-        let ruta_index = btn.id.replace('btnEliminarCategoria', '');
-        let index = ruta_index.split(' ')[1];
-        let ruta = ruta_index.split(' ')[0];
-        btn.addEventListener('click', () => {
-            crearModal('Eliminar Categoria', '¿Está seguro que desea eliminar la categoria?');
-            document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('admin_categoria_eliminar', {'ruta': 'RUTA', 'categoriaId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
-            });
-        });
-    });
+            const form = btn.closest('form');
+            if (!form) {
+                return;
+            }
 
-    btnEliminarSedes = document.querySelectorAll('[id^="btnEliminarSede"]');
-    btnEliminarSedes.forEach((btn) => {
-        let ruta_index = btn.id.replace('btnEliminarSede', '');
-        let index = ruta_index.split(' ')[1];
-        let ruta = ruta_index.split(' ')[0];
-        btn.addEventListener('click', () => {
-            crearModal('Eliminar Sede', '¿Está seguro que desea eliminar la sede?');
-            document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                window.location.href = `{{ path('admin_sede_eliminar', {'ruta': 'RUTA', 'sedeId' : 'ID' }) }}`.replace('ID', index).replace('RUTA', ruta);
-            });
+            crearModal(
+                btn.dataset.modalTitle || 'Confirmar acción',
+                btn.dataset.modalText || '¿Está seguro que desea continuar?',
+                () => form.submit()
+            );
         });
     });
 </script>

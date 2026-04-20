@@ -82,7 +82,9 @@ class AdminBusinessFlowJugadorGrupoFunctionalTest extends AdminBusinessFlowFunct
         self::assertSame('Mario Edit', $jugadorEditado->getNombre());
         self::assertSame('88' . substr($suffix, 0, 6), $jugadorEditado->getNumeroDocumento());
 
-        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/' . $jugadorId . '/eliminar');
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/' . $jugadorId . '/eliminar', [
+            '_token' => $this->csrfTokenValue('delete_jugador_' . $jugadorId),
+        ]);
         self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/equipo/' . $equipoId . '/jugador/');
 
         $this->entityManager->clear();
@@ -144,7 +146,9 @@ class AdminBusinessFlowJugadorGrupoFunctionalTest extends AdminBusinessFlowFunct
         $usuario = $this->crearUsuario('ft_user_del_jugador_' . $suffix, ['ROLE_USER']);
         $this->client->loginUser($usuario);
 
-        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugadorId . '/eliminar');
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugadorId . '/eliminar', [
+            '_token' => $this->csrfTokenValue('delete_jugador_' . $jugadorId),
+        ]);
         self::assertContains($this->client->getResponse()->getStatusCode(), [401, 403]);
 
         $this->entityManager->clear();
@@ -165,7 +169,9 @@ class AdminBusinessFlowJugadorGrupoFunctionalTest extends AdminBusinessFlowFunct
         $jugadorId = $jugador->getId();
         self::assertNotNull($jugadorId);
 
-        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugadorId . '/eliminar');
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/' . $equipo->getId() . '/jugador/' . $jugadorId . '/eliminar', [
+            '_token' => $this->csrfTokenValue('delete_jugador_' . $jugadorId),
+        ]);
         $status = $this->client->getResponse()->getStatusCode();
         if ($status === 302) {
             self::assertResponseRedirects('/login');
@@ -455,7 +461,9 @@ class AdminBusinessFlowJugadorGrupoFunctionalTest extends AdminBusinessFlowFunct
                     $this->crearTorneo($admin, $ruta, $suffix);
 
                     $this->client->loginUser($admin);
-                    $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/999999/eliminar');
+                    $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/999999/eliminar', [
+                        '_token' => $this->csrfTokenValue('delete_sede_999999'),
+                    ]);
 
                     self::assertResponseRedirects('/login');
                 }

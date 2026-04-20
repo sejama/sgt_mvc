@@ -28,7 +28,10 @@
                     <td>{{ cancha.descripcion }}</td>
                     <td>
                         <a href="{{ path('admin_cancha_editar',{'ruta': ruta, 'sedeId': sede.id, 'canchaId': cancha.id }) }}" class="btn btn-info">Editar</a>
-                        <a class="btn btn-danger" id="btnEliminarCancha{{ cancha.id }}">Eliminar</a>
+                        <form id="formEliminarCancha{{ cancha.id }}" action="{{ path('admin_cancha_eliminar', {'ruta': ruta, 'sedeId': sede.id, 'canchaId': cancha.id }) }}" method="post" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_cancha_' ~ cancha.id) }}">
+                            <button type="button" class="btn btn-danger js-confirm-action" data-modal-title="Eliminar Cancha" data-modal-text="¿Está seguro que desea eliminar la cancha?">Eliminar</button>
+                        </form>
                 </tr>
             {% endfor %}
         </tbody>
@@ -36,15 +39,18 @@
       {% include "./componentes/modal.html.twig" %}
 
     <script>
-        btnEliminarCanchas = document.querySelectorAll('[id^="btnEliminarCancha"]');
-        btnEliminarCanchas.forEach((btn) => {
-            let index = btn.id.replace('btnEliminarCancha', '');
+        document.querySelectorAll('.js-confirm-action').forEach((btn) => {
             btn.addEventListener('click', () => {
-                crearModal('Eliminar Cancha', '¿Está seguro que desea eliminar la cancha?');
-                document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('admin_cancha_eliminar', {'ruta': ruta, 'sedeId': sede.id, 'canchaId': 'ID' }) }}`.replace('ID', index);
-                });
-                
+                const form = btn.closest('form');
+                if (!form) {
+                    return;
+                }
+
+                crearModal(
+                    btn.dataset.modalTitle || 'Confirmar acción',
+                    btn.dataset.modalText || '¿Está seguro que desea continuar?',
+                    () => form.submit()
+                );
             });
         });
     </script>

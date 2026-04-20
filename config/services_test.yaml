@@ -1,0 +1,7 @@
+services:
+    App\Tests\Support\TestCsrfTokenManager:
+        public: true
+
+    security.csrf.token_manager:
+        alias: App\Tests\Support\TestCsrfTokenManager
+        public: true

@@ -182,10 +182,14 @@ class JugadorControllerTest extends TestCase
             ->method('eliminarJugador')
             ->with($jugador);
 
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/11/jugador/99/eliminar', 'POST', [
+            '_token' => 'test-token-delete_jugador_99',
+        ]);
+
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('info');
 
-        $response = $controller->eliminarJugador('ruta-test', 7, 11, 99, $equipoManager, $jugadorManager, $logger);
+        $response = $controller->eliminarJugador('ruta-test', 7, 11, 99, $request, $equipoManager, $jugadorManager, $logger);
 
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame(['success', 'Jugador eliminado correctamente'], $controller->lastFlash);
@@ -219,5 +223,10 @@ class TestableJugadorController extends JugadorController
     public function addFlash(string $type, mixed $message): void
     {
         $this->lastFlash = [$type, (string) $message];
+    }
+
+    protected function isCsrfTokenValid(string $id, ?string $token): bool
+    {
+        return true;
     }
 }

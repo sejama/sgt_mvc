@@ -172,7 +172,9 @@ class CanchaControllerTest extends TestCase
             ->setPassword('hash')
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
-        $request = Request::create('/admin/torneo/ruta-test/sede/1/cancha/99/eliminar', 'GET');
+        $request = Request::create('/admin/torneo/ruta-test/sede/1/cancha/99/eliminar', 'POST', [
+            '_token' => 'test-token-delete_cancha_99',
+        ]);
 
         $sedeManager = $this->createMock(SedeManager::class);
         $sede = $this->createMock(Sede::class);
@@ -267,5 +269,10 @@ class TestableCanchaController extends CanchaController
     public function addFlash(string $type, mixed $message): void
     {
         $this->lastFlash = [$type, (string) $message];
+    }
+
+    protected function isCsrfTokenValid(string $id, ?string $token): bool
+    {
+        return true;
     }
 }

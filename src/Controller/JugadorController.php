@@ -6,7 +6,6 @@ use App\Enum\TipoDocumento;
 use App\Enum\TipoPersona;
 use App\Manager\EquipoManager;
 use App\Manager\JugadorManager;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -185,18 +184,23 @@ class JugadorController extends AbstractController
         );
     }
 
-    #[Route('/{jugadorId}/eliminar', name: 'admin_jugador_eliminar', methods: ['GET'])]
+    #[Route('/{jugadorId}/eliminar', name: 'admin_jugador_eliminar', methods: ['POST'])]
     public function eliminarJugador(
         string $ruta,
         int $categoriaId,
         int $equipoId,
         int $jugadorId,
+        Request $request,
         EquipoManager $equipoManager,
         JugadorManager $jugadorManager,
         LoggerInterface $logger
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
         $jugador = $jugadorManager->obtenerJugador($jugadorId);
+        if (!$this->isCsrfTokenValid('delete_jugador_' . $jugadorId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
         $jugadorManager->eliminarJugador($jugador);
         $this->addFlash('success', 'Jugador eliminado correctamente');
         $logger->info('Jugador eliminado del equipo: ' . $equipo->getId() . ', con el nombre: ' . $jugador->getNombre() . ' ' . $jugador->getApellido() . ', por el usuario: ' .  $this->getUser()->getId());

@@ -193,9 +193,6 @@ class PartidoManager
                     $equipos[$j]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
                     $this->equipoRepository->guardar($equipos[$j]);
                 }
-
-                $this->equipoRepository->guardar($equipos[$i]);
-                $this->equipoRepository->guardar($equipos[$j]);
             }
         }
     }

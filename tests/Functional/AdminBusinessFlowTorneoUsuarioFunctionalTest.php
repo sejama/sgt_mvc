@@ -394,7 +394,9 @@ class AdminBusinessFlowTorneoUsuarioFunctionalTest extends AdminBusinessFlowFunc
         $this->crearTorneo($admin, $ruta, $suffix);
 
         $this->client->loginUser($admin);
-        $this->client->request('GET', '/admin/torneo/' . $ruta . '/eliminar');
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/eliminar', [
+            '_token' => $this->csrfTokenValue('delete_torneo_' . $ruta),
+        ]);
 
         self::assertResponseRedirects('/admin/torneo/');
 
@@ -461,7 +463,9 @@ class AdminBusinessFlowTorneoUsuarioFunctionalTest extends AdminBusinessFlowFunc
         $admin = $this->crearUsuario('admin_torneo_del_inx_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
         $this->client->loginUser($admin);
 
-        $this->client->request('GET', '/admin/torneo/' . $ruta . '/eliminar');
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/eliminar', [
+            '_token' => $this->csrfTokenValue('delete_torneo_' . $ruta),
+        ]);
 
         self::assertResponseRedirects('/login');
     }
@@ -701,7 +705,9 @@ class AdminBusinessFlowTorneoUsuarioFunctionalTest extends AdminBusinessFlowFunc
         self::assertNotNull($usuarioObjetivoId);
 
         $this->client->loginUser($admin);
-        $this->client->request('GET', '/admin/usuario/eliminar/' . $usuarioObjetivoId);
+            $this->client->request('POST', '/admin/usuario/eliminar/' . $usuarioObjetivoId, [
+                '_token' => $this->csrfTokenValue('delete_usuario_' . $usuarioObjetivoId),
+            ]);
 
         self::assertResponseRedirects('/admin/usuario/');
 

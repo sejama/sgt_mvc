@@ -158,16 +158,21 @@ class CategoriaController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{categoriaId}/eliminar', name: 'admin_categoria_eliminar', methods: ['GET'])]
+    #[Route('/{categoriaId}/eliminar', name: 'admin_categoria_eliminar', methods: ['POST'])]
     public function eliminarCategoria(
         string $ruta,
         int $categoriaId,
+        Request $request,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
+            if (!$this->isCsrfTokenValid('delete_categoria_' . $categoriaId, (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Token CSRF inválido.');
+            }
+
             try {
                 $categoriaManager->eliminarCategoria($categoriaId);
                 $this->addFlash('success', "Categoría eliminada con éxito.");

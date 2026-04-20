@@ -38,7 +38,10 @@
                     <td>{{ jugador.responsable ? 'Si' : 'No' }}</td>
                     <td>
                         <a href="{{ path('admin_jugador_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id }) }}" class="btn btn-info">Editar</a>
-                        <a class="btn btn-danger" id="btnEliminarJugador{{ jugador.id }}">Eliminar</a>
+                        <form action="{{ path('admin_jugador_eliminar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': jugador.id }) }}" method="post" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_jugador_' ~ jugador.id) }}">
+                            <button type="button" class="btn btn-danger js-confirm-action" data-modal-title="Eliminar Jugador" data-modal-text="¿Está seguro que desea eliminar el jugador?">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
             {% endfor %}
@@ -46,14 +49,18 @@
     </table>
     {% include "./componentes/modal.html.twig" %}
     <script>
-        btnEliminarJugadores = document.querySelectorAll('[id^="btnEliminarJugador"]');
-        btnEliminarJugadores.forEach((btn) => {
-            let index = btn.id.replace('btnEliminarJugador', '');
+        document.querySelectorAll('.js-confirm-action').forEach((btn) => {
             btn.addEventListener('click', () => {
-                crearModal('Eliminar Jugador', '¿Está seguro que desea eliminar el jugador?');
-                document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('admin_jugador_eliminar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id, 'jugadorId': 'ID'}) }}`.replace('ID', index);
-                });
+                const form = btn.closest('form');
+                if (!form) {
+                    return;
+                }
+
+                crearModal(
+                    btn.dataset.modalTitle || 'Confirmar acción',
+                    btn.dataset.modalText || '¿Está seguro que desea continuar?',
+                    () => form.submit()
+                );
             });
         });
     </script>

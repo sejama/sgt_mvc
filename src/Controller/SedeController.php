@@ -104,16 +104,21 @@ class SedeController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{sedeId}/eliminar', name: 'admin_sede_eliminar', methods: ['GET'])]
+    #[Route('/{sedeId}/eliminar', name: 'admin_sede_eliminar', methods: ['POST'])]
     public function eliminarSede(
         string $ruta,
         int $sedeId,
+        Request $request,
         TorneoManager $torneoManager,
         SedeManager $sedeManager,
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
+            if (!$this->isCsrfTokenValid('delete_sede_' . $sedeId, (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Token CSRF inválido.');
+            }
+
             try {
                 $sede = $sedeManager->obtenerSede($sedeId);
                 $sedeManager->eliminarSede($sede);

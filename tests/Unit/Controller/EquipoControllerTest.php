@@ -241,10 +241,14 @@ class EquipoControllerTest extends TestCase
             ->method('eliminarEquipo')
             ->with($equipo);
 
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/99/eliminar', 'POST', [
+            '_token' => 'test-token-delete_equipo_99',
+        ]);
+
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('info');
 
-        $response = $controller->eliminarEquipo('ruta-test', 7, 99, $equipoManager, $logger);
+        $response = $controller->eliminarEquipo('ruta-test', 7, 99, $request, $equipoManager, $logger);
 
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame(['success', 'Equipo eliminado con éxito.'], $controller->lastFlash);
@@ -270,10 +274,14 @@ class EquipoControllerTest extends TestCase
             ->method('bajarEquipo')
             ->with($equipo);
 
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/55/bajar', 'POST', [
+            '_token' => 'test-token-bajar_equipo_55',
+        ]);
+
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('info');
 
-        $response = $controller->cambiarEstado('ruta-test', 7, 55, $equipoManager, $logger);
+        $response = $controller->cambiarEstado('ruta-test', 7, 55, $request, $equipoManager, $logger);
 
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame(['success', 'Equipo dado de baja con éxito.'], $controller->lastFlash);
@@ -307,5 +315,10 @@ class TestableEquipoController extends EquipoController
     public function addFlash(string $type, mixed $message): void
     {
         $this->lastFlash = [$type, (string) $message];
+    }
+
+    protected function isCsrfTokenValid(string $id, ?string $token): bool
+    {
+        return true;
     }
 }

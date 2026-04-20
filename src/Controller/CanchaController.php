@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Exception\AppException;
 use App\Manager\CanchaManager;
 use App\Manager\SedeManager;
-use App\Manager\TorneoManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,7 +110,7 @@ class CanchaController extends AbstractController
         );
     }
 
-    #[Route('/{canchaId}/eliminar', name: 'admin_cancha_eliminar', methods: ['GET'])]
+    #[Route('/{canchaId}/eliminar', name: 'admin_cancha_eliminar', methods: ['POST'])]
     public function eliminarCancha(
         string $ruta,
         int $sedeId,
@@ -123,20 +122,21 @@ class CanchaController extends AbstractController
     ): Response {
         $sede = $sedeManager->obtenerSede($sedeId);
         $cancha = $canchaManager->obtenerCancha($canchaId);
-        if ($request->isMethod('GET')) {
-            // Procesar el formulario
-            try {
-                $canchaManager->eliminarCancha($cancha);
-                $this->addFlash('success', 'Cancha eliminada con éxito.');
-                $logger->info('Cancha eliminada: ' . $cancha->getId() . ', por el usuario: ' .  $this->getUser()->getId());
-                return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
-            } catch (AppException $ae) {
-                $logger->error($ae->getMessage());
-                $this->addFlash('error', $ae->getMessage());
-            } catch (\Throwable $e) {
-                $logger->error($e->getMessage());
-                $this->addFlash('error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.');
-            }
+        if (!$this->isCsrfTokenValid('delete_cancha_' . $canchaId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
+        try {
+            $canchaManager->eliminarCancha($cancha);
+            $this->addFlash('success', 'Cancha eliminada con éxito.');
+            $logger->info('Cancha eliminada: ' . $cancha->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+            return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
+        } catch (AppException $ae) {
+            $logger->error($ae->getMessage());
+            $this->addFlash('error', $ae->getMessage());
+        } catch (\Throwable $e) {
+            $logger->error($e->getMessage());
+            $this->addFlash('error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.');
         }
         return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
     }

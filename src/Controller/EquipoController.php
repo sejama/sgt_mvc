@@ -137,14 +137,19 @@ class EquipoController extends AbstractController
         );
     }
 
-    #[Route('/{equipoId}/eliminar', name: 'admin_equipo_eliminar', methods: ['GET'])]
+    #[Route('/{equipoId}/eliminar', name: 'admin_equipo_eliminar', methods: ['POST'])]
     public function eliminarEquipo(
         string $ruta,
         int $categoriaId,
         int $equipoId,
+        Request $request,
         EquipoManager $equipoManager,
         LoggerInterface $logger
     ): Response {
+        if (!$this->isCsrfTokenValid('delete_equipo_' . $equipoId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
         try {
             $equipo = $equipoManager->obtenerEquipo($equipoId);
             $equipoManager->eliminarEquipo($equipo);
@@ -160,14 +165,19 @@ class EquipoController extends AbstractController
         return $this->redirectToRoute('admin_equipo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
     }
 
-    #[Route('/{equipoId}/bajar', name: 'admin_equipo_bajar', methods: ['GET'])]
+    #[Route('/{equipoId}/bajar', name: 'admin_equipo_bajar', methods: ['POST'])]
     public function cambiarEstado(
         string $ruta,
         int $categoriaId,
         int $equipoId,
+        Request $request,
         EquipoManager $equipoManager,
         LoggerInterface $logger
     ): Response {
+        if (!$this->isCsrfTokenValid('bajar_equipo_' . $equipoId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
         try {
             $equipo = $equipoManager->obtenerEquipo($equipoId);
             $equipoManager->bajarEquipo($equipo);

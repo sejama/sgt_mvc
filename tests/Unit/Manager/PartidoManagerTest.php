@@ -433,7 +433,7 @@ class PartidoManagerTest extends TestCase
             ->method('guardar')
             ->with($this->isInstanceOf(Partido::class));
 
-        $equipoRepository->expects($this->exactly(3))
+        $equipoRepository->expects($this->once())
             ->method('guardar');
 
         $manager = new PartidoManager(

@@ -68,6 +68,14 @@ abstract class AdminBusinessFlowFunctionalTestCase extends WebTestCase
             $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
         }
     }
+
+    protected function csrfTokenValue(string $tokenId): string
+    {
+        $tokenManager = static::getContainer()->get('security.csrf.token_manager');
+
+        return $tokenManager->getToken($tokenId)->getValue();
+    }
+
     protected function crearUsuario(string $username, array $roles): Usuario
     {
         $usuario = (new Usuario())

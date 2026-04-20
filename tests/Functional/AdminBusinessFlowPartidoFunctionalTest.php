@@ -303,7 +303,9 @@ class AdminBusinessFlowPartidoFunctionalTest extends AdminBusinessFlowFunctional
         self::assertInstanceOf(Cancha::class, $canchaEditada);
         self::assertSame('FT Cancha Edit ' . $suffix, $canchaEditada->getNombre());
 
-        $this->client->request('GET', '/admin/torneo/' . $ruta . '/sede/' . $sedeId . '/cancha/' . $canchaId . '/eliminar');
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/sede/' . $sedeId . '/cancha/' . $canchaId . '/eliminar', [
+            '_token' => $this->csrfTokenValue('delete_cancha_' . $canchaId),
+        ]);
         self::assertResponseRedirects('/admin/torneo/' . $ruta . '/sede/' . $sedeId . '/cancha/');
 
         $this->entityManager->clear();

@@ -50,6 +50,13 @@ class SecurityAccessFunctionalTest extends WebTestCase
         parent::tearDown();
     }
 
+    protected function csrfTokenValue(string $tokenId): string
+    {
+        $tokenManager = static::getContainer()->get('security.csrf.token_manager');
+
+        return $tokenManager->getToken($tokenId)->getValue();
+    }
+
     public function testAnonimoNoPuedeAccederAAdminTorneo(): void
     {
         $this->client->request('GET', '/admin/torneo/');
@@ -203,7 +210,9 @@ class SecurityAccessFunctionalTest extends WebTestCase
         self::assertNotNull($usuarioObjetivoId);
 
         $this->client->loginUser($usuarioActor);
-        $this->client->request('GET', '/admin/usuario/eliminar/' . $usuarioObjetivoId);
+        $this->client->request('POST', '/admin/usuario/eliminar/' . $usuarioObjetivoId, [
+            '_token' => $this->csrfTokenValue('delete_usuario_' . $usuarioObjetivoId),
+        ]);
 
         $statusCode = $this->client->getResponse()->getStatusCode();
         self::assertContains($statusCode, [401, 403]);
@@ -254,7 +263,9 @@ class SecurityAccessFunctionalTest extends WebTestCase
         $usuarioObjetivoId = $usuarioObjetivo->getId();
         self::assertNotNull($usuarioObjetivoId);
 
-        $this->client->request('GET', '/admin/usuario/eliminar/' . $usuarioObjetivoId);
+        $this->client->request('POST', '/admin/usuario/eliminar/' . $usuarioObjetivoId, [
+            '_token' => $this->csrfTokenValue('delete_usuario_' . $usuarioObjetivoId),
+        ]);
 
         $statusCode = $this->client->getResponse()->getStatusCode();
         if ($statusCode === 302) {

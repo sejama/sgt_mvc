@@ -46,9 +46,15 @@
                             <a href="{{ path('admin_equipo_editar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info p-1">Editar</a>
                             <a href="{{ path('admin_jugador_index', {'ruta': torneo.ruta,'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" class="btn btn-info p-1">Jugadores</a>
                             {% if equipo.estado == 'Activo' %}
-                            <a class="btn btn-danger p-1" id="btnBajarEquipo{{ equipo.id }}">Bajar</a>
+                            <form id="formBajarEquipo{{ equipo.id }}" action="{{ path('admin_equipo_bajar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" method="post" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('bajar_equipo_' ~ equipo.id) }}">
+                                <button type="button" class="btn btn-danger p-1 js-confirm-action" data-modal-title="Bajar Equipo" data-modal-text="¿Está seguro que desea bajar el equipo?">Bajar</button>
+                            </form>
                             {% else %}
-                            <a class="btn btn-danger p-1" id="btnEliminarEquipo{{ equipo.id }}">Eliminar</a>
+                            <form id="formEliminarEquipo{{ equipo.id }}" action="{{ path('admin_equipo_eliminar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': equipo.id }) }}" method="post" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_equipo_' ~ equipo.id) }}">
+                                <button type="button" class="btn btn-danger p-1 js-confirm-action" data-modal-title="Eliminar Equipo" data-modal-text="¿Está seguro que desea eliminar el equipo?">Eliminar</button>
+                            </form>
                             {% endif %}
                         </td>
                     </tr>
@@ -59,27 +65,18 @@
     {% include "./componentes/modal.html.twig" %}
 
     <script>
-        btnEliminarEquipos = document.querySelectorAll('[id^="btnEliminarEquipo"]');
-        btnEliminarEquipos.forEach((btn) => {
-            let index = btn.id.replace('btnEliminarEquipo', '');
+        document.querySelectorAll('.js-confirm-action').forEach((btn) => {
             btn.addEventListener('click', () => {
-                crearModal('Eliminar Equipo', '¿Está seguro que desea eliminar el equipo?');
-                document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('admin_equipo_eliminar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': 'ID'}) }}`.replace('ID', index);
-                });
-                
-            });
-        });
+                const form = btn.closest('form');
+                if (!form) {
+                    return;
+                }
 
-        btnBajarEquipos = document.querySelectorAll('[id^="btnBajarEquipo"]');
-        btnBajarEquipos.forEach((btn) => {
-            let index = btn.id.replace('btnBajarEquipo', '');
-            btn.addEventListener('click', () => {
-                crearModal('Bajar Equipo', '¿Está seguro que desea bajar el equipo?');
-                document.getElementById('btnModalAceptar').addEventListener('click', () => {
-                    window.location.href = `{{ path('admin_equipo_bajar', {'ruta': torneo.ruta, 'categoriaId': categoria.id, 'equipoId': 'ID'}) }}`.replace('ID', index);
-                });
-                
+                crearModal(
+                    btn.dataset.modalTitle || 'Confirmar acción',
+                    btn.dataset.modalText || '¿Está seguro que desea continuar?',
+                    () => form.submit()
+                );
             });
         });
     </script>

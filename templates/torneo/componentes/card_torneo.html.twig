@@ -36,7 +36,12 @@
                                                     <li><a class="dropdown-item" href="{{ path('admin_grupo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_categoria_editar_disputa', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
-                                                    <li><a class="dropdown-item" type="button" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
+                                                    <li>
+                                                        <form action="{{ path('admin_categoria_eliminar', {'ruta': torneo.ruta, 'categoriaId' : categoria.id}) }}" method="post" class="d-inline w-100">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_categoria_' ~ categoria.id) }}">
+                                                            <button type="button" class="dropdown-item js-confirm-action" data-modal-title="Eliminar Categoria" data-modal-text="¿Está seguro que desea eliminar la categoria?">Eliminar</button>
+                                                        </form>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -72,7 +77,12 @@
                                                     <li><a class="dropdown-item" href="{{ path('admin_grupo_index', { 'ruta': torneo.ruta,'categoriaId' : categoria.id }) }}">Ver Grupos</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_categoria_editar', {'ruta': torneo.ruta,'categoriaId' : categoria.id} ) }}">Editar</a></li>
                                                     <li><a class="dropdown-item" href="{{ path('admin_categoria_editar_disputa', {'ruta': torneo.ruta,'categoriaId' : categoria.id})}}">Disputa</a></li>
-                                                    <li><a class="dropdown-item" type="button" id="btnEliminarCategoria{{torneo.ruta}} {{categoria.id}}">Eliminar</a></li>
+                                                    <li>
+                                                        <form action="{{ path('admin_categoria_eliminar', {'ruta': torneo.ruta, 'categoriaId' : categoria.id}) }}" method="post" class="d-inline w-100">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_categoria_' ~ categoria.id) }}">
+                                                            <button type="button" class="dropdown-item js-confirm-action" data-modal-title="Eliminar Categoria" data-modal-text="¿Está seguro que desea eliminar la categoria?">Eliminar</button>
+                                                        </form>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -104,7 +114,12 @@
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="{{ path('admin_cancha_index',{'ruta': torneo.ruta,'sedeId' : sede.id}) }}">Ver Canchas</a></li>
                                                 <li><a class="dropdown-item" href="{{ path('admin_sede_editar', {'ruta': torneo.ruta,'sedeId' : sede.id})}}">Editar</a></li>
-                                                <li><a class="dropdown-item" type="button" id="btnEliminarSede{{torneo.ruta}} {{sede.id}}">Eliminar</a></li>
+                                                <li>
+                                                    <form action="{{ path('admin_sede_eliminar', {'ruta': torneo.ruta, 'sedeId' : sede.id}) }}" method="post" class="d-inline w-100">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_sede_' ~ sede.id) }}">
+                                                        <button type="button" class="dropdown-item js-confirm-action" data-modal-title="Eliminar Sede" data-modal-text="¿Está seguro que desea eliminar la sede?">Eliminar</button>
+                                                    </form>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -124,7 +139,10 @@
                 <a href="{{ path('admin_categoria_crear', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Categoria</a>
                 <a href="{{ path('admin_sede_crear', {'ruta': torneo.ruta }) }}" class="btn btn-info">Agregar Sede</a>
                 <a href="{{ path('admin_partido_index', {'ruta': torneo.ruta }) }}" class="btn btn-info">Partidos</a>
-                <a id="btnEliminarTorneo{{torneo.ruta}}" class="btn btn-danger">Eliminar</a>
+                <form action="{{ path('admin_torneo_eliminar', {'ruta': torneo.ruta }) }}" method="post" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_torneo_' ~ torneo.ruta) }}">
+                    <button type="button" class="btn btn-danger js-confirm-action" data-modal-title="Eliminar Torneo" data-modal-text="¿Está seguro que desea eliminar al torneo?">Eliminar</button>
+                </form>
             </div>
         </div>
     </div>

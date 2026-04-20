@@ -214,9 +214,13 @@ class UsuarioController extends AbstractController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('/eliminar/{id}', name: 'admin_usuario_eliminar', methods: ['GET'])]
-    public function eliminarUsuario(UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
+    #[Route('/eliminar/{id}', name: 'admin_usuario_eliminar', methods: ['POST'])]
+    public function eliminarUsuario(Request $request, UsuarioManager $usuarioManager, LoggerInterface $logger, $id): Response
     {
+        if (!$this->isCsrfTokenValid('delete_usuario_' . $id, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
         try {
             $usuario = $usuarioManager->buscarUsuario((int)$id);
             $usuarioManager->eliminarUsuario($usuario);
@@ -230,5 +234,7 @@ class UsuarioController extends AbstractController
             $logger->error($e->getMessage());
             $this->addFlash('error', "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
         }
+
+        return $this->redirectToRoute('admin_usuario_index');
     }
 }

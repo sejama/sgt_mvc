@@ -117,9 +117,10 @@ class TorneoController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/{ruta}/eliminar', name: 'admin_torneo_eliminar', methods: ['GET'])]
+    #[Route('/{ruta}/eliminar', name: 'admin_torneo_eliminar', methods: ['POST'])]
     public function eliminarTorneo(
         string $ruta,
+        Request $request,
         TorneoManager $torneoManager,
         CategoriaManager $categoriaManager,
         SedeManager $sedeManager,
@@ -127,6 +128,10 @@ class TorneoController extends AbstractController
         LoggerInterface $logger
     ): Response {
         if ($this->getUser() !== null) {
+            if (!$this->isCsrfTokenValid('delete_torneo_' . $ruta, (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Token CSRF inválido.');
+            }
+
             try {
                 $torneo = $torneoManager->obtenerTorneo($ruta);
                 foreach ($torneo->getCategorias() as $categoria) {

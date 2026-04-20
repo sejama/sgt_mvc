@@ -15,7 +15,9 @@
 
 <script>
 
-function crearModal(mensajeTitulo, mensajeTexto){
+let accionModalAceptar = null;
+
+function crearModal(mensajeTitulo, mensajeTexto, accionAceptar = null){
     let myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
         keyboard: false
     })
@@ -23,6 +25,14 @@ function crearModal(mensajeTitulo, mensajeTexto){
     let mensaje = myModal._element.querySelector('.modal-body');
     titulo.innerHTML = mensajeTitulo;
     mensaje.innerHTML = mensajeTexto || "Desea confirmar el cambio?";
+    accionModalAceptar = accionAceptar;
+    document.getElementById('btnModalAceptar').onclick = () => {
+        if (typeof accionModalAceptar === 'function') {
+            accionModalAceptar();
+        }
+        accionModalAceptar = null;
+        myModal.hide();
+    };
     myModal.show()
 }
 

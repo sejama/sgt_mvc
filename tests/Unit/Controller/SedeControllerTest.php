@@ -147,10 +147,14 @@ class SedeControllerTest extends TestCase
             ->with($sede)
             ->willThrowException(new AppException('Sede duplicada'));
 
+        $request = Request::create('/admin/torneo/ruta-test/sede/9/eliminar', 'POST', [
+            '_token' => 'test-token-delete_sede_9',
+        ]);
+
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
 
-        $response = $controller->eliminarSede('ruta-test', 9, $torneoManager, $sedeManager, $logger);
+        $response = $controller->eliminarSede('ruta-test', 9, $request, $torneoManager, $sedeManager, $logger);
 
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame(['error', 'Sede duplicada'], $controller->lastFlash);
@@ -185,5 +189,10 @@ class TestableSedeController extends SedeController
     public function addFlash(string $type, mixed $message): void
     {
         $this->lastFlash = [$type, (string) $message];
+    }
+
+    protected function isCsrfTokenValid(string $id, ?string $token): bool
+    {
+        return true;
     }
 }
