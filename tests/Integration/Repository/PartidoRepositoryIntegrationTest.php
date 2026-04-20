@@ -8,6 +8,40 @@ use App\Entity\Partido;
 
 class PartidoRepositoryIntegrationTest extends PartidoRepositoryIntegrationTestCase
 {
+    public function testEjecutarEnTransaccionRetornaValorDelCallback(): void
+    {
+        $resultado = $this->partidoRepository->ejecutarEnTransaccion(static fn (): int => 42);
+
+        self::assertSame(42, $resultado);
+    }
+
+    public function testReservarRangoNumerosXTorneoDentroDeTransaccionHaceRollbackSinHuecos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-partido-rango-rb', $suffix);
+
+        $creador = $this->crearUsuario('it_partido_rango_rb_user_' . $suffix);
+        $this->crearTorneo($creador, $ruta, $suffix);
+
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
+
+        try {
+            $inicioEnTransaccion = $this->partidoRepository->ejecutarEnTransaccion(
+                fn (): int => $this->partidoRepository->reservarRangoNumerosXTorneo($ruta, 2)
+            );
+
+            self::assertSame(1, $inicioEnTransaccion);
+        } finally {
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
+        }
+
+        $inicioLuegoRollback = $this->partidoRepository->reservarRangoNumerosXTorneo($ruta, 1);
+        self::assertSame(1, $inicioLuegoRollback);
+    }
+
     public function testReservarRangoNumerosXTorneoInicializaDesdeMaximoExistente(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);
