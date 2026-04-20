@@ -19,6 +19,9 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 ## Comandos
 
 - Suite completa: composer test
+- Analisis estatico: composer phpstan
+- Estandar de codigo: composer phpcs
+- Calidad (ambos): composer quality
 - Unit: composer test:unit
 - Integration: composer test:integration
 - Functional: composer test:functional
@@ -30,6 +33,7 @@ No existe garantia matematica total de ausencia de bugs, pero si una garantia op
 
 - Workflow: .github/workflows/tests.yml
 - Ejecuta base de datos MySQL para entorno test, migraciones y luego composer test:ci.
+- Ejecuta tambien chequeos de calidad estatica (composer phpstan y composer phpcs) en modo no bloqueante, emitiendo warning si fallan.
 - Cobertura en CI: se prioriza PCOV (mas rapido) y se usa Xdebug como fallback.
 - En PCOV se limita el escaneo a src para reducir overhead sin cambiar el umbral ni el alcance de tests.
 - Estado actual (temporal):

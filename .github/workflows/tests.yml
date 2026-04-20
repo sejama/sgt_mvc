@@ -58,6 +58,20 @@ jobs:
         working-directory: ${{ steps.project-dir.outputs.dir }}
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Run PHPStan (non-blocking)
+        working-directory: ${{ steps.project-dir.outputs.dir }}
+        run: |
+          if ! composer phpstan; then
+            echo "::warning::PHPStan detecto problemas. Se mantiene en modo no bloqueante temporalmente."
+          fi
+
+      - name: Run PHPCS (non-blocking)
+        working-directory: ${{ steps.project-dir.outputs.dir }}
+        run: |
+          if ! composer phpcs; then
+            echo "::warning::PHPCS detecto problemas de estilo. Se mantiene en modo no bloqueante temporalmente."
+          fi
+
       - name: Prepare test database
         working-directory: ${{ steps.project-dir.outputs.dir }}
         run: |

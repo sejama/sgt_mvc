@@ -82,6 +82,12 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
         },
+        "phpstan": "php ./vendor/bin/phpstan analyse src tests --no-progress --memory-limit=1G",
+        "phpcs": "php ./vendor/bin/phpcs --standard=PSR12 --extensions=php src tests",
+        "quality": [
+            "@phpstan",
+            "@phpcs"
+        ],
         "test": "php ./vendor/bin/phpunit",
         "test:unit": "php ./vendor/bin/phpunit --testsuite Unit",
         "test:integration": "php ./vendor/bin/phpunit --testsuite Integration",

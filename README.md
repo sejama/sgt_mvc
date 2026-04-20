@@ -158,6 +158,9 @@ Comandos disponibles:
 
 ```bash
 composer test
+composer phpstan
+composer phpcs
+composer quality
 composer test:unit
 composer test:integration
 composer test:functional
