@@ -182,19 +182,21 @@ class PartidoManager
                 $partido->setEquipoVisitante($equipos[$j]);
                 $partido->setNumero($numero++);
 
-                $this->partidoRepository->guardar($partido);
+                $this->partidoRepository->guardar($partido, false);
 
                 if ($equipos[$i]->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
                     $equipos[$i]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
-                    $this->equipoRepository->guardar($equipos[$i]);
+                    $this->equipoRepository->guardar($equipos[$i], false);
                 }
 
                 if ($equipos[$j]->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
                     $equipos[$j]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
-                    $this->equipoRepository->guardar($equipos[$j]);
+                    $this->equipoRepository->guardar($equipos[$j], false);
                 }
             }
         }
+
+        $this->partidoRepository->flush();
     }
 
     public function obtenerSedesyCanchasXTorneo(string $ruta): array

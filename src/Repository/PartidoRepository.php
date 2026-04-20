@@ -37,6 +37,11 @@ class PartidoRepository extends ServiceEntityRepository
         }
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function buscarPartidosXTorneo(string $ruta): array
     {
         return $this->createQueryBuilder('p')

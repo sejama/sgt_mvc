@@ -431,10 +431,14 @@ class PartidoManagerTest extends TestCase
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
-            ->with($this->isInstanceOf(Partido::class));
+            ->with($this->isInstanceOf(Partido::class), false);
+
+        $partidoRepository->expects($this->once())
+            ->method('flush');
 
         $equipoRepository->expects($this->once())
-            ->method('guardar');
+            ->method('guardar')
+            ->with($equipoA, false);
 
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
