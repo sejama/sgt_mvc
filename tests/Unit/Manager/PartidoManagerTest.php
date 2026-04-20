@@ -233,6 +233,45 @@ class PartidoManagerTest extends TestCase
         $this->assertSame(1, $resultado['Sede A']['Cancha 1']['2026-03-25'][0]['id']);
     }
 
+    public function testObtenerPartidosProgramadosXTorneoNoDuplicaPartidosConMismoId(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+
+        $partidoDuplicado = [
+            'id' => 7,
+            'sede' => 'Sede A',
+            'cancha' => 'Cancha 1',
+            'horario' => new \DateTimeImmutable('2026-03-25 11:00:00'),
+        ];
+
+        $partidoRepository->method('buscarPartidosProgramadosClasificatorioXTorneo')
+            ->with('ruta-test')
+            ->willReturn([$partidoDuplicado]);
+
+        $partidoRepository->method('buscarPartidosProgramadosPlayOffXTorneo')
+            ->with('ruta-test')
+            ->willReturn([$partidoDuplicado]);
+
+        $partidoRepository->method('buscarPartidosProgramadosPlayOffFinalesXTorneo')
+            ->with('ruta-test')
+            ->willReturn([]);
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
+            $this->createMock(EquipoRepository::class),
+            $partidoRepository,
+            $this->createMock(PartidoConfigRepository::class),
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $resultado = $manager->obtenerPartidosProgramadosXTorneo('ruta-test');
+
+        $this->assertCount(1, $resultado['Sede A']['Cancha 1']['2026-03-25']);
+        $this->assertSame(7, $resultado['Sede A']['Cancha 1']['2026-03-25'][0]['id']);
+    }
+
     public function testObtenerPartidosEliminatoriaPostClasificatorioSeparaPorNombre(): void
     {
         $partidoRepository = $this->createMock(PartidoRepository::class);

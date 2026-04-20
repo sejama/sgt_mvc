@@ -62,51 +62,62 @@ class PartidoManager
 
     public function obtenerPartidosProgramadosXTorneo($ruta): array
     {
-        $paritdosOrdenados = [];
-        foreach ($this->partidoRepository->buscarPartidosProgramadosClasificatorioXTorneo($ruta) as $partido) {
-            $partido['fecha'] = $partido['horario']->format('Y-m-d');
-            $partido['hora'] = $partido['horario']->format('H:i');
-            
-            // Validar que 'cancha' y 'fecha' existan y sean válidos
-            if (isset($partido['sede'], $partido['cancha'], $partido['fecha'])) {
-                $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
-            }
-        }
-        foreach ($this->partidoRepository->buscarPartidosProgramadosPlayOffXTorneo($ruta) as $partido) {
-            $partido['fecha'] = $partido['horario']->format('Y-m-d');
-            $partido['hora'] = $partido['horario']->format('H:i');
-            
-            if (isset($partido['sede'], $partido['cancha'], $partido['fecha'])) {
-                $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
+        $partidosOrdenados = [];
+        $partidosProcesados = [];
+
+        $this->agruparPartidosProgramados(
+            $this->partidoRepository->buscarPartidosProgramadosClasificatorioXTorneo($ruta),
+            $partidosOrdenados,
+            $partidosProcesados
+        );
+
+        $this->agruparPartidosProgramados(
+            $this->partidoRepository->buscarPartidosProgramadosPlayOffXTorneo($ruta),
+            $partidosOrdenados,
+            $partidosProcesados
+        );
+
+        $this->agruparPartidosProgramados(
+            $this->partidoRepository->buscarPartidosProgramadosPlayOffFinalesXTorneo($ruta),
+            $partidosOrdenados,
+            $partidosProcesados
+        );
+
+        foreach ($partidosOrdenados as &$canchas) {
+            foreach ($canchas as &$fechas) {
+                foreach ($fechas as &$partidos) {
+                    usort($partidos, static fn (array $a, array $b): int => strcmp((string) $a['hora'], (string) $b['hora']));
+                }
             }
         }
 
-        foreach ($this->partidoRepository->buscarPartidosProgramadosPlayOffFinalesXTorneo($ruta) as $partido) {
-            $partido['fecha'] = $partido['horario']->format('Y-m-d');
-            $partido['hora'] = $partido['horario']->format('H:i');
-            
-            if (isset($partido['sede'], $partido['cancha'], $partido['fecha'])) {
-                $paritdosOrdenados[$partido['sede']][$partido['cancha']][$partido['fecha']][] = $partido;
-            }
-        }
-
-        // Ordenar los partidos por fecha y hora
-    foreach ($paritdosOrdenados as $sede => &$canchas) {
-        foreach ($canchas as $cancha => &$fechas) {
-            foreach ($fechas as $fecha => &$partidos) {
-                // Eliminar duplicados basados en un identificador único (por ejemplo, 'id')
-                $partidos = array_values(array_unique($partidos, SORT_REGULAR));
-
-                usort($partidos, function ($a, $b) {
-                    $horaA = strtotime($a['hora']);
-                    $horaB = strtotime($b['hora']);
-                    return $horaA <=> $horaB;
-                });
-            }
-        }
+        return $partidosOrdenados;
     }
-        
-        return $paritdosOrdenados;
+
+    private function agruparPartidosProgramados(array $partidos, array &$partidosOrdenados, array &$partidosProcesados): void
+    {
+        foreach ($partidos as $partido) {
+            if (!isset($partido['id'], $partido['horario'], $partido['sede'], $partido['cancha'])) {
+                continue;
+            }
+
+            $partidoId = (int) $partido['id'];
+            if (isset($partidosProcesados[$partidoId])) {
+                continue;
+            }
+
+            if (!$partido['horario'] instanceof \DateTimeInterface) {
+                continue;
+            }
+
+            $partidosProcesados[$partidoId] = true;
+
+            $fecha = $partido['horario']->format('Y-m-d');
+            $partido['fecha'] = $fecha;
+            $partido['hora'] = $partido['horario']->format('H:i');
+
+            $partidosOrdenados[$partido['sede']][$partido['cancha']][$fecha][] = $partido;
+        }
     }
 
     public function obtenerPartidoXCancha(int $canchaId): array
