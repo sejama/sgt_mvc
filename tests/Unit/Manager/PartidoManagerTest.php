@@ -687,6 +687,185 @@ class PartidoManagerTest extends TestCase
         $this->assertSame($equipoLocal, $partidoSiguiente->getEquipoLocal());
     }
 
+    public function testCrearPartidoXCategoriaSinPlayOffNoReservaNumeracion(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $validadorPartidoManager = $this->createMock(ValidadorPartidoManager::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+
+        $validadorPartidoManager->expects($this->once())
+            ->method('validarPlayOff')
+            ->with([]);
+
+        $grupoManager->expects($this->once())
+            ->method('obtenerGrupos')
+            ->with($categoria)
+            ->willReturn([]);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $partidoRepository->expects($this->never())
+            ->method('reservarRangoNumerosXTorneo');
+
+        $partidoRepository->expects($this->never())
+            ->method('guardar');
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $this->createMock(CategoriaRepository::class),
+            $this->createMock(EquipoRepository::class),
+            $partidoRepository,
+            $this->createMock(PartidoConfigRepository::class),
+            $validadorPartidoManager
+        );
+
+        $manager->crearPartidoXCategoria($categoria, []);
+    }
+
+    public function testCrearPartidoXCategoriaConPlayOffReservaRangoYGuardaPartidoYConfig(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $validadorPartidoManager = $this->createMock(ValidadorPartidoManager::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+
+        $grupoA = (new Grupo())->setNombre('A')->setCategoria($categoria);
+        $grupoB = (new Grupo())->setNombre('B')->setCategoria($categoria);
+        $this->setEntityId($grupoA, 11);
+        $this->setEntityId($grupoB, 12);
+
+        $playOff = [
+            [
+                [
+                    [
+                        'nombre' => 'Semi Final',
+                        'grupoEquipo1' => '11',
+                        'posicionEquipo1' => 1,
+                        'grupoEquipo2' => '12',
+                        'posicionEquipo2' => 2,
+                    ],
+                ],
+            ],
+        ];
+
+        $validadorPartidoManager->expects($this->once())
+            ->method('validarPlayOff')
+            ->with($playOff);
+
+        $grupoManager->expects($this->once())
+            ->method('obtenerGrupos')
+            ->with($categoria)
+            ->willReturn([]);
+
+        $grupoManager->expects($this->exactly(2))
+            ->method('obtenerGrupo')
+            ->withConsecutive([11], [12])
+            ->willReturnOnConsecutiveCalls($grupoA, $grupoB);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $partidoRepository->expects($this->once())
+            ->method('reservarRangoNumerosXTorneo')
+            ->with('ruta-test', 1)
+            ->willReturn(25);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->callback(function (Partido $partido) use ($categoria): bool {
+                return $partido->getCategoria() === $categoria
+                    && $partido->getNumero() === 25
+                    && $partido->getTipo() === TipoPartido::ELIMINATORIO->value;
+            }));
+
+        $partidoConfigRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->callback(function (PartidoConfig $config) use ($grupoA, $grupoB): bool {
+                return $config->getNombre() === 'Semi Final'
+                    && $config->getGrupoEquipo1() === $grupoA
+                    && $config->getGrupoEquipo2() === $grupoB
+                    && $config->getPosicionEquipo1() === 1
+                    && $config->getPosicionEquipo2() === 2;
+            }));
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $this->createMock(CategoriaRepository::class),
+            $this->createMock(EquipoRepository::class),
+            $partidoRepository,
+            $partidoConfigRepository,
+            $validadorPartidoManager
+        );
+
+        $manager->crearPartidoXCategoria($categoria, $playOff);
+    }
+
+    public function testCrearPartidosXGrupoSinCrucesNoReservaNiGuarda(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())->setTorneo($torneo);
+        $grupo = (new Grupo())
+            ->setNombre('Grupo A')
+            ->setCategoria($categoria);
+
+        $equipoA = (new Equipo())
+            ->setNombre('Equipo A')
+            ->setNombreCorto('EA')
+            ->setEstado(EstadoEquipo::BORRADOR->value)
+            ->setCategoria($categoria)
+            ->setNumero(1);
+
+        $grupo->addEquipo($equipoA);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $partidoRepository->expects($this->never())
+            ->method('reservarRangoNumerosXTorneo');
+
+        $partidoRepository->expects($this->never())
+            ->method('guardar');
+
+        $partidoRepository->expects($this->never())
+            ->method('flush');
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
+            $this->createMock(EquipoRepository::class),
+            $partidoRepository,
+            $this->createMock(PartidoConfigRepository::class),
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $manager->crearPartidosXGrupo($grupo);
+    }
+
     public function testCrearPartidoManualConConfiguracionPorGrupos(): void
     {
         $partidoRepository = $this->createMock(PartidoRepository::class);
