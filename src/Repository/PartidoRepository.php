@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Partido;
+use Doctrine\DBAL\Connection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -67,6 +68,66 @@ class PartidoRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         return (int) $result;
+    }
+
+    public function reservarRangoNumerosXTorneo(string $ruta, int $cantidad): int
+    {
+        if ($cantidad <= 0) {
+            throw new \InvalidArgumentException('La cantidad de numeros a reservar debe ser mayor a cero.');
+        }
+
+        $connection = $this->getEntityManager()->getConnection();
+
+        return (int) $connection->transactional(function (Connection $connection) use ($ruta, $cantidad): int {
+            $torneoId = $connection->fetchOne(
+                'SELECT id FROM torneo WHERE ruta = :ruta FOR UPDATE',
+                ['ruta' => $ruta]
+            );
+
+            if ($torneoId === false) {
+                throw new \RuntimeException('No se encontro torneo para reservar numeracion de partidos.');
+            }
+
+            $torneoId = (int) $torneoId;
+
+            $ultimoNumero = $connection->fetchOne(
+                'SELECT ultimo_numero FROM torneo_partido_secuencia WHERE torneo_id = :torneoId FOR UPDATE',
+                ['torneoId' => $torneoId]
+            );
+
+            if ($ultimoNumero === false) {
+                $ultimoNumero = (int) $connection->fetchOne(
+                    'SELECT COALESCE(MAX(p.numero), 0)
+                     FROM partido p
+                     INNER JOIN categoria c ON c.id = p.categoria_id
+                     WHERE c.torneo_id = :torneoId',
+                    ['torneoId' => $torneoId]
+                );
+
+                $connection->executeStatement(
+                    'INSERT INTO torneo_partido_secuencia (torneo_id, ultimo_numero) VALUES (:torneoId, :ultimoNumero)',
+                    [
+                        'torneoId' => $torneoId,
+                        'ultimoNumero' => $ultimoNumero,
+                    ]
+                );
+            } else {
+                $ultimoNumero = (int) $ultimoNumero;
+            }
+
+            $inicioRango = $ultimoNumero + 1;
+            $nuevoUltimoNumero = $ultimoNumero + $cantidad;
+
+            $connection->executeStatement(
+                'UPDATE torneo_partido_secuencia SET ultimo_numero = :nuevoUltimoNumero WHERE torneo_id = :torneoId',
+                [
+                    'nuevoUltimoNumero' => $nuevoUltimoNumero,
+                    'torneoId' => $torneoId,
+                ]
+            );
+
+            return $inicioRango;
+        });
     }
 
     public function buscarPartidoXCanchaHorario(string $ruta, int $partidoId, int $canchaId, \DateTimeImmutable $horario): ?Partido

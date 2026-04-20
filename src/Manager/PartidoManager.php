@@ -131,7 +131,12 @@ class PartidoManager
         foreach ($this->grupoManager->obtenerGrupos($categoria) as $grupo) {
             $this->crearPartidosXGrupo($grupo);
         }
-        $numero = $this->obtenerSiguienteNumeroPartido($categoria->getTorneo()->getRuta());
+        $cantidadPartidosPlayOff = $this->contarPartidosPlayOff($partidosPlayOff);
+        if ($cantidadPartidosPlayOff === 0) {
+            return;
+        }
+
+        $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($categoria->getTorneo()->getRuta(), $cantidadPartidosPlayOff);
         
         foreach ($partidosPlayOff as $tiposPlayOff) {
             $partidoId = [];
@@ -178,7 +183,14 @@ class PartidoManager
     public function crearPartidosXGrupo(Grupo $grupo): void
     {
         $equipos = $grupo->getEquipo();
-        $numero = $this->obtenerSiguienteNumeroPartido($grupo->getCategoria()->getTorneo()->getRuta());
+        $cantidadEquipos = count($equipos);
+        $cantidadCruces = (int) (($cantidadEquipos * ($cantidadEquipos - 1)) / 2);
+
+        if ($cantidadCruces === 0) {
+            return;
+        }
+
+        $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($grupo->getCategoria()->getTorneo()->getRuta(), $cantidadCruces);
         for ($i = 0; $i < count($equipos); $i++) {
             for ($j = $i + 1; $j < count($equipos); $j++) {
                 $partido = new Partido();
@@ -329,7 +341,20 @@ class PartidoManager
 
     private function obtenerSiguienteNumeroPartido(string $ruta): int
     {
-        return $this->partidoRepository->obtenerMaxNumeroPartidoXTorneo($ruta) + 1;
+        return $this->partidoRepository->reservarRangoNumerosXTorneo($ruta, 1);
+    }
+
+    private function contarPartidosPlayOff(array $partidosPlayOff): int
+    {
+        $cantidad = 0;
+
+        foreach ($partidosPlayOff as $tiposPlayOff) {
+            foreach ($tiposPlayOff as $partidoPlayOff) {
+                $cantidad += count($partidoPlayOff);
+            }
+        }
+
+        return $cantidad;
     }
 
     private function obtenerCategoriaDesdeData(array $data, string $key, string $ruta): Categoria

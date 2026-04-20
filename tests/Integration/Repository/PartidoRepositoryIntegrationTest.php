@@ -4,23 +4,65 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Repository;
 
-use App\Entity\Cancha;
-use App\Entity\Categoria;
-use App\Entity\Equipo;
-use App\Entity\Grupo;
 use App\Entity\Partido;
-use App\Entity\Sede;
-use App\Entity\Torneo;
-use App\Entity\Usuario;
-use App\Enum\Genero;
-use App\Repository\PartidoRepository;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class PartidoRepositoryIntegrationTest extends PartidoRepositoryIntegrationTestCase
 {
+    public function testReservarRangoNumerosXTorneoInicializaDesdeMaximoExistente(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('it-partido-rango-max', $suffix);
+
+        $creador = $this->crearUsuario('it_partido_rango_max_user_' . $suffix);
+        $torneo = $this->crearTorneo($creador, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+
+        $partidoA = (new Partido())
+            ->setCategoria($categoria)
+            ->setNumero(2)
+            ->setTipo('clasificatorio')
+            ->setEstado('Pendiente');
+
+        $partidoB = (new Partido())
+            ->setCategoria($categoria)
+            ->setNumero(5)
+            ->setTipo('clasificatorio')
+            ->setEstado('Pendiente');
+
+        $this->partidoRepository->guardar($partidoA, true);
+        $this->partidoRepository->guardar($partidoB, true);
+
+        $inicioRango = $this->partidoRepository->reservarRangoNumerosXTorneo($ruta, 3);
+
+        self::assertSame(6, $inicioRango);
+
+        $siguiente = $this->partidoRepository->reservarRangoNumerosXTorneo($ruta, 1);
+        self::assertSame(9, $siguiente);
+    }
+
+    public function testReservarRangoNumerosXTorneoEsIndependientePorTorneo(): void
+    {
+        $suffixA = substr(md5(uniqid('', true)), 0, 8);
+        $suffixB = substr(md5(uniqid('', true)), 0, 8);
+
+        $rutaA = $this->buildRuta('it-partido-rango-a', $suffixA);
+        $rutaB = $this->buildRuta('it-partido-rango-b', $suffixB);
+
+        $creadorA = $this->crearUsuario('it_partido_rango_a_user_' . $suffixA);
+        $creadorB = $this->crearUsuario('it_partido_rango_b_user_' . $suffixB);
+
+        $this->crearTorneo($creadorA, $rutaA, $suffixA);
+        $this->crearTorneo($creadorB, $rutaB, $suffixB);
+
+        $inicioA = $this->partidoRepository->reservarRangoNumerosXTorneo($rutaA, 2);
+        $inicioB = $this->partidoRepository->reservarRangoNumerosXTorneo($rutaB, 1);
+        $siguienteA = $this->partidoRepository->reservarRangoNumerosXTorneo($rutaA, 1);
+
+        self::assertSame(1, $inicioA);
+        self::assertSame(1, $inicioB);
+        self::assertSame(3, $siguienteA);
+    }
+
     public function testObternerPartidoxRutaNumeroYBuscarPartidosXTorneo(): void
     {
         $suffix = substr(md5(uniqid('', true)), 0, 8);

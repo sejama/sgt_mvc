@@ -53,6 +53,7 @@ abstract class PartidoRepositoryIntegrationTestCase extends KernelTestCase
         $tables = [
             'partido_config',
             'partido',
+            'torneo_partido_secuencia',
             'jugador',
             'equipo',
             'grupo',

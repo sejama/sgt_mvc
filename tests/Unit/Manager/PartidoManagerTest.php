@@ -464,9 +464,9 @@ class PartidoManagerTest extends TestCase
         $grupo->addEquipo($equipoB);
 
         $partidoRepository->expects($this->once())
-            ->method('obtenerMaxNumeroPartidoXTorneo')
-            ->with('ruta-test')
-            ->willReturn(0);
+            ->method('reservarRangoNumerosXTorneo')
+            ->with('ruta-test', 1)
+            ->willReturn(1);
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
@@ -524,9 +524,9 @@ class PartidoManagerTest extends TestCase
         $grupo->addEquipo($equipoB);
 
         $partidoRepository->expects($this->once())
-            ->method('obtenerMaxNumeroPartidoXTorneo')
-            ->with('ruta-test')
-            ->willReturn(7);
+            ->method('reservarRangoNumerosXTorneo')
+            ->with('ruta-test', 1)
+            ->willReturn(8);
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
@@ -722,9 +722,9 @@ class PartidoManagerTest extends TestCase
             ->willReturnOnConsecutiveCalls($grupo1, $grupo2);
 
         $partidoRepository->expects($this->once())
-            ->method('obtenerMaxNumeroPartidoXTorneo')
-            ->with('ruta-test')
-            ->willReturn(0);
+            ->method('reservarRangoNumerosXTorneo')
+            ->with('ruta-test', 1)
+            ->willReturn(1);
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
@@ -807,9 +807,9 @@ class PartidoManagerTest extends TestCase
             ->method('obtenerGrupo');
 
         $partidoRepository->expects($this->once())
-            ->method('obtenerMaxNumeroPartidoXTorneo')
-            ->with('ruta-test')
-            ->willReturn(12);
+            ->method('reservarRangoNumerosXTorneo')
+            ->with('ruta-test', 1)
+            ->willReturn(13);
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
