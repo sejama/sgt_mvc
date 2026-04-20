@@ -464,9 +464,9 @@ class PartidoManagerTest extends TestCase
         $grupo->addEquipo($equipoB);
 
         $partidoRepository->expects($this->once())
-            ->method('buscarPartidosXTorneo')
+            ->method('obtenerMaxNumeroPartidoXTorneo')
             ->with('ruta-test')
-            ->willReturn([]);
+            ->willReturn(0);
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
@@ -478,6 +478,67 @@ class PartidoManagerTest extends TestCase
         $equipoRepository->expects($this->once())
             ->method('guardar')
             ->with($equipoA, false);
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
+            $equipoRepository,
+            $partidoRepository,
+            $this->createMock(PartidoConfigRepository::class),
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $manager->crearPartidosXGrupo($grupo);
+
+        $this->assertSame(EstadoEquipo::ACTIVO->value, $equipoA->getEstado());
+        $this->assertSame(EstadoEquipo::ACTIVO->value, $equipoB->getEstado());
+    }
+
+    public function testCrearPartidosXGrupoContinuaDesdeElMaximoNumeroExistente(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())->setTorneo($torneo);
+        $grupo = (new Grupo())
+            ->setNombre('Grupo A')
+            ->setCategoria($categoria);
+
+        $equipoA = (new Equipo())
+            ->setNombre('Equipo A')
+            ->setNombreCorto('EA')
+            ->setEstado(EstadoEquipo::BORRADOR->value)
+            ->setCategoria($categoria)
+            ->setNumero(1);
+
+        $equipoB = (new Equipo())
+            ->setNombre('Equipo B')
+            ->setNombreCorto('EB')
+            ->setEstado(EstadoEquipo::BORRADOR->value)
+            ->setCategoria($categoria)
+            ->setNumero(2);
+
+        $grupo->addEquipo($equipoA);
+        $grupo->addEquipo($equipoB);
+
+        $partidoRepository->expects($this->once())
+            ->method('obtenerMaxNumeroPartidoXTorneo')
+            ->with('ruta-test')
+            ->willReturn(7);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->callback(function (Partido $partido): bool {
+                return $partido->getNumero() === 8;
+            }), false);
+
+        $partidoRepository->expects($this->once())
+            ->method('flush');
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('guardar');
 
         $manager = new PartidoManager(
             $this->createMock(CanchaManager::class),
@@ -661,9 +722,9 @@ class PartidoManagerTest extends TestCase
             ->willReturnOnConsecutiveCalls($grupo1, $grupo2);
 
         $partidoRepository->expects($this->once())
-            ->method('buscarPartidosXTorneo')
+            ->method('obtenerMaxNumeroPartidoXTorneo')
             ->with('ruta-test')
-            ->willReturn([]);
+            ->willReturn(0);
 
         $partidoRepository->expects($this->once())
             ->method('guardar')
@@ -708,6 +769,72 @@ class PartidoManagerTest extends TestCase
         $this->assertSame($categoria, $partido->getCategoria());
         $this->assertSame($equipoLocal, $partido->getEquipoLocal());
         $this->assertSame($equipoVisitante, $partido->getEquipoVisitante());
+    }
+
+    public function testCrearPartidoManualContinuaDesdeElMaximoNumeroExistente(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+        $this->setEntityId($categoria, 10);
+
+        $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC')->setCategoria($categoria);
+        $equipoVisitante = (new Equipo())->setNombre('Visita')->setNombreCorto('VIS')->setCategoria($categoria);
+        $this->setEntityId($equipoLocal, 31);
+        $this->setEntityId($equipoVisitante, 32);
+
+        $categoriaRepository->expects($this->once())
+            ->method('find')
+            ->with(10)
+            ->willReturn($categoria);
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('find')
+            ->withConsecutive([31], [32])
+            ->willReturnOnConsecutiveCalls($equipoLocal, $equipoVisitante);
+
+        $grupoManager->expects($this->never())
+            ->method('obtenerGrupo');
+
+        $partidoRepository->expects($this->once())
+            ->method('obtenerMaxNumeroPartidoXTorneo')
+            ->with('ruta-test')
+            ->willReturn(12);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->callback(function (Partido $partido): bool {
+                return $partido->getNumero() === 13;
+            }));
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $categoriaRepository,
+            $equipoRepository,
+            $partidoRepository,
+            $partidoConfigRepository,
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $partido = $manager->crearPartidoManual('ruta-test', [
+            'crear_categoriaId' => '10',
+            'crear_tipo' => TipoPartido::ELIMINATORIO->value,
+            'crear_equipoLocalId' => '31',
+            'crear_equipoVisitanteId' => '32',
+        ]);
+
+        $this->assertSame(13, $partido->getNumero());
     }
 
     public function testEditarPartidoManualConConfiguracionPorGanadores(): void

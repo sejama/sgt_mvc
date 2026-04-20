@@ -55,6 +55,20 @@ class PartidoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function obtenerMaxNumeroPartidoXTorneo(string $ruta): int
+    {
+        $result = $this->createQueryBuilder('p')
+            ->select('COALESCE(MAX(p.numero), 0)')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->where('t.ruta = :ruta')
+            ->setParameter('ruta', $ruta)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int) $result;
+    }
+
     public function buscarPartidoXCanchaHorario(string $ruta, int $partidoId, int $canchaId, \DateTimeImmutable $horario): ?Partido
     {
         return $this->createQueryBuilder('p')
@@ -250,53 +264,6 @@ class PartidoRepository extends ServiceEntityRepository
         WHERE equipo_local_id IS NOT null AND equipo_visitante_id IS NOT null
         ORDER BY s.id, c.id, hora;
 
-        SELECT 
-            p.id, 
-            p.numero, 
-            s.nombre AS sede, 
-            c.nombre AS cancha, 
-            p.horario AS hora, 
-            CASE 
-                WHEN p.equipo_local_id IS NULL THEN CONCAT(g1.nombre, ' ', pc.posicion_equipo1)
-                ELSE eLocal.nombre 
-            END AS equipoLocal,
-            CASE 
-                WHEN p.equipo_visitante_id IS NULL THEN CONCAT(g2.nombre, ' ', pc.posicion_equipo2)
-                ELSE eVisitante.nombre 
-            END AS equipoVisitante,
-            pc.nombre AS grupo, 
-            cat.nombre AS categoria,
-            p.local_set1, 
-            p.visitante_set1, 
-            p.local_set2, 
-            p.visitante_set2, 
-            p.local_set3, 
-            p.visitante_set3, 
-            p.local_set4, 
-            p.visitante_set4, 
-            p.local_set5, 
-            p.visitante_set5
-        FROM 
-            partido p
-        INNER JOIN 
-            cancha c ON p.cancha_id = c.id
-        INNER JOIN 
-            sede s ON c.sede_id = s.id
-        INNER JOIN 
-            categoria cat ON cat.id = p.categoria_id
-        INNER JOIN 
-            partido_config pc ON pc.partido_id = p.id
-        LEFT JOIN 
-            grupo g1 ON g1.id = pc.grupo_equipo1_id
-        LEFT JOIN 
-            grupo g2 ON g2.id = pc.grupo_equipo2_id
-        LEFT JOIN 
-            equipo eLocal ON eLocal.id = p.equipo_local_id
-        LEFT JOIN 
-            equipo eVisitante ON eVisitante.id = p.equipo_visitante_id
-        ORDER BY 
-            s.id, c.id, hora;
-        
         return $this->createQueryBuilder('p')
             ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, CONCAT(g1.nombre, \' \', pc.posicionEquipo1) AS equipoLocal, CONCAT(g2.nombre, \' \', pc.posicionEquipo2) AS equipoVisitante, pc.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1, p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5')
             ->join('p.cancha', 'c')

@@ -131,8 +131,7 @@ class PartidoManager
         foreach ($this->grupoManager->obtenerGrupos($categoria) as $grupo) {
             $this->crearPartidosXGrupo($grupo);
         }
-        $numPartido = $this->obtenerPartidosXTorneo($categoria->getTorneo()->getRuta());
-        $numero = count($numPartido) + 1;
+        $numero = $this->obtenerSiguienteNumeroPartido($categoria->getTorneo()->getRuta());
         
         foreach ($partidosPlayOff as $tiposPlayOff) {
             $partidoId = [];
@@ -179,8 +178,7 @@ class PartidoManager
     public function crearPartidosXGrupo(Grupo $grupo): void
     {
         $equipos = $grupo->getEquipo();
-        $numPartido = $this->obtenerPartidosXTorneo($grupo->getCategoria()->getTorneo()->getRuta());
-        $numero = count($numPartido) + 1;
+        $numero = $this->obtenerSiguienteNumeroPartido($grupo->getCategoria()->getTorneo()->getRuta());
         for ($i = 0; $i < count($equipos); $i++) {
             for ($j = $i + 1; $j < count($equipos); $j++) {
                 $partido = new Partido();
@@ -331,7 +329,7 @@ class PartidoManager
 
     private function obtenerSiguienteNumeroPartido(string $ruta): int
     {
-        return count($this->obtenerPartidosXTorneo($ruta)) + 1;
+        return $this->partidoRepository->obtenerMaxNumeroPartidoXTorneo($ruta) + 1;
     }
 
     private function obtenerCategoriaDesdeData(array $data, string $key, string $ruta): Categoria
