@@ -1,10 +1,125 @@
 {% extends 'base.html.twig' %}
-{% block body %}
-<a href={{ path('app_main_torneo', {'ruta': ruta}) }} class="btn btn-secondary">Volver</a>
 
-    {% for key, grupo in grupos %} 
-        {{ include("componentes/tabla.html.twig",{
-            'grupo': grupo[0], 'posiciones': grupo[1]
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .categoria-page {
+            --clasificacion-oro-bg: #fff8df;
+            --clasificacion-oro-border: #f2c94c;
+            --clasificacion-plata-bg: #f5f7fb;
+            --clasificacion-plata-border: #aeb8c8;
+            --clasificacion-bronce-bg: #fff1e6;
+            --clasificacion-bronce-border: #c98b5c;
+        }
+
+        .categoria-page .hero-categoria {
+            background: linear-gradient(135deg, #0f172a 0%, #1f3a5f 55%, #27546c 100%);
+            color: #fff;
+        }
+
+        .categoria-page .hero-categoria .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .categoria-page .hero-categoria .btn-volver-torneo {
+            border-color: rgba(255, 255, 255, 0.55);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+        }
+
+        .categoria-page .hero-categoria .btn-volver-torneo:hover,
+        .categoria-page .hero-categoria .btn-volver-torneo:focus {
+            color: #0f172a;
+            background: #fff;
+            border-color: #fff;
+        }
+
+        .categoria-page .hero-categoria .btn-volver-torneo i {
+            margin-right: 0.35rem;
+        }
+
+        .categoria-page .clasificacion-badge {
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .categoria-page .clasificacion-oro {
+            background-color: var(--clasificacion-oro-bg);
+            border-left: 4px solid var(--clasificacion-oro-border);
+        }
+
+        .categoria-page .clasificacion-plata {
+            background-color: #e2eaf4;
+            border-left: 4px solid #6f86a8;
+            box-shadow: inset 0 0 0 1px rgba(111, 134, 168, 0.18);
+        }
+
+        .categoria-page .clasificacion-bronce {
+            background-color: var(--clasificacion-bronce-bg);
+            border-left: 4px solid var(--clasificacion-bronce-border);
+        }
+
+        .categoria-page .tabla-posiciones thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #fff;
+        }
+
+        .categoria-page .tabla-posiciones .sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background: inherit;
+        }
+
+        .categoria-page .tabla-posiciones thead .sticky-col {
+            z-index: 3;
+        }
+
+        .categoria-page .mobile-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.08);
+        }
+
+        .categoria-page .mobile-card .metric-value {
+            font-weight: 700;
+            line-height: 1.1;
+        }
+    </style>
+{% endblock %}
+{% block title %}SGT - Posiciones{% endblock %}
+{% block body %}
+<div class="categoria-page py-3">
+    <div class="card border-0 shadow-sm hero-categoria mb-4">
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
+                <div class="flex-grow-1">
+                    <h1 class="h3 mb-2">Tablas de posiciones por grupo</h1>
+                    <p class="mb-0 text-muted">Consulta rápida del ranking de cada grupo con los cupos de clasificación resaltados.</p>
+                </div>
+                <div class="d-flex flex-column align-items-start align-items-lg-end gap-2">
+                    <a href="{{ path('app_main_torneo', {'ruta': ruta}) }}" class="btn btn-sm btn-volver-torneo">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver al torneo
+                    </a>
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                        <span class="badge rounded-pill text-bg-warning clasificacion-badge">Oro</span>
+                        <span class="badge rounded-pill text-bg-light text-dark clasificacion-badge">Plata</span>
+                        <span class="badge rounded-pill text-bg-secondary clasificacion-badge">Bronce</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for key, grupo in grupos %}
+        {{ include('componentes/tabla.html.twig', {
+            'grupo': grupo[0],
+            'posiciones': grupo[1]
         }) }}
     {% endfor %}
 </div>

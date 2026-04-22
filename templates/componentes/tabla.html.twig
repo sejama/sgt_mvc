@@ -1,57 +1,203 @@
+{% set clasificaOro = grupo.clasificaOro ?? 0 %}
+{% set clasificaPlata = grupo.clasificaPlata ?? 0 %}
+{% set clasificaBronce = grupo.clasificaBronce ?? 0 %}
+{% set limiteOro = clasificaOro %}
+{% set limitePlata = clasificaOro + clasificaPlata %}
+{% set limiteBronce = clasificaOro + clasificaPlata + clasificaBronce %}
 
-<div class="card mt-1">
-    <div class="card-header">
-        <h4>Nombre Grupo: {{ grupo.nombre }}</h4>
-    </div>
-    <div class="card-body p-0 table-responsive">
-        <table class="table align-middle text-center" style="border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th class="p-0" style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="col"></th>
-                    <th class="p-0" style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="col"></th>
-                    <th class="p-0 table-active" colspan="3" scope="col">Partidos</th>
-                    <th class="p-0" colspan="3" scope="col">Set</th>
-                    <th class="p-0 table-active" colspan="3" scope="col">Puntos</th>
-                    <th class="p-0" scope="col"></th>
-                </tr>
-                <tr>
-                    <th class="p-0 px-1" style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="col">Pos</th>
-                    <th class="p-0 px-1" style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="col">Equipo</th>
-                    <th class="p-0 px-1 table-active" scope="col">Jug</th>
-                    <th class="p-0 px-1 table-active" scope="col">Gan</th>
-                    <th class="p-0 px-1 table-active" scope="col">Per</th>
-                    <th class="p-0 px-1" scope="col">Favor</th>
-                    <th class="p-0 px-1" scope="col">Contra</th>
-                    <th class="p-0 px-1" scope="col">Dif</th>
-                    <th class="p-0 px-1 table-active" scope="col">Fav</th>
-                    <th class="p-0 px-1 table-active" scope="col">Con</th>
-                    <th class="p-0 px-1 table-active" scope="col">Dif</th>
-                    <th class="p-0 px-1" scope="col">Ptos</th>
-                </tr>   
-            </thead>
-            <tbody>
-                {% for key, equipo in posiciones %}
-                <tr>
-                    <th style="position: -webkit-sticky; position: sticky; left: 0px; background: white;" scope="row">{{ key+1 }}</th>
-                    <td style="position: -webkit-sticky; position: sticky; left: 0px; background: white;">{{ equipo.nombre }}</td>
-                    <td class="table-active">{{ equipo.partidosJugados }}</td>
-                    <td class="table-active">{{ equipo.partidosGanados }}</td>
-                    <td class="table-active">{{ equipo.partidosPerdidos }}</td>
-                    <td>{{ equipo.setsFavor }}</td>
-                    <td>{{ equipo.setsContra }} </td>
-                    <td>{{ equipo.setsDiferencia }}</td>
-                    <td class="table-active">{{ equipo.puntosFavor }}</td>
-                    <td class="table-active">{{ equipo.puntosContra }}</td>
-                    <td class="table-active">{{ equipo.puntosDiferencia }}</td>
-                    <td>{{ equipo.puntos }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <!-- 
-        <div class="card-footer">
-            Card footer
+<div class="card border-0 shadow-sm mb-4 overflow-hidden">
+    <div class="card-header bg-white border-0 pb-0 pt-3 px-3 px-md-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-center">
+            <div>
+                <p class="text-uppercase text-muted small mb-1">Grupo</p>
+                <h2 class="h5 mb-0">{{ grupo.nombre }}</h2>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge rounded-pill text-bg-warning clasificacion-badge">{{ clasificaOro }} a Oro</span>
+                {% if clasificaPlata > 0 %}
+                    <span class="badge rounded-pill text-bg-light text-dark clasificacion-badge">{{ clasificaPlata }} a Plata</span>
+                {% endif %}
+                {% if clasificaBronce > 0 %}
+                    <span class="badge rounded-pill text-bg-secondary clasificacion-badge">{{ clasificaBronce }} a Bronce</span>
+                {% endif %}
+            </div>
         </div>
-    -->
+    </div>
+
+    <div class="card-body p-3 p-md-4">
+        <div class="d-md-none">
+            {% for key, equipo in posiciones %}
+                {% set posicion = key + 1 %}
+                {% set rowClass = '' %}
+                {% set rowLabel = '' %}
+                {% set rowBadge = 'text-bg-light' %}
+
+                {% if posicion <= limiteOro %}
+                    {% set rowClass = 'clasificacion-oro' %}
+                    {% set rowLabel = 'Clasifica a Oro' %}
+                    {% set rowBadge = 'text-bg-warning' %}
+                {% elseif posicion <= limitePlata %}
+                    {% set rowClass = 'clasificacion-plata' %}
+                    {% set rowLabel = 'Clasifica a Plata' %}
+                    {% set rowBadge = 'text-bg-light text-dark' %}
+                {% elseif posicion <= limiteBronce %}
+                    {% set rowClass = 'clasificacion-bronce' %}
+                    {% set rowLabel = 'Clasifica a Bronce' %}
+                    {% set rowBadge = 'text-bg-secondary' %}
+                {% endif %}
+
+                <article class="mobile-card {{ rowClass }} mb-3">
+                    <div class="p-3 p-sm-4 bg-white">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <div class="text-uppercase text-muted small mb-1">Posición</div>
+                                <div class="display-6 fw-bold mb-0">{{ posicion }}</div>
+                            </div>
+                            {% if rowLabel %}
+                                <span class="badge rounded-pill {{ rowBadge }} clasificacion-badge">{{ rowLabel }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="fw-semibold fs-5 mb-3">{{ equipo.nombre }}</div>
+
+                        <div class="row g-2 text-center">
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">PJ</div>
+                                    <div class="metric-value">{{ equipo.partidosJugados }}</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">G / P</div>
+                                    <div class="metric-value">{{ equipo.partidosGanados }} / {{ equipo.partidosPerdidos }}</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Pts</div>
+                                    <div class="metric-value">{{ equipo.puntos }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mt-2 text-center">
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Set +</div>
+                                    <div class="metric-value">{{ equipo.setsFavor }}</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Set -</div>
+                                    <div class="metric-value">{{ equipo.setsContra }}</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Dif</div>
+                                    <div class="metric-value">{{ equipo.setsDiferencia }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mt-2 text-center">
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Puntos +</div>
+                                    <div class="metric-value">{{ equipo.puntosFavor }}</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Puntos -</div>
+                                    <div class="metric-value">{{ equipo.puntosContra }}</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
+                                    <div class="text-muted small">Dif</div>
+                                    <div class="metric-value">{{ equipo.puntosDiferencia }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <div class="table-responsive d-none d-md-block">
+            <table class="table table-hover align-middle text-center mb-0 tabla-posiciones">
+                <thead class="align-middle">
+                    <tr>
+                        <th class="sticky-col sticky-col-pos border-0" scope="col"></th>
+                        <th class="sticky-col sticky-col-team border-0 text-start" scope="col"></th>
+                        <th class="table-light" colspan="3" scope="colgroup">Partidos</th>
+                        <th colspan="3" scope="colgroup">Set</th>
+                        <th class="table-light" colspan="3" scope="colgroup">Puntos</th>
+                        <th scope="col"></th>
+                    </tr>
+                    <tr>
+                        <th class="sticky-col sticky-col-pos border-top-0" scope="col">Pos</th>
+                        <th class="sticky-col sticky-col-team border-top-0 text-start" scope="col">Equipo</th>
+                        <th class="table-light border-top-0" scope="col">Jug</th>
+                        <th class="table-light border-top-0" scope="col">Gan</th>
+                        <th class="table-light border-top-0" scope="col">Per</th>
+                        <th class="border-top-0" scope="col">Favor</th>
+                        <th class="border-top-0" scope="col">Contra</th>
+                        <th class="border-top-0" scope="col">Dif</th>
+                        <th class="table-light border-top-0" scope="col">Fav</th>
+                        <th class="table-light border-top-0" scope="col">Con</th>
+                        <th class="table-light border-top-0" scope="col">Dif</th>
+                        <th class="border-top-0" scope="col">Ptos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, equipo in posiciones %}
+                        {% set posicion = key + 1 %}
+                        {% set rowClass = '' %}
+                        {% set rowLabel = '' %}
+                        {% set rowBadge = 'text-bg-light' %}
+
+                        {% if posicion <= limiteOro %}
+                            {% set rowClass = 'clasificacion-oro' %}
+                            {% set rowLabel = 'Oro' %}
+                            {% set rowBadge = 'text-bg-warning' %}
+                        {% elseif posicion <= limitePlata %}
+                            {% set rowClass = 'clasificacion-plata' %}
+                            {% set rowLabel = 'Plata' %}
+                            {% set rowBadge = 'text-bg-light text-dark' %}
+                        {% elseif posicion <= limiteBronce %}
+                            {% set rowClass = 'clasificacion-bronce' %}
+                            {% set rowLabel = 'Bronce' %}
+                            {% set rowBadge = 'text-bg-secondary' %}
+                        {% endif %}
+
+                        <tr class="{{ rowClass }}">
+                            <th class="sticky-col sticky-col-pos" scope="row">{{ posicion }}</th>
+                            <td class="sticky-col sticky-col-team text-start fw-semibold">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span>{{ equipo.nombre }}</span>
+                                    {% if rowLabel %}
+                                        <span class="badge rounded-pill {{ rowBadge }} clasificacion-badge">{{ rowLabel }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="table-light">{{ equipo.partidosJugados }}</td>
+                            <td class="table-light">{{ equipo.partidosGanados }}</td>
+                            <td class="table-light">{{ equipo.partidosPerdidos }}</td>
+                            <td>{{ equipo.setsFavor }}</td>
+                            <td>{{ equipo.setsContra }}</td>
+                            <td>{{ equipo.setsDiferencia }}</td>
+                            <td class="table-light">{{ equipo.puntosFavor }}</td>
+                            <td class="table-light">{{ equipo.puntosContra }}</td>
+                            <td class="table-light">{{ equipo.puntosDiferencia }}</td>
+                            <td class="fw-semibold">{{ equipo.puntos }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

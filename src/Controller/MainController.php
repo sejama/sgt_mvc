@@ -126,7 +126,6 @@ class MainController extends AbstractController
         string $ruta,
         int $categoriaId
     ): Response {
-        
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         $grupos = $categoria->getGrupos();
         $gruposPosiciones = [];
