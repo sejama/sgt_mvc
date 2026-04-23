@@ -169,6 +169,43 @@ class PartidoRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function buscarPartidoXSedeHorario(string $ruta, int $partidoId, int $sedeId, \DateTimeImmutable $horario): ?Partido
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->join('p.cancha', 'can')
+            ->join('can.sede', 's')
+            ->where('s.id = :sedeId')
+            ->andWhere('p.horario = :horario')
+            ->andWhere('t.ruta = :ruta')
+            ->andWhere('p.id != :partidoId')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('partidoId', $partidoId)
+            ->setParameter('sedeId', $sedeId)
+            ->setParameter('horario', $horario)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function obtenerHorariosProgramadosXTorneo(string $ruta): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.horario, can.id AS canchaId, s.id AS sedeId')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->join('p.cancha', 'can')
+            ->join('can.sede', 's')
+            ->where('t.ruta = :ruta')
+            ->andWhere('p.horario IS NOT NULL')
+            ->andWhere('p.estado != :estadoCancelado')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('estadoCancelado', 'Cancelado')
+            ->orderBy('p.horario', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function existenOtrosPartidosProgramadosXTorneo(string $ruta, int $partidoId): bool
     {
         $cantidad = (int) $this->createQueryBuilder('p')

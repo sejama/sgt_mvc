@@ -160,12 +160,14 @@ class PartidoController extends AbstractController
         $partidosSinAsignar = $partidoManager->obtenerPartidosSinAsignarXTorneo($ruta);
         $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);
         $canchas = $partidoManager->obtenerSedesyCanchasXTorneo($ruta);
+        $horariosProgramados = $partidoManager->obtenerHorariosProgramadosXTorneo($ruta);
         // Organizar las sedes y sus canchas en un array estructurado
         $sedesCanchas = [];
         foreach ($canchas as $cancha) {
             $sedeNombre = $cancha['sede'];
             $canchaNombre = [
                 'id' => $cancha['id'],
+                'sedeId' => $cancha['sedeId'],
                 'cancha' => $cancha['cancha'],
             ];
 
@@ -181,6 +183,7 @@ class PartidoController extends AbstractController
             'partidosSinAsignar' => $partidosSinAsignar,
             'partidosProgramados' => $partidosProgramados,
             'canchas' => $sedesCanchas,
+            'horariosProgramados' => $horariosProgramados,
             ]
         );
     }

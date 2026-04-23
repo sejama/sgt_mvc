@@ -229,12 +229,58 @@ class PartidoManager
         return $this->canchaManager->obtenerSedesYCanchasByTorneo($ruta);
     }
 
+    public function obtenerHorariosProgramadosXTorneo(string $ruta): array
+    {
+        $horariosProgramados = [
+            'porCancha' => [],
+            'porSede' => [],
+        ];
+
+        foreach ($this->partidoRepository->obtenerHorariosProgramadosXTorneo($ruta) as $partido) {
+            if (!isset($partido['horario'], $partido['canchaId'], $partido['sedeId'])) {
+                continue;
+            }
+
+            if (!$partido['horario'] instanceof \DateTimeInterface) {
+                continue;
+            }
+
+            $fechaHora = $partido['horario']->format('Y-m-d\\TH:i');
+            $canchaId = (string) $partido['canchaId'];
+            $sedeId = (string) $partido['sedeId'];
+
+            $horariosProgramados['porCancha'][$canchaId][$fechaHora] = true;
+            $horariosProgramados['porSede'][$sedeId][$fechaHora] = true;
+        }
+
+        foreach ($horariosProgramados['porCancha'] as $canchaId => $horarios) {
+            $horariosProgramados['porCancha'][$canchaId] = array_keys($horarios);
+        }
+
+        foreach ($horariosProgramados['porSede'] as $sedeId => $horarios) {
+            $horariosProgramados['porSede'][$sedeId] = array_keys($horarios);
+        }
+
+        return $horariosProgramados;
+    }
+
     public function editarPartido(string $ruta, int $partidoId, int $canchaId, string $horario): void
     {
         $horario = new \DateTimeImmutable(substr_replace($horario, '00', -2));
 
+        $cancha = $this->canchaManager->obtenerCancha($canchaId);
+        $sede = $cancha->getSede();
+
+        if ($sede === null || $sede->getTorneo()?->getRuta() !== $ruta) {
+            throw new AppException('La cancha seleccionada no pertenece al torneo actual.');
+        }
+
         if ($this->partidoRepository->buscarPartidoXCanchaHorario($ruta, $partidoId, $canchaId, $horario)) {
             throw new AppException('Ya existe un partido programado en esa cancha y horario');
+        }
+
+        if ($this->partidoRepository->buscarPartidoXSedeHorario($ruta, $partidoId, (int) $sede->getId(), $horario)) {
+            throw new AppException('Ya existe un partido programado en esa sede y horario');
         }
 
         $partido = $this->obtenerPartidoxId($partidoId);
@@ -250,7 +296,7 @@ class PartidoManager
             throw new AppException('El primer partido del torneo no puede programarse antes de la fecha y hora de inicio del torneo: ' . $inicioTorneo->format('d/m/Y H:i'));
         }
 
-        $partido->setCancha($this->canchaManager->obtenerCancha($canchaId));
+        $partido->setCancha($cancha);
         $partido->setHorario($horario);
         $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);
 

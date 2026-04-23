@@ -40,11 +40,11 @@
                 <th scope="row">{{ partido.numero }}</th>
                 <td>
                   <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-                    <option selected>Seleccionar Cancha</option>
+                    <option value="" selected>Seleccionar Cancha</option>
                     {% for key,sede in canchas %}
                       <optgroup label="{{key}}">	
                       {% for cancha in sede %}
-                        <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+                        <option value="{{ cancha['id'] }}" data-sede-id="{{ cancha['sedeId'] }}">{{ cancha['cancha'] }}</option>
                       {% endfor %}
                       </optgroup>
                     {% endfor %}
@@ -52,13 +52,14 @@
                 </td>
                 <td>
                     <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
-
-                      min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
-                      max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+                      min="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
+                      max="{{ partido.fechaFinTorneo|date('Y-m-d\\TH:i') }}"
+                      step="900"
                       data-force-inicio="{{ esPrimerPartido ? '1' : '0' }}"
                       data-inicio-torneo="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
                       disabled
                     >
+                    <small id="ayudaHorario{{ partido.id }}" class="form-text text-muted d-block mt-1">Seleccioná cancha para habilitar horario y ver disponibilidad.</small>
                 </td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
@@ -104,11 +105,11 @@
         <th scope="row">{{ partido.numero }}</th>
         <td>
           <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-            <option selected>Seleccionar Cancha</option>
+            <option value="" selected>Seleccionar Cancha</option>
             {% for key,sede in canchas %}
               <optgroup label="{{key}}">	
               {% for cancha in sede %}
-                <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+                <option value="{{ cancha['id'] }}" data-sede-id="{{ cancha['sedeId'] }}">{{ cancha['cancha'] }}</option>
               {% endfor %}
               </optgroup>
             {% endfor %}
@@ -116,13 +117,14 @@
         </td>
         <td>
             <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
-
-              min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
-              max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+              min="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
+              max="{{ partido.fechaFinTorneo|date('Y-m-d\\TH:i') }}"
+              step="900"
               data-force-inicio="{{ esPrimerPartido ? '1' : '0' }}"
               data-inicio-torneo="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
               disabled
             >
+            <small id="ayudaHorario{{ partido.id }}" class="form-text text-muted d-block mt-1">Seleccioná cancha para habilitar horario y ver disponibilidad.</small>
         </td>
         <td>{{ partido.categoria }}</td>
         <td>{{ partido.nombre }}</td>
@@ -168,11 +170,11 @@
         <th scope="row">{{ partido.numero }}</th>
         <td>
           <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-            <option selected>Seleccionar Cancha</option>
+            <option value="" selected>Seleccionar Cancha</option>
             {% for key,sede in canchas %}
               <optgroup label="{{key}}">	
               {% for cancha in sede %}
-                <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+                <option value="{{ cancha['id'] }}" data-sede-id="{{ cancha['sedeId'] }}">{{ cancha['cancha'] }}</option>
               {% endfor %}
               </optgroup>
             {% endfor %}
@@ -180,13 +182,14 @@
         </td>
         <td>
             <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
-
-              min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
-              max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+              min="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
+              max="{{ partido.fechaFinTorneo|date('Y-m-d\\TH:i') }}"
+              step="900"
               data-force-inicio="{{ esPrimerPartido ? '1' : '0' }}"
               data-inicio-torneo="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
               disabled
             >
+            <small id="ayudaHorario{{ partido.id }}" class="form-text text-muted d-block mt-1">Seleccioná cancha para habilitar horario y ver disponibilidad.</small>
         </td>
         <td>{{ partido.categoria }}</td>
         <td>{{ partido.nombre }}</td>
@@ -255,43 +258,117 @@
         {% endfor %}
       {% endfor %}
       {% endfor %}
+  <script id="horarios-programados-payload" type="application/json">{{ horariosProgramados|json_encode|raw }}</script>
   <script>
-    const selec = document.querySelectorAll('select');
+    const payloadEl = document.getElementById('horarios-programados-payload');
+    const horariosProgramados = payloadEl ? JSON.parse(payloadEl.textContent || '{}') : {};
+    const porCancha = horariosProgramados.porCancha || {};
+    const porSede = horariosProgramados.porSede || {};
 
-    selec.forEach((element) => {
+    function toSet(values) {
+      return new Set(Array.isArray(values) ? values : []);
+    }
+
+    function actualizarAyudaHorario(partidoId, canchaId, sedeId) {
+      const ayuda = document.getElementById('ayudaHorario' + partidoId);
+      if (!ayuda) {
+        return;
+      }
+
+      if (!canchaId) {
+        ayuda.textContent = 'Seleccioná cancha para habilitar horario y ver disponibilidad.';
+        return;
+      }
+
+      const canchaOcupados = (porCancha[canchaId] || []).slice(0, 3).join(', ');
+      const sedeOcupados = (porSede[sedeId] || []).slice(0, 3).join(', ');
+
+      if (!canchaOcupados && !sedeOcupados) {
+        ayuda.textContent = 'No hay horarios ocupados para la cancha/sede seleccionada.';
+        return;
+      }
+
+      let mensaje = 'Ocupados';
+      if (canchaOcupados) {
+        mensaje += ' cancha: ' + canchaOcupados + '.';
+      }
+      if (sedeOcupados) {
+        mensaje += ' sede: ' + sedeOcupados + '.';
+      }
+
+      ayuda.textContent = mensaje;
+    }
+
+    function validarHorario(partidoId) {
+      const canchaSelect = document.getElementById('cancha' + partidoId);
+      const horarioInput = document.getElementById('horario' + partidoId);
+      const hiddenHorario = document.getElementById('var_horario' + partidoId);
+      const botonGuardar = document.getElementById('admin_partido_editar' + partidoId);
+
+      if (!canchaSelect || !horarioInput || !hiddenHorario || !botonGuardar) {
+        return;
+      }
+
+      const canchaId = canchaSelect.value;
+      const sedeId = canchaSelect.options[canchaSelect.selectedIndex]?.dataset?.sedeId || '';
+      const canchaSlots = toSet(porCancha[canchaId]);
+      const sedeSlots = toSet(porSede[sedeId]);
+      const valor = horarioInput.value;
+
+      let error = '';
+      if (valor) {
+        if (canchaSlots.has(valor)) {
+          error = 'Ese horario ya está ocupado en la cancha seleccionada.';
+        } else if (sedeSlots.has(valor)) {
+          error = 'Ese horario ya está ocupado en la sede seleccionada.';
+        }
+      }
+
+      horarioInput.setCustomValidity(error);
+      horarioInput.reportValidity();
+
+      const puedeGuardar = canchaId && valor && !error;
+      hiddenHorario.value = puedeGuardar ? valor : '';
+      botonGuardar.classList.toggle('disabled', !puedeGuardar);
+    }
+
+    document.querySelectorAll('select[id^="cancha"]').forEach((element) => {
       element.addEventListener('change', (event) => {
-        const cancha_partidoId = event.target.id.replace('cancha', '');
+        const partidoId = event.target.id.replace('cancha', '');
         const canchaId = event.target.value;
-        console.log("Cancha Partido ID ", cancha_partidoId);
-        console.log("Cancha ID ", canchaId);
-        const horarioInput = document.getElementById('horario' + cancha_partidoId);
-        const esPrimerPartido = horarioInput.dataset.forceInicio === '1';
+        const sedeId = event.target.options[event.target.selectedIndex]?.dataset?.sedeId || '';
+        const horarioInput = document.getElementById('horario' + partidoId);
+        const hiddenCancha = document.getElementById('var_cancha' + partidoId);
 
-        if (esPrimerPartido) {
-          const inicioTorneo = horarioInput.dataset.inicioTorneo;
-          horarioInput.value = inicioTorneo;
-          horarioInput.disabled = true;
-          document.getElementById('var_horario' + cancha_partidoId).value = inicioTorneo;
-          const botonGuardar = document.getElementById('admin_partido_editar' + cancha_partidoId);
-          botonGuardar.classList.remove('disabled');
-        } else {
-          horarioInput.disabled = false;
+        if (!horarioInput || !hiddenCancha) {
+          return;
         }
 
-        document.getElementById('var_cancha'+cancha_partidoId).value = canchaId;
+        hiddenCancha.value = canchaId || '';
+        actualizarAyudaHorario(partidoId, canchaId, sedeId);
+
+        if (!canchaId) {
+          horarioInput.value = '';
+          horarioInput.disabled = true;
+          validarHorario(partidoId);
+          return;
+        }
+
+        horarioInput.disabled = false;
+
+        const esPrimerPartido = horarioInput.dataset.forceInicio === '1';
+        if (esPrimerPartido) {
+          horarioInput.value = horarioInput.dataset.inicioTorneo || '';
+        }
+
+        validarHorario(partidoId);
       });
     });
 
-    const horarios = document.querySelectorAll('input[type="datetime-local"]');
-    horarios.forEach((element, cancha_partidoId ) => {
+    document.querySelectorAll('input[id^="horario"]').forEach((element) => {
       element.addEventListener('change', (event) => {
-        const horario_partidoId = event.target.id.replace('horario', '');
-        const horario = event.target.value;
-        console.log("Horario Partido ID ",horario_partidoId);
-        console.log("Horario ", horario);
-        document.getElementById('var_horario'+horario_partidoId).value = horario;
-        const boton = document.getElementById('admin_partido_editar' + horario_partidoId);
-        boton.classList.remove('disabled');
+        const partidoId = event.target.id.replace('horario', '');
+        validarHorario(partidoId);
       });
     });
   </script>
