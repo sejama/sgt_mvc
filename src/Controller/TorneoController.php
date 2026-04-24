@@ -28,10 +28,22 @@ class TorneoController extends AbstractController
         $user = $this->getUser();
         if ($user instanceof Usuario) {
             $torneos = $torneoManager->obtenerTorneosXCreador((int)$user->getId());
+            $torneosActivos = [];
+            $torneosFinalizados = [];
+            $ahora = new \DateTimeImmutable('now', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+            foreach ($torneos as $torneo) {
+                $fechaFinTorneo = $torneo->getFechaFinTorneo();
+                if ($fechaFinTorneo !== null && $fechaFinTorneo < $ahora) {
+                    $torneosFinalizados[] = $torneo;
+                } else {
+                    $torneosActivos[] = $torneo;
+                }
+            }
             return $this->render(
                 'torneo/index.html.twig',
                 [
-                'torneos' => $torneos,
+                    'torneosActivos' => $torneosActivos,
+                    'torneosFinalizados' => $torneosFinalizados,
                 ]
             );
         }

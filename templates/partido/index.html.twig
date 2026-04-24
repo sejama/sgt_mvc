@@ -263,13 +263,12 @@
     const payloadEl = document.getElementById('horarios-programados-payload');
     const horariosProgramados = payloadEl ? JSON.parse(payloadEl.textContent || '{}') : {};
     const porCancha = horariosProgramados.porCancha || {};
-    const porSede = horariosProgramados.porSede || {};
 
     function toSet(values) {
       return new Set(Array.isArray(values) ? values : []);
     }
 
-    function actualizarAyudaHorario(partidoId, canchaId, sedeId) {
+    function actualizarAyudaHorario(partidoId, canchaId) {
       const ayuda = document.getElementById('ayudaHorario' + partidoId);
       if (!ayuda) {
         return;
@@ -281,22 +280,13 @@
       }
 
       const canchaOcupados = (porCancha[canchaId] || []).slice(0, 3).join(', ');
-      const sedeOcupados = (porSede[sedeId] || []).slice(0, 3).join(', ');
 
-      if (!canchaOcupados && !sedeOcupados) {
-        ayuda.textContent = 'No hay horarios ocupados para la cancha/sede seleccionada.';
+      if (!canchaOcupados) {
+        ayuda.textContent = 'No hay horarios ocupados para la cancha seleccionada.';
         return;
       }
 
-      let mensaje = 'Ocupados';
-      if (canchaOcupados) {
-        mensaje += ' cancha: ' + canchaOcupados + '.';
-      }
-      if (sedeOcupados) {
-        mensaje += ' sede: ' + sedeOcupados + '.';
-      }
-
-      ayuda.textContent = mensaje;
+      ayuda.textContent = 'Ocupados en cancha: ' + canchaOcupados + '.';
     }
 
     function validarHorario(partidoId) {
@@ -310,17 +300,13 @@
       }
 
       const canchaId = canchaSelect.value;
-      const sedeId = canchaSelect.options[canchaSelect.selectedIndex]?.dataset?.sedeId || '';
       const canchaSlots = toSet(porCancha[canchaId]);
-      const sedeSlots = toSet(porSede[sedeId]);
       const valor = horarioInput.value;
 
       let error = '';
       if (valor) {
         if (canchaSlots.has(valor)) {
           error = 'Ese horario ya está ocupado en la cancha seleccionada.';
-        } else if (sedeSlots.has(valor)) {
-          error = 'Ese horario ya está ocupado en la sede seleccionada.';
         }
       }
 
@@ -336,7 +322,6 @@
       element.addEventListener('change', (event) => {
         const partidoId = event.target.id.replace('cancha', '');
         const canchaId = event.target.value;
-        const sedeId = event.target.options[event.target.selectedIndex]?.dataset?.sedeId || '';
         const horarioInput = document.getElementById('horario' + partidoId);
         const hiddenCancha = document.getElementById('var_cancha' + partidoId);
 
@@ -345,7 +330,7 @@
         }
 
         hiddenCancha.value = canchaId || '';
-        actualizarAyudaHorario(partidoId, canchaId, sedeId);
+        actualizarAyudaHorario(partidoId, canchaId);
 
         if (!canchaId) {
           horarioInput.value = '';

@@ -233,11 +233,10 @@ class PartidoManager
     {
         $horariosProgramados = [
             'porCancha' => [],
-            'porSede' => [],
         ];
 
         foreach ($this->partidoRepository->obtenerHorariosProgramadosXTorneo($ruta) as $partido) {
-            if (!isset($partido['horario'], $partido['canchaId'], $partido['sedeId'])) {
+            if (!isset($partido['horario'], $partido['canchaId'])) {
                 continue;
             }
 
@@ -247,18 +246,12 @@ class PartidoManager
 
             $fechaHora = $partido['horario']->format('Y-m-d\\TH:i');
             $canchaId = (string) $partido['canchaId'];
-            $sedeId = (string) $partido['sedeId'];
 
             $horariosProgramados['porCancha'][$canchaId][$fechaHora] = true;
-            $horariosProgramados['porSede'][$sedeId][$fechaHora] = true;
         }
 
         foreach ($horariosProgramados['porCancha'] as $canchaId => $horarios) {
             $horariosProgramados['porCancha'][$canchaId] = array_keys($horarios);
-        }
-
-        foreach ($horariosProgramados['porSede'] as $sedeId => $horarios) {
-            $horariosProgramados['porSede'][$sedeId] = array_keys($horarios);
         }
 
         return $horariosProgramados;
@@ -277,10 +270,6 @@ class PartidoManager
 
         if ($this->partidoRepository->buscarPartidoXCanchaHorario($ruta, $partidoId, $canchaId, $horario)) {
             throw new AppException('Ya existe un partido programado en esa cancha y horario');
-        }
-
-        if ($this->partidoRepository->buscarPartidoXSedeHorario($ruta, $partidoId, (int) $sede->getId(), $horario)) {
-            throw new AppException('Ya existe un partido programado en esa sede y horario');
         }
 
         $partido = $this->obtenerPartidoxId($partidoId);

@@ -13,14 +13,80 @@
 <h1>SGT - Torneos</h1>
 <a href="{{ path('app_main') }}" class="btn btn-secondary">Volver</a>
 <a href="{{ path('admin_torneo_crear') }}" class="btn btn-success">Crear</a>
-{% if torneos|length == 0 %}
+{% if torneosActivos|length == 0 and torneosFinalizados|length == 0 %}
     <div class="alert alert-warning" role="alert">
         No hay torneos registrados
     </div>
 {% else %}
-{% for torneo in torneos %}
-{{ include ('./torneo/componentes/card_torneo.html.twig', {torneo}) }}
-{% endfor %}
+    <div class="mt-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <h2 class="h4 mb-0">Activos o pendientes</h2>
+            <span class="badge text-bg-primary">{{ torneosActivos|length }}</span>
+        </div>
+        {% if torneosActivos is empty %}
+            <div class="alert alert-light border" role="alert">
+                No hay torneos activos o pendientes.
+            </div>
+        {% else %}
+            <div class="accordion accordion-flush" id="accordionTorneosActivos">
+                {% for torneo in torneosActivos %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="torneo-activo-heading-{{ torneo.id }}">
+                            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#torneo-activo-collapse-{{ torneo.id }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="torneo-activo-collapse-{{ torneo.id }}">
+                                <div class="d-flex w-100 align-items-center justify-content-between gap-3 pe-3">
+                                    <div class="text-start">
+                                        <div class="fw-semibold">{{ torneo.nombre }}</div>
+                                        <small class="text-body-secondary">{{ torneo.fechaInicioTorneo|date('d/m/Y H:i') }} al {{ torneo.fechaFinTorneo|date('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <span class="badge text-bg-primary">Activo / pendiente</span>
+                                </div>
+                            </button>
+                        </h3>
+                        <div id="torneo-activo-collapse-{{ torneo.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="torneo-activo-heading-{{ torneo.id }}" data-bs-parent="#accordionTorneosActivos">
+                            <div class="accordion-body bg-body-tertiary">
+                                {{ include('./torneo/componentes/card_torneo.html.twig', { torneo, compact: true }) }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-5">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <h2 class="h4 mb-0">Finalizados</h2>
+            <span class="badge text-bg-secondary">{{ torneosFinalizados|length }}</span>
+        </div>
+        {% if torneosFinalizados is empty %}
+            <div class="alert alert-light border" role="alert">
+                No hay torneos finalizados.
+            </div>
+        {% else %}
+            <div class="accordion accordion-flush" id="accordionTorneosFinalizados">
+                {% for torneo in torneosFinalizados %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="torneo-finalizado-heading-{{ torneo.id }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#torneo-finalizado-collapse-{{ torneo.id }}" aria-expanded="false" aria-controls="torneo-finalizado-collapse-{{ torneo.id }}">
+                                <div class="d-flex w-100 align-items-center justify-content-between gap-3 pe-3">
+                                    <div class="text-start">
+                                        <div class="fw-semibold">{{ torneo.nombre }}</div>
+                                        <small class="text-body-secondary">{{ torneo.fechaInicioTorneo|date('d/m/Y H:i') }} al {{ torneo.fechaFinTorneo|date('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <span class="badge text-bg-secondary">Finalizado</span>
+                                </div>
+                            </button>
+                        </h3>
+                        <div id="torneo-finalizado-collapse-{{ torneo.id }}" class="accordion-collapse collapse" aria-labelledby="torneo-finalizado-heading-{{ torneo.id }}" data-bs-parent="#accordionTorneosFinalizados">
+                            <div class="accordion-body bg-body-tertiary">
+                                {{ include('./torneo/componentes/card_torneo.html.twig', { torneo, compact: true }) }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 {% endif %}
 
 {% include "./componentes/modal.html.twig" %}

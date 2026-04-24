@@ -310,13 +310,44 @@ class PartidoManagerTest extends TestCase
     public function testEditarPartidoLanzaErrorSiCanchaHorarioYaOcupados(): void
     {
         $partidoRepository = $this->createMock(PartidoRepository::class);
+        $canchaManager = $this->createMock(CanchaManager::class);
+
+        $torneo = (new Torneo())
+            ->setNombre('Torneo')
+            ->setRuta('ruta-test')
+            ->setFechaInicioInscripcion(new \DateTimeImmutable('2026-01-01 00:00:00'))
+            ->setFechaFinInscripcion(new \DateTimeImmutable('2026-01-02 00:00:00'))
+            ->setFechaInicioTorneo(new \DateTimeImmutable('2026-01-03 00:00:00'))
+            ->setFechaFinTorneo(new \DateTimeImmutable('2026-01-04 00:00:00'))
+            ->setCreador((new Usuario())
+                ->setNombre('Creador')
+                ->setApellido('Test')
+                ->setEmail('creador@example.com')
+                ->setUsername('creador')
+                ->setRoles(['ROLE_USER']))
+            ->setEstado('Activo');
+
+        $sede = (new Sede())
+            ->setNombre('Sede')
+            ->setDomicilio('Domicilio')
+            ->setTorneo($torneo);
+
+        $cancha = (new Cancha())
+            ->setNombre('Cancha')
+            ->setDescripcion('Descripcion')
+            ->setSede($sede);
+
+        $canchaManager->expects($this->once())
+            ->method('obtenerCancha')
+            ->with(2)
+            ->willReturn($cancha);
 
         $partidoRepository->expects($this->once())
             ->method('buscarPartidoXCanchaHorario')
             ->willReturn(new Partido());
 
         $manager = new PartidoManager(
-            $this->createMock(CanchaManager::class),
+            $canchaManager,
             $this->createMock(GrupoManager::class),
             $this->createMock(CategoriaRepository::class),
             $this->createMock(EquipoRepository::class),
