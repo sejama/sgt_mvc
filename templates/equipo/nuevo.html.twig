@@ -13,7 +13,7 @@
     
     <h1>SGT - Nuevo Equipo</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('admin_equipo_crear', {'ruta': ruta, 'categoriaId': categoriaId }) }}">
+    <form class="needs-validation" novalidate method="post" enctype="multipart/form-data" action="{{ path('admin_equipo_crear', {'ruta': ruta, 'categoriaId': categoriaId }) }}">
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -51,6 +51,13 @@
                 <div id="localidadFeedback" class="invalid-feedback">
                     Localidad no es valido
                 </div>
+            </div>
+        </div>
+        <div class="row g-1 mt-2 mb-2">
+            <div class="col-md">
+                <label for="logo" class="form-label">Logo del equipo</label>
+                <input type="file" class="form-control" id="logo" name="logo" accept="image/png,image/jpeg,image/webp,image/gif">
+                <div class="form-text">Opcional. Máximo 2 MB. El sistema lo mostrará en tamaño reducido.</div>
             </div>
         </div>
         <div class="card mt-2">

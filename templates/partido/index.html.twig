@@ -1,5 +1,50 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .partido-logo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.2rem 0.45rem 0.2rem 0.2rem;
+      border-radius: 999px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      max-width: 100%;
+    }
+
+    .partido-logo-chip .partido-logo {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 999px;
+      border: 2px solid #cbd5e1;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.2);
+      flex-shrink: 0;
+    }
+
+    .partido-logo-chip .partido-nombre {
+      font-weight: 600;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 767.98px) {
+      .partido-logo-chip {
+        gap: 0.35rem;
+        padding: 0.15rem 0.35rem 0.15rem 0.15rem;
+      }
+
+      .partido-logo-chip .partido-logo {
+        width: 31px;
+        height: 31px;
+      }
+    }
+  </style>
+{% endblock %}
+
 {% block body %}
     {% for flash_error in app.flashes('error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
@@ -12,15 +57,18 @@
     {% endfor %}
     {% set esPrimerPartido = partidosProgramados|length == 0 %}
     <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
-    <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
-    <a href="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}" class="btn btn-primary">Agregar/Editar partido</a>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
+      <a href="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}" class="btn btn-primary">Agregar/Editar partido</a>
+    </div>
     <h3>Partidos clasificatorios</h3>
     {% if partidosSinAsignar['clasificatorios']|length == 0 %}
         <div class="alert alert-warning" role="alert">
             No hay partidos clasificatorios sin asignar
         </div>
     {% else %}
-    <table class="table table-striped">
+    <div class="table-responsive">
+    <table class="table table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -63,9 +111,21 @@
                 </td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
-                <td>{{ partido.equipoLocal }}</td>
+                <td>
+                  {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                      <img src="{{ asset(logoLocal|default('uploads/logos/sin_logo.png')) }}" alt="Logo de {{ partido.equipoLocal }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoLocal }}</span>
+                  </div>
+                </td>
                 <td>-</td>
-                <td>{{ partido.equipoVisitante }}</td>
+                <td>
+                  {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                      <img src="{{ asset(logoVisitante|default('uploads/logos/sin_logo.png')) }}" alt="Logo de {{ partido.equipoVisitante }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoVisitante }}</span>
+                  </div>
+                </td>
                 <td>
                   <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
                     <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
@@ -78,6 +138,7 @@
           {% endfor %}
         </tbody>
       </table>
+    </div>
       {% endif %}
       <h3>Partidos eliminatorios post grupos</h3>
       {% if partidosSinAsignar['eliminatorias']|length == 0 %}
@@ -85,7 +146,8 @@
             No hay partidos eliminatorios sin asignar
         </div>
       {% else %}
-      <table class="table table-striped">
+      <div class="table-responsive">
+      <table class="table table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -128,9 +190,21 @@
         </td>
         <td>{{ partido.categoria }}</td>
         <td>{{ partido.nombre }}</td>
-        <td>{{ partido.equipoLocal }}</td>
+        <td>
+          {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+          <div class="partido-logo-chip">
+            <img src="{{ asset(logoLocal) }}" alt="Logo de {{ partido.equipoLocal }}" class="partido-logo">
+            <span class="partido-nombre text-break">{{ partido.equipoLocal }}</span>
+          </div>
+        </td>
         <td>-</td>
-        <td>{{ partido.equipoVisitante }}</td>
+        <td>
+          {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+          <div class="partido-logo-chip">
+            <img src="{{ asset(logoVisitante) }}" alt="Logo de {{ partido.equipoVisitante }}" class="partido-logo">
+            <span class="partido-nombre text-break">{{ partido.equipoVisitante }}</span>
+          </div>
+        </td>
         <td>
           <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
             <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
@@ -143,6 +217,7 @@
       {% endfor %}
     </tbody>
   </table>
+      </div>
   {% endif %}
   <h3>Partidos eliminatorios finales</h3>
   {% if partidosSinAsignar['finales']|length == 0 %}
@@ -150,7 +225,8 @@
             No hay partidos eliminatorios sin asignar
         </div>
       {% else %}
-      <table class="table table-striped">
+      <div class="table-responsive">
+      <table class="table table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -242,9 +318,21 @@
                 <td>{{ partido.hora|date('H:i') }}</td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
-                <td>{{ partido.equipoLocal }} {{ partido.localSet1 }} {{ partido.localSet2 }} {{ partido.localSet3 }} {{ partido.localSet4 }} {{ partido.localSet5 }}</td>
+                <td>
+                  {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                    <img src="{{ asset(logoLocal) }}" alt="Logo de {{ partido.equipoLocal }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoLocal }} {{ partido.localSet1 }} {{ partido.localSet2 }} {{ partido.localSet3 }} {{ partido.localSet4 }} {{ partido.localSet5 }}</span>
+                  </div>
+                </td>
                 <td>-</td>
-                <td>{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</td>
+                <td>
+                  {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                    <img src="{{ asset(logoVisitante) }}" alt="Logo de {{ partido.equipoVisitante }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</span>
+                  </div>
+                </td>
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
                     <a href="{{ path('admin_partido_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
@@ -255,6 +343,7 @@
             {% endfor %}
             </tbody>
           </table>
+          </div>
         {% endfor %}
       {% endfor %}
       {% endfor %}

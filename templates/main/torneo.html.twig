@@ -60,6 +60,35 @@
       border-color: #fff;
     }
 
+    .torneo-page .equipo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      padding: 0.24rem 0.44rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .torneo-page .equipo-chip .logo-equipo {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 999px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.28);
+    }
+
+    .torneo-page .equipo-chip .nombre-equipo {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      line-height: 1.1;
+      letter-spacing: 0.01em;
+      font-weight: 600;
+    }
+
     @media (max-width: 767.98px) {
       .torneo-page .hero-torneo .card-body {
         padding: 1rem !important;
@@ -94,6 +123,15 @@
         font-size: 0.85rem;
         padding-top: 0.35rem;
         padding-bottom: 0.35rem;
+      }
+
+      .torneo-page .equipo-chip .logo-equipo {
+        width: 31px;
+        height: 31px;
+      }
+
+      .torneo-page .equipo-chip .nombre-equipo {
+        font-size: 0.86rem;
       }
     }
   </style>
@@ -186,7 +224,11 @@
                         </div>
                         <div class="row align-items-start g-1 mt-1">
                           <div class="col-5 text-start">
-                            <div class="fw-semibold small">{{ partido.equipoLocal }}</div>
+                            {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+                            <div class="equipo-chip fw-semibold">
+                              <img src="{{ asset(logoLocal) }}" alt="Logo de {{ partido.equipoLocal }}" class="logo-equipo">
+                              <span class="nombre-equipo">{{ partido.equipoLocal }}</span>
+                            </div>
                             <small class="text-muted d-block mt-1">
                               {% if localScores|length > 0 %}
                                 {{ localScores|join(' ') }}
@@ -199,7 +241,11 @@
                             <span class="badge bg-secondary">VS</span>
                           </div>
                           <div class="col-5 text-end">
-                            <div class="fw-semibold small">{{ partido.equipoVisitante }}</div>
+                            {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+                            <div class="equipo-chip fw-semibold justify-content-end w-100">
+                              <span class="nombre-equipo">{{ partido.equipoVisitante }}</span>
+                              <img src="{{ asset(logoVisitante) }}" alt="Logo de {{ partido.equipoVisitante }}" class="logo-equipo">
+                            </div>
                             <small class="text-muted d-block mt-1">
                               {% if visitanteScores|length > 0 %}
                                 {{ visitanteScores|join(' ') }}

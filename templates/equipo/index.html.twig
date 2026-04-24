@@ -25,6 +25,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Logo</th>
                     <th>Nombre Corto</th>
                     <th>Nombre</th>
                     <th>Grupo</th>
@@ -37,6 +38,11 @@
                 {% for equipo in equipos %}
                     <tr>
                         <th class="p-1">{{ loop.index }}</th>
+                        <td class="p-1">
+                            {% if equipo.logoPath %}
+                                <img src="{{ asset(equipo.logoPath) }}" alt="Logo de {{ equipo.nombre }}" class="img-thumbnail" style="width: 48px; height: 48px; object-fit: contain;">
+                            {% endif %}
+                        </td>
                         <td class="p-1">{{ equipo.nombreCorto }}</td>
                         <td class="p-1">{{ equipo.nombre }}</td>
                         <td class="p-1">{{ equipo.grupo.nombre ?? '' }}</td>

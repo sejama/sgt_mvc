@@ -14,6 +14,55 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController extends AbstractController
 {
+    /**
+     * @param array<string, mixed> $partidosProgramados
+     * @return array<string, mixed>
+     */
+    private function completarLogosPartidosProgramados(array $partidosProgramados, iterable $categorias): array
+    {
+        $logosPorEquipo = [];
+
+        foreach ($categorias as $categoria) {
+            foreach ($categoria->getEquipos() as $equipo) {
+                $nombre = $equipo->getNombre();
+                if (!is_string($nombre) || $nombre === '') {
+                    continue;
+                }
+
+                $logosPorEquipo[strtolower(trim($nombre))] = $equipo->getLogoPath();
+            }
+        }
+
+        foreach ($partidosProgramados as $sede => $canchas) {
+            foreach ($canchas as $cancha => $fechas) {
+                foreach ($fechas as $fecha => $partidos) {
+                    foreach ($partidos as $idx => $partido) {
+                        $logoLocal = $partido['equipoLocalLogoPath'] ?? null;
+                        $logoVisitante = $partido['equipoVisitanteLogoPath'] ?? null;
+
+                        if (!$logoLocal && isset($partido['equipoLocal']) && is_string($partido['equipoLocal'])) {
+                            $claveLocal = strtolower(trim($partido['equipoLocal']));
+                            if (isset($logosPorEquipo[$claveLocal])) {
+                                $partido['equipoLocalLogoPath'] = $logosPorEquipo[$claveLocal];
+                            }
+                        }
+
+                        if (!$logoVisitante && isset($partido['equipoVisitante']) && is_string($partido['equipoVisitante'])) {
+                            $claveVisitante = strtolower(trim($partido['equipoVisitante']));
+                            if (isset($logosPorEquipo[$claveVisitante])) {
+                                $partido['equipoVisitanteLogoPath'] = $logosPorEquipo[$claveVisitante];
+                            }
+                        }
+
+                        $partidosProgramados[$sede][$cancha][$fecha][$idx] = $partido;
+                    }
+                }
+            }
+        }
+
+        return $partidosProgramados;
+    }
+
     #[Route('/', name: 'app_main', methods: ['GET'])]
     public function index(
         TorneoManager $torneoManager
@@ -45,6 +94,7 @@ class MainController extends AbstractController
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categorias = $torneo->getCategorias();
         $partidosProgramados = $partidoManager->obtenerPartidosProgramadosXTorneo($ruta);
+        $partidosProgramados = $this->completarLogosPartidosProgramados($partidosProgramados, $categorias);
 
         // Leer filtros de query string
         $selectedCategoriaId = $request->query->getInt('categoria') ?: null;

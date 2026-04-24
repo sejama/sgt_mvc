@@ -6,7 +6,6 @@ namespace App\Manager;
 
 use App\Entity\Categoria;
 use App\Entity\Equipo;
-use App\Entity\Partido;
 use App\Enum\EstadoEquipo;
 use App\Enum\EstadoPartido;
 use App\Exception\AppException;
@@ -46,7 +45,8 @@ class EquipoManager
         string $nombreCorto,
         string $pais,
         string $provincia,
-        string $localidad
+        string $localidad,
+        ?string $logoPath = null
     ): Equipo {
 
         if ($this->equipoRepository->findOneBy(['categoria' => $categoria, 'nombre' => $nombre])) {
@@ -74,6 +74,7 @@ class EquipoManager
         $equipo->setPais($pais);
         $equipo->setProvincia($provincia);
         $equipo->setLocalidad($localidad);
+        $equipo->setLogoPath($logoPath);
         $equipo->setEstado(EstadoEquipo::BORRADOR->value);
         $equipo->setNumero($numeroEquipo);
 
@@ -88,7 +89,8 @@ class EquipoManager
         string $nombreCorto,
         string $pais,
         string $provincia,
-        string $localidad
+        string $localidad,
+        ?string $logoPath = null
     ): void {
 
         if ($equipo->getNombre() !== $nombre 
@@ -116,6 +118,9 @@ class EquipoManager
         $equipo->setPais($pais);
         $equipo->setProvincia($provincia);
         $equipo->setLocalidad($localidad);
+        if ($logoPath !== null) {
+            $equipo->setLogoPath($logoPath);
+        }
 
         $this->equipoRepository->guardar($equipo, true);
     }
