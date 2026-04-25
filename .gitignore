@@ -23,3 +23,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Logos subidos por equipo, excepto el logo predeterminado.
+/public/uploads/logos/*
+!/public/uploads/logos/sin_logo.png

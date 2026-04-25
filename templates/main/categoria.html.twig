@@ -89,6 +89,65 @@
             font-weight: 700;
             line-height: 1.1;
         }
+
+        .categoria-page .mobile-posicion {
+            font-size: 1.75rem;
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .categoria-page .mobile-team-name {
+            font-size: 0.98rem;
+            line-height: 1.15;
+        }
+
+        .categoria-page .mobile-metric-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 3rem;
+        }
+
+        .categoria-page .mobile-metric-box .metric-value {
+            font-size: 0.9rem;
+        }
+
+        .categoria-page .mobile-more-toggle {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .categoria-page .mobile-more-toggle:hover,
+        .categoria-page .mobile-more-toggle:focus {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 575.98px) {
+            .categoria-page .mobile-card.mb-3 {
+                margin-bottom: 0.7rem !important;
+            }
+
+            .categoria-page .mobile-card > div {
+                padding: 0.6rem !important;
+            }
+
+            .categoria-page .mobile-posicion {
+                font-size: 1.45rem;
+            }
+
+            .categoria-page .mobile-team-name {
+                font-size: 0.88rem;
+            }
+
+            .categoria-page .mobile-metric-box {
+                min-height: 2.7rem;
+            }
+
+            .categoria-page .mobile-metric-box .metric-value {
+                font-size: 0.82rem;
+            }
+        }
     </style>
 {% endblock %}
 {% block title %}SGT - Posiciones{% endblock %}
