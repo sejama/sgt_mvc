@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 26-04-2026 a las 13:48:58
+-- Tiempo de generación: 26-04-2026 a las 19:44:55
 -- Versión del servidor: 11.8.6-MariaDB-log
 -- Versión de PHP: 7.2.34
 
@@ -232,8 +232,11 @@ INSERT INTO `equipo` (`id`, `categoria_id`, `grupo_id`, `nombre`, `nombre_corto`
 (97, 11, NULL, 'Los Perkins', 'Los Perkins', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-25 22:13:10', '2026-04-25 22:13:10', 'Borrador', 43, NULL),
 (98, 11, NULL, 'Divididos', 'Divididos', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-25 22:13:46', '2026-04-25 23:40:39', 'Borrador', 44, 'uploads/logos/2026/xvi_master_voley/98.png'),
 (99, 11, NULL, 'Velez', 'Velez', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-25 22:13:58', '2026-04-25 23:40:06', 'Borrador', 45, 'uploads/logos/2026/xvi_master_voley/99.png'),
-(100, 11, NULL, 'Rosario Voley', 'Rosario Voley', 'Argentina', 'Santa Fe', 'Rosario', '2026-04-25 22:14:11', '2026-04-25 22:14:11', 'Borrador', 46, NULL),
-(101, 11, NULL, 'Centro 11 Rio Cuarto', 'C11RC', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-25 22:21:59', '2026-04-25 23:40:26', 'Borrador', 47, 'uploads/logos/2026/xvi_master_voley/101.png');
+(100, 11, NULL, 'Rosario Voley', 'Rosario Voley', 'Argentina', 'Santa Fe', 'Rosario', '2026-04-25 22:14:11', '2026-04-26 13:28:57', 'Borrador', 46, 'uploads/logos/2026/xvi_master_voley/100.png'),
+(101, 11, NULL, 'Centro 11 Rio Cuarto', 'C11RC', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-25 22:21:59', '2026-04-25 23:40:26', 'Borrador', 47, 'uploads/logos/2026/xvi_master_voley/101.png'),
+(102, 10, NULL, 'Rosario Voley', 'Rosario Voley', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-26 16:18:22', '2026-04-26 16:18:23', 'Borrador', 48, 'uploads/logos/2026/xvi_master_voley/102.png'),
+(103, 10, NULL, 'Maxi Voley Santa Fe', 'Maxi Voley SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-26 16:19:00', '2026-04-26 16:19:25', 'Borrador', 49, 'uploads/logos/2026/xvi_master_voley/103.png'),
+(104, 11, NULL, 'Maxi Voley Santa Fe', 'Maxi Voley SF', 'Argentina', 'Santa Fe', 'Santa Fe', '2026-04-26 16:20:35', '2026-04-26 16:20:35', 'Borrador', 50, 'uploads/logos/2026/xvi_master_voley/104.png');
 
 -- --------------------------------------------------------
 
@@ -396,7 +399,10 @@ INSERT INTO `jugador` (`id`, `equipo_id`, `nombre`, `apellido`, `tipo_documento`
 (98, 98, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-25 22:13:46', '2026-04-25 22:13:46', 'Entrenador'),
 (99, 99, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-25 22:13:58', '2026-04-25 22:13:58', 'Entrenador'),
 (100, 100, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-25 22:14:11', '2026-04-25 22:14:11', 'Entrenador'),
-(101, 101, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-25 22:21:59', '2026-04-25 22:21:59', 'Entrenador');
+(101, 101, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-25 22:21:59', '2026-04-25 22:21:59', 'Entrenador'),
+(102, 102, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-26 16:18:23', '2026-04-26 16:18:23', 'Entrenador'),
+(103, 103, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-26 16:19:00', '2026-04-26 16:19:00', 'Entrenador'),
+(104, 104, 'Nombre', 'Apellido', 'DNI', '12345678', NULL, 1, 'delegado@correo.com', '123456789', '2026-04-26 16:20:35', '2026-04-26 16:20:35', 'Entrenador');
 
 -- --------------------------------------------------------
 
@@ -934,7 +940,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `equipo`
 --
 ALTER TABLE `equipo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT de la tabla `grupo`
@@ -946,7 +952,7 @@ ALTER TABLE `grupo`
 -- AUTO_INCREMENT de la tabla `jugador`
 --
 ALTER TABLE `jugador`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT de la tabla `messenger_messages`

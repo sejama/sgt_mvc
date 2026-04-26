@@ -1153,6 +1153,211 @@ class PartidoManagerTest extends TestCase
         $this->assertSame($equipoVisitante, $partido->getEquipoVisitante());
     }
 
+    public function testCrearPartidoManualLanzaAppExceptionSiCategoriaInvalida(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $this->createMock(GrupoManager::class),
+            $this->createMock(CategoriaRepository::class),
+            $this->createMock(EquipoRepository::class),
+            $partidoRepository,
+            $this->createMock(PartidoConfigRepository::class),
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('Debe seleccionar una categoría válida.');
+
+        $manager->crearPartidoManual('ruta-test', [
+            'crear_categoriaId' => '0',
+            'crear_tipo' => TipoPartido::ELIMINATORIO->value,
+            'crear_equipoLocalId' => '31',
+            'crear_equipoVisitanteId' => '32',
+        ]);
+    }
+
+    public function testCrearPartidoManualLanzaAppExceptionSiEquiposSonMismos(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+        $this->setEntityId($categoria, 10);
+
+        $categoriaRepository->expects($this->once())
+            ->method('find')
+            ->with(10)
+            ->willReturn($categoria);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $equipoRepository->expects($this->never())
+            ->method('find');
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $categoriaRepository,
+            $equipoRepository,
+            $partidoRepository,
+            $partidoConfigRepository,
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El equipo local y visitante no pueden ser el mismo.');
+
+        $manager->crearPartidoManual('ruta-test', [
+            'crear_categoriaId' => '10',
+            'crear_tipo' => TipoPartido::ELIMINATORIO->value,
+            'crear_equipoLocalId' => '31',
+            'crear_equipoVisitanteId' => '31',
+        ]);
+    }
+
+    public function testCrearPartidoManualLanzaAppExceptionSiOrigenDeConfigEsInvalido(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-test');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::MASCULINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+        $this->setEntityId($categoria, 10);
+
+        $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC')->setCategoria($categoria);
+        $equipoVisitante = (new Equipo())->setNombre('Visita')->setNombreCorto('VIS')->setCategoria($categoria);
+        $this->setEntityId($equipoLocal, 31);
+        $this->setEntityId($equipoVisitante, 32);
+
+        $categoriaRepository->expects($this->once())
+            ->method('find')
+            ->with(10)
+            ->willReturn($categoria);
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('find')
+            ->withConsecutive([31], [32])
+            ->willReturnOnConsecutiveCalls($equipoLocal, $equipoVisitante);
+
+        $partidoRepository->expects($this->once())
+            ->method('ejecutarEnTransaccion')
+            ->willReturnCallback(static fn (callable $callback) => $callback());
+
+        $partidoRepository->expects($this->once())
+            ->method('reservarRangoNumerosXTorneo')
+            ->with('ruta-test', 1)
+            ->willReturn(1);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($this->isInstanceOf(Partido::class));
+
+        $partidoConfigRepository->expects($this->never())
+            ->method('guardar');
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $categoriaRepository,
+            $equipoRepository,
+            $partidoRepository,
+            $partidoConfigRepository,
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('Debe seleccionar un origen de configuración válido.');
+
+        $manager->crearPartidoManual('ruta-test', [
+            'crear_categoriaId' => '10',
+            'crear_tipo' => TipoPartido::ELIMINATORIO->value,
+            'crear_equipoLocalId' => '31',
+            'crear_equipoVisitanteId' => '32',
+            'crear_usarConfig' => '1',
+            'crear_config_nombre' => 'Semi Final Oro',
+            'crear_config_origen' => 'invalido',
+        ]);
+    }
+
+    public function testEditarPartidoManualLanzaAppExceptionSiPartidoNoPerteneceAlTorneo(): void
+    {
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoConfigRepository = $this->createMock(PartidoConfigRepository::class);
+
+        $torneo = (new Torneo())->setRuta('ruta-otra');
+        $categoria = (new Categoria())
+            ->setNombre('Cat')
+            ->setNombreCorto('CAT')
+            ->setGenero(Genero::FEMENINO)
+            ->setEstado('Activa')
+            ->setTorneo($torneo);
+        $this->setEntityId($categoria, 77);
+
+        $partido = (new Partido())
+            ->setCategoria($categoria)
+            ->setTipo(TipoPartido::CLASIFICATORIO->value)
+            ->setEstado(EstadoPartido::BORRADOR->value)
+            ->setNumero(9);
+        $this->setEntityId($partido, 88);
+
+        $partidoRepository->expects($this->once())
+            ->method('find')
+            ->with(88)
+            ->willReturn($partido);
+
+        $partidoRepository->expects($this->never())
+            ->method('guardar');
+
+        $manager = new PartidoManager(
+            $this->createMock(CanchaManager::class),
+            $grupoManager,
+            $categoriaRepository,
+            $equipoRepository,
+            $partidoRepository,
+            $partidoConfigRepository,
+            $this->createMock(ValidadorPartidoManager::class)
+        );
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('El partido no pertenece al torneo seleccionado.');
+
+        $manager->editarPartidoManual('ruta-test', [
+            'editar_partidoId' => '88',
+            'editar_categoriaId' => '77',
+            'editar_tipo' => TipoPartido::ELIMINATORIO->value,
+            'editar_equipoLocalId' => '101',
+            'editar_equipoVisitanteId' => '102',
+        ]);
+    }
+
     private function setEntityId(object $entity, int $id): void
     {
         $reflection = new \ReflectionClass($entity);

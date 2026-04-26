@@ -19,22 +19,9 @@ class GenerarPdfTest extends TestCase
 {
     private string $projectRoot;
 
-    private string $planillaImagePath;
-
     protected function setUp(): void
     {
         $this->projectRoot = dirname(__DIR__, 3);
-        $this->planillaImagePath = $this->projectRoot . '/public/assets/img/planilla.png';
-
-        if (!is_dir(dirname($this->planillaImagePath))) {
-            mkdir(dirname($this->planillaImagePath), 0777, true);
-        }
-
-        $image = imagecreatetruecolor(1, 1);
-        $backgroundColor = imagecolorallocate($image, 255, 255, 255);
-        imagefill($image, 0, 0, $backgroundColor);
-        imagepng($image, $this->planillaImagePath);
-        imagedestroy($image);
     }
 
     protected function tearDown(): void
@@ -45,15 +32,6 @@ class GenerarPdfTest extends TestCase
         $tempPdf = $this->projectRoot . '/src/Utils/partido-101.pdf';
         if (file_exists($tempPdf)) {
             unlink($tempPdf);
-        }
-
-        if (file_exists($this->planillaImagePath)) {
-            unlink($this->planillaImagePath);
-        }
-
-        $imgDir = dirname($this->planillaImagePath);
-        if (is_dir($imgDir)) {
-            @rmdir($imgDir);
         }
     }
 
