@@ -600,4 +600,57 @@ class AdminBusinessFlowJugadorGrupoFunctionalTest extends AdminBusinessFlowFunct
             self::assertContains($status, [401, 403]);
         }
     }
+
+    public function testAdminIntercambiaEquiposEntreGruposAntesDeGenerarPartidos(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-admin-swap-equipos', $suffix);
+
+        $admin = $this->crearUsuario('ft_admin_swap_equipos_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $categoria->setEstado('Zonas_creadas');
+        $this->entityManager->persist($categoria);
+
+        $grupoA = $this->crearGrupo($categoria, $suffix . 'a');
+        $grupoB = $this->crearGrupo($categoria, $suffix . 'b');
+
+        $equipoA = $this->crearEquipo($categoria, $suffix . 'a');
+        $equipoB = $this->crearEquipo($categoria, $suffix . 'b');
+        $equipoA->setGrupo($grupoA);
+        $equipoB->setGrupo($grupoB);
+
+        $this->entityManager->persist($equipoA);
+        $this->entityManager->persist($equipoB);
+        $this->entityManager->flush();
+
+        $categoriaId = $categoria->getId();
+        $equipoAId = $equipoA->getId();
+        $equipoBId = $equipoB->getId();
+        self::assertNotNull($categoriaId);
+        self::assertNotNull($equipoAId);
+        self::assertNotNull($equipoBId);
+
+        $this->client->loginUser($admin);
+
+        $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/intercambiar-equipos');
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Equipo Origen', (string) $this->client->getResponse()->getContent());
+
+        $this->client->request('POST', '/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/intercambiar-equipos', [
+            'equipoOrigenId' => (string) $equipoAId,
+            'equipoDestinoId' => (string) $equipoBId,
+        ]);
+
+        self::assertResponseRedirects('/admin/torneo/' . $ruta . '/categoria/' . $categoriaId . '/grupo/intercambiar-equipos');
+
+        $this->entityManager->clear();
+        $equipoAActualizado = $this->entityManager->getRepository(Equipo::class)->find($equipoAId);
+        $equipoBActualizado = $this->entityManager->getRepository(Equipo::class)->find($equipoBId);
+        self::assertInstanceOf(Equipo::class, $equipoAActualizado);
+        self::assertInstanceOf(Equipo::class, $equipoBActualizado);
+
+        self::assertSame($grupoB->getId(), $equipoAActualizado->getGrupo()?->getId());
+        self::assertSame($grupoA->getId(), $equipoBActualizado->getGrupo()?->getId());
+    }
 }

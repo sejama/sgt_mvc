@@ -247,7 +247,8 @@ class EquipoController extends AbstractController
         $directorioDestino = $this->getParameter('kernel.project_dir') . '/public/uploads/logos/' . $anioActual . '/' . $torneoSlug;
         $filesystem->mkdir($directorioDestino);
 
-        $nombreArchivo = $equipoId . '.png';
+        $versionLogo = (string) (new \DateTimeImmutable('now'))->format('Uv') . '-' . bin2hex(random_bytes(3));
+        $nombreArchivo = $equipoId . '-' . $versionLogo . '.png';
         $rutaDestinoCompleta = $directorioDestino . '/' . $nombreArchivo;
 
         if ($imagen instanceof \GdImage) {
@@ -258,7 +259,7 @@ class EquipoController extends AbstractController
 
             imagedestroy($imagen);
         } else {
-            $nombreArchivo = $equipoId . '.' . $extensionOriginal;
+            $nombreArchivo = $equipoId . '-' . $versionLogo . '.' . $extensionOriginal;
             $rutaDestinoCompleta = $directorioDestino . '/' . $nombreArchivo;
             $archivo->move($directorioDestino, $nombreArchivo);
         }

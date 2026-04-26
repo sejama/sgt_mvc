@@ -5,9 +5,13 @@ namespace App\Tests\Unit\Manager;
 use App\Entity\Categoria;
 use App\Entity\Equipo;
 use App\Entity\Grupo;
+use App\Entity\Partido;
+use App\Enum\EstadoCategoria;
+use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
 use App\Manager\ValidadorManager;
+use App\Repository\EquipoRepository;
 use App\Repository\GrupoRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -16,10 +20,11 @@ class GrupoManagerTest extends KernelTestCase
     public function testCrearGruposOK(): void
     {
         $grupoRepository = $this->createMock(GrupoRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
         $categoriaManager = $this->createMock(CategoriaManager::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $grupoManager = new GrupoManager($grupoRepository, $categoriaManager, $validadorManager);
+        $grupoManager = new GrupoManager($grupoRepository, $equipoRepository, $categoriaManager, $validadorManager);
 
         $grupos = [];
         $grupos[] = [
@@ -105,5 +110,111 @@ class GrupoManagerTest extends KernelTestCase
             ->with($this->isInstanceOf(Grupo::class));
 
         $grupoManager->crearGrupos($grupos);
+    }
+
+    public function testIntercambiarEquiposEntreGruposOK(): void
+    {
+        $grupoRepository = $this->createMock(GrupoRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+
+        $grupoManager = new GrupoManager($grupoRepository, $equipoRepository, $categoriaManager, $validadorManager);
+
+        $categoria = new Categoria();
+        $categoria->setNombre('Categoria 1');
+        $categoria->setNombreCorto('C1');
+        $categoria->setEstado(EstadoCategoria::ZONAS_CREADAS->value);
+
+        $grupoA = new Grupo();
+        $grupoA->setNombre('A');
+        $this->setEntityId($grupoA, 10);
+
+        $grupoB = new Grupo();
+        $grupoB->setNombre('B');
+        $this->setEntityId($grupoB, 20);
+
+        $equipoA = new Equipo();
+        $equipoA->setNombre('Equipo A');
+        $equipoA->setNombreCorto('EA');
+        $equipoA->setCategoria($categoria);
+        $equipoA->setGrupo($grupoA);
+        $this->setEntityId($equipoA, 101);
+
+        $equipoB = new Equipo();
+        $equipoB->setNombre('Equipo B');
+        $equipoB->setNombreCorto('EB');
+        $equipoB->setCategoria($categoria);
+        $equipoB->setGrupo($grupoB);
+        $this->setEntityId($equipoB, 102);
+
+        $categoria->addEquipo($equipoA);
+        $categoria->addEquipo($equipoB);
+
+        $equipoRepository
+            ->expects($this->exactly(2))
+            ->method('guardar');
+
+        $grupoManager->intercambiarEquiposEntreGrupos($categoria, 101, 102);
+
+        self::assertSame($grupoB, $equipoA->getGrupo());
+        self::assertSame($grupoA, $equipoB->getGrupo());
+    }
+
+    public function testIntercambiarEquiposEntreGruposFallaSiYaHayPartidosGenerados(): void
+    {
+        $grupoRepository = $this->createMock(GrupoRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+
+        $grupoManager = new GrupoManager($grupoRepository, $equipoRepository, $categoriaManager, $validadorManager);
+
+        $categoria = new Categoria();
+        $categoria->setNombre('Categoria 1');
+        $categoria->setNombreCorto('C1');
+        $categoria->setEstado(EstadoCategoria::ZONAS_CREADAS->value);
+        $categoria->addPartido(new Partido());
+
+        $grupoA = new Grupo();
+        $grupoA->setNombre('A');
+        $this->setEntityId($grupoA, 10);
+
+        $grupoB = new Grupo();
+        $grupoB->setNombre('B');
+        $this->setEntityId($grupoB, 20);
+
+        $equipoA = new Equipo();
+        $equipoA->setNombre('Equipo A');
+        $equipoA->setNombreCorto('EA');
+        $equipoA->setCategoria($categoria);
+        $equipoA->setGrupo($grupoA);
+        $this->setEntityId($equipoA, 101);
+
+        $equipoB = new Equipo();
+        $equipoB->setNombre('Equipo B');
+        $equipoB->setNombreCorto('EB');
+        $equipoB->setCategoria($categoria);
+        $equipoB->setGrupo($grupoB);
+        $this->setEntityId($equipoB, 102);
+
+        $categoria->addEquipo($equipoA);
+        $categoria->addEquipo($equipoB);
+
+        $equipoRepository
+            ->expects($this->never())
+            ->method('guardar');
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('No se pueden intercambiar equipos porque ya existen partidos generados para la categoria.');
+
+        $grupoManager->intercambiarEquiposEntreGrupos($categoria, 101, 102);
+    }
+
+    private function setEntityId(object $entity, int $id): void
+    {
+        $reflection = new \ReflectionProperty($entity, 'id');
+        $reflection->setAccessible(true);
+        $reflection->setValue($entity, $id);
     }
 }
