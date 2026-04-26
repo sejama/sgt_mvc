@@ -9,6 +9,7 @@ use App\Manager\TablaManager;
 use App\Manager\ValidadorManager;
 use App\Repository\CategoriaRepository;
 use App\Repository\PartidoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\exactly;
@@ -199,5 +200,114 @@ class CategoriaManagerTest extends TestCase
         $this->assertStringContainsString('ql-align-center', (string) $categoria->getDisputa());
         $this->assertStringContainsString('color: rgb(255, 0, 0)', (string) $categoria->getDisputa());
         $this->assertStringNotContainsString('position: absolute', (string) $categoria->getDisputa());
+
+    }
+
+    public function testEliminarCategoriaLanzaAppExceptionSiNoExiste(): void
+    {
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
+
+        $categoriaRepository->expects($this->once())
+            ->method('find')
+            ->with(99)
+            ->willReturn(null);
+
+        $categoriaManager = new CategoriaManager(
+            $categoriaRepository,
+            $partidoRepository,
+            $validadorManager,
+            $tablaManager
+        );
+
+        $this->expectExceptionMessage('No se encontró la categoría');
+
+        $categoriaManager->eliminarCategoria(99);
+    }
+
+    public function testArmarPlayOffFinalizaGruposYAsignaEquipos(): void
+    {
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
+
+        $categoria = $this->createMock(Categoria::class);
+        $torneo = new Torneo();
+        $categoria->method('getTorneo')->willReturn($torneo);
+        $categoria->expects($this->once())
+            ->method('setEstado')
+            ->with(\App\Enum\EstadoCategoria::ZONAS_CERRADAS->value);
+
+        $grupo = $this->createMock(\App\Entity\Grupo::class);
+        $grupo->method('getEstado')->willReturn(\App\Enum\EstadoGrupo::FINALIZADO->value);
+        $grupo->method('getNombre')->willReturn('Grupo A');
+        $categoria->method('getGrupos')->willReturn(new ArrayCollection([$grupo]));
+
+        $equipo1 = $this->createMock(\App\Entity\Equipo::class);
+        $equipo2 = $this->createMock(\App\Entity\Equipo::class);
+        $partido = new \App\Entity\Partido();
+        $partido->setEquipoLocal(null);
+        $partido->setEquipoVisitante(null);
+        $partido->setPartidoConfig((new \App\Entity\PartidoConfig())
+            ->setGrupoEquipo1($grupo)
+            ->setGrupoEquipo2($grupo)
+            ->setPosicionEquipo1(1)
+            ->setPosicionEquipo2(2));
+        $categoria->method('getPartidos')->willReturn(new ArrayCollection([$partido]));
+
+        $tablaManager->expects($this->once())
+            ->method('calcularPosiciones')
+            ->with($grupo)
+            ->willReturn([
+                ['equipo' => $equipo1],
+                ['equipo' => $equipo2],
+            ]);
+
+        $partidoRepository->expects($this->once())
+            ->method('guardar')
+            ->with($partido);
+
+        $categoriaRepository->expects($this->once())
+            ->method('guardar')
+            ->with($categoria, true);
+
+        $categoriaManager = new CategoriaManager(
+            $categoriaRepository,
+            $partidoRepository,
+            $validadorManager,
+            $tablaManager
+        );
+
+        $categoriaManager->armarPlayOff($categoria);
+
+        $this->assertSame($equipo1, $partido->getEquipoLocal());
+        $this->assertSame($equipo2, $partido->getEquipoVisitante());
+    }
+
+    public function testArmarPlayOffLanzaAppExceptionSiGrupoNoFinalizado(): void
+    {
+        $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+        $tablaManager = $this->createMock(TablaManager::class);
+
+        $categoria = $this->createMock(Categoria::class);
+        $grupo = $this->createMock(\App\Entity\Grupo::class);
+        $grupo->method('getEstado')->willReturn('Borrador');
+        $categoria->method('getGrupos')->willReturn(new ArrayCollection([$grupo]));
+
+        $categoriaManager = new CategoriaManager(
+            $categoriaRepository,
+            $partidoRepository,
+            $validadorManager,
+            $tablaManager
+        );
+
+        $this->expectExceptionMessage('No se puede armar el play off si no se han finalizado todos los grupos');
+
+        $categoriaManager->armarPlayOff($categoria);
     }
 }
