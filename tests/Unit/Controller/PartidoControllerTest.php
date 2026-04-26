@@ -186,6 +186,220 @@ class PartidoControllerTest extends TestCase
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame('/app_error_forbidden', $response->headers->get('Location'));
     }
+
+    public function testIndexRenderizaDatosAgrupadosDelTorneo(): void
+    {
+        $controller = new TestablePartidoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $torneo = $this->createMock(\App\Entity\Torneo::class);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->expects(self::once())
+            ->method('obtenerTorneo')
+            ->with('ruta-test')
+            ->willReturn($torneo);
+
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $partidoManager->expects(self::once())
+            ->method('obtenerPartidosSinAsignarXTorneo')
+            ->with('ruta-test')
+            ->willReturn(['clasificatorios' => []]);
+        $partidoManager->expects(self::once())
+            ->method('obtenerPartidosProgramadosXTorneo')
+            ->with('ruta-test')
+            ->willReturn(['Sede A' => ['Cancha 1' => []]]);
+        $partidoManager->expects(self::once())
+            ->method('obtenerSedesyCanchasXTorneo')
+            ->with('ruta-test')
+            ->willReturn([
+                ['sede' => 'Sede A', 'id' => 1, 'sedeId' => 10, 'cancha' => 'Cancha 1'],
+                ['sede' => 'Sede A', 'id' => 2, 'sedeId' => 10, 'cancha' => 'Cancha 2'],
+            ]);
+        $partidoManager->expects(self::once())
+            ->method('obtenerHorariosProgramadosXTorneo')
+            ->with('ruta-test')
+            ->willReturn(['porCancha' => []]);
+
+        $response = $controller->index('ruta-test', $partidoManager, $torneoManager);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('partido/index.html.twig', $controller->lastTemplate);
+        self::assertSame($torneo, $controller->lastParameters['torneo']);
+        self::assertSame(['clasificatorios' => []], $controller->lastParameters['partidosSinAsignar']);
+        self::assertArrayHasKey('Sede A', $controller->lastParameters['canchas']);
+    }
+
+    public function testCrearPartidoClasificatorioPorGetCalculaTiposYRenderiza(): void
+    {
+        $controller = new TestablePartidoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/partido/crear', 'GET');
+
+        $grupo = $this->createMock(\App\Entity\Grupo::class);
+        $grupo->method('getClasificaOro')->willReturn(4);
+        $grupo->method('getClasificaPlata')->willReturn(2);
+        $grupo->method('getClasificaBronce')->willReturn(8);
+
+        $categoria = $this->createMock(\App\Entity\Categoria::class);
+        $categoria->method('getGrupos')->willReturn([$grupo]);
+
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->expects(self::once())
+            ->method('obtenerCategoria')
+            ->with(7)
+            ->willReturn($categoria);
+
+        $torneo = $this->createMock(\App\Entity\Torneo::class);
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->expects(self::once())
+            ->method('obtenerTorneo')
+            ->with('ruta-test')
+            ->willReturn($torneo);
+
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::never())->method('info');
+
+        $response = $controller->crearPartidoClasificatorio(
+            'ruta-test',
+            7,
+            $categoriaManager,
+            $torneoManager,
+            $equipoManager,
+            $partidoManager,
+            $request,
+            $logger
+        );
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('partido/crear.html.twig', $controller->lastTemplate);
+        self::assertSame(['Semi Final Oro', 'Final Oro'], $controller->lastParameters['tipoOro']);
+        self::assertSame(['Final Plata'], $controller->lastParameters['tipoPlata']);
+        self::assertSame(['Cuartos de Final Bronce', 'Semi Final Bronce', 'Final Bronce'], $controller->lastParameters['tipoBronce']);
+    }
+
+    public function testGestionarPartidoPorPostCrearRedirige(): void
+    {
+        $controller = new TestablePartidoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/partido/gestionar', 'POST', [
+            'accion' => 'crear',
+        ]);
+
+        $partido = $this->createMock(\App\Entity\Partido::class);
+        $partido->method('getId')->willReturn(123);
+
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $partidoManager->expects(self::once())
+            ->method('crearPartidoManual')
+            ->with(
+                'ruta-test',
+                self::callback(static fn (array $data): bool => ($data['accion'] ?? '') === 'crear')
+            )
+            ->willReturn($partido);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->expects(self::never())->method('obtenerTorneo');
+
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('info');
+
+        $response = $controller->gestionarPartido('ruta-test', $request, $torneoManager, $categoriaManager, $partidoManager, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame(['success', 'Partido creado correctamente.'], $controller->lastFlash);
+        self::assertSame('/admin_partido_gestionar', $response->headers->get('Location'));
+    }
+
+    public function testGestionarPartidoPorPostEditarRedirige(): void
+    {
+        $controller = new TestablePartidoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/partido/gestionar', 'POST', [
+            'accion' => 'editar',
+        ]);
+
+        $partido = $this->createMock(\App\Entity\Partido::class);
+        $partido->method('getId')->willReturn(124);
+
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $partidoManager->expects(self::once())
+            ->method('editarPartidoManual')
+            ->with(
+                'ruta-test',
+                self::callback(static fn (array $data): bool => ($data['accion'] ?? '') === 'editar')
+            )
+            ->willReturn($partido);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('info');
+
+        $response = $controller->gestionarPartido('ruta-test', $request, $torneoManager, $categoriaManager, $partidoManager, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame(['success', 'Partido editado correctamente.'], $controller->lastFlash);
+        self::assertSame('/admin_partido_gestionar', $response->headers->get('Location'));
+    }
+
+    public function testEditarPartidoPorPostEditaYGeneraPdf(): void
+    {
+        $controller = new TestablePartidoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/partido/editar', 'POST', [
+            'var_partidoId' => '7',
+            'var_cancha' => '2',
+            'var_horario' => '2026-05-01 10:30',
+        ]);
+
+        $partido = $this->createMock(\App\Entity\Partido::class);
+
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $partidoManager->expects(self::once())
+            ->method('editarPartido')
+            ->with('ruta-test', 7, 2, '2026-05-01 10:30');
+        $partidoManager->expects(self::once())
+            ->method('obtenerPartidoxId')
+            ->with(7)
+            ->willReturn($partido);
+
+        $generarPdf = $this->createMock(GenerarPdf::class);
+        $generarPdf->expects(self::once())
+            ->method('generarPdf')
+            ->with($partido, 'ruta-test');
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('info');
+
+        $response = $controller->editarPartido('ruta-test', $request, $partidoManager, $generarPdf, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame(['success', 'Partido editado correctamente.'], $controller->lastFlash);
+        self::assertSame('/admin_partido_index', $response->headers->get('Location'));
+    }
 }
 
 class TestablePartidoController extends PartidoController

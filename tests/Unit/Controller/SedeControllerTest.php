@@ -21,6 +21,86 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class SedeControllerTest extends TestCase
 {
+    public function testCrearSedeManejaAppExceptionYMantieneFormulario(): void
+    {
+        $controller = new TestableSedeController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/sede/nuevo', 'POST', [
+            'sedeNombre' => 'Sede Nueva',
+            'sedeDireccion' => 'Calle Test 123',
+        ]);
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneo = $this->createMock(Torneo::class);
+        $torneoManager->expects($this->once())
+            ->method('obtenerTorneo')
+            ->with('ruta-test')
+            ->willReturn($torneo);
+
+        $sedeManager = $this->createMock(SedeManager::class);
+        $sedeManager->expects($this->once())
+            ->method('crearSede')
+            ->with($torneo, 'Sede Nueva', 'Calle Test 123')
+            ->willThrowException(new AppException('Sede duplicada'));
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('flush');
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->crearSede('ruta-test', $torneoManager, $sedeManager, $request, $entityManager, $logger);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('sede/nuevo.html.twig', $controller->lastTemplate);
+        self::assertSame(['error', 'Sede duplicada'], $controller->lastFlash);
+    }
+
+    public function testEditarSedeManejaAppExceptionYMantieneFormulario(): void
+    {
+        $controller = new TestableSedeController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/sede/9/editar', 'POST', [
+            'sedeNombre' => 'Sede Editada',
+            'sedeDireccion' => 'Calle Nueva 9',
+        ]);
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneo = $this->createMock(Torneo::class);
+        $torneoManager->expects($this->once())
+            ->method('obtenerTorneo')
+            ->with('ruta-test')
+            ->willReturn($torneo);
+
+        $sede = $this->createMock(Sede::class);
+        $sedeManager = $this->createMock(SedeManager::class);
+        $sedeManager->expects($this->once())
+            ->method('obtenerSede')
+            ->with(9)
+            ->willReturn($sede);
+        $sedeManager->expects($this->once())
+            ->method('editarSede')
+            ->with($torneo, $sede, 'Sede Editada', 'Calle Nueva 9')
+            ->willThrowException(new AppException('Sede duplicada'));
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->editarSede('ruta-test', 9, $torneoManager, $sedeManager, $request, $logger);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('sede/editar.html.twig', $controller->lastTemplate);
+        self::assertSame(['error', 'Sede duplicada'], $controller->lastFlash);
+    }
+
     public function testCrearSedePorPostYRedirige(): void
     {
         $controller = new TestableSedeController();
