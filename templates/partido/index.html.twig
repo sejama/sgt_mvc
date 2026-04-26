@@ -1,5 +1,50 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .partido-logo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.2rem 0.45rem 0.2rem 0.2rem;
+      border-radius: 999px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      max-width: 100%;
+    }
+
+    .partido-logo-chip .partido-logo {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 999px;
+      border: 2px solid #cbd5e1;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.2);
+      flex-shrink: 0;
+    }
+
+    .partido-logo-chip .partido-nombre {
+      font-weight: 600;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 767.98px) {
+      .partido-logo-chip {
+        gap: 0.35rem;
+        padding: 0.15rem 0.35rem 0.15rem 0.15rem;
+      }
+
+      .partido-logo-chip .partido-logo {
+        width: 31px;
+        height: 31px;
+      }
+    }
+  </style>
+{% endblock %}
+
 {% block body %}
     {% for flash_error in app.flashes('error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
@@ -12,15 +57,18 @@
     {% endfor %}
     {% set esPrimerPartido = partidosProgramados|length == 0 %}
     <h1>{% block title %}SGT- Gestion Partidos{% endblock %}</h1>
-    <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
-    <a href="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}" class="btn btn-primary">Agregar/Editar partido</a>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <a href="{{ path('admin_torneo_index') }}" class="btn btn-secondary">Volver</a>
+      <a href="{{ path('admin_partido_gestionar', { 'ruta': torneo.ruta }) }}" class="btn btn-primary">Agregar/Editar partido</a>
+    </div>
     <h3>Partidos clasificatorios</h3>
     {% if partidosSinAsignar['clasificatorios']|length == 0 %}
         <div class="alert alert-warning" role="alert">
             No hay partidos clasificatorios sin asignar
         </div>
     {% else %}
-    <table class="table table-striped">
+    <div class="table-responsive">
+    <table class="table table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -40,11 +88,11 @@
                 <th scope="row">{{ partido.numero }}</th>
                 <td>
                   <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-                    <option selected>Seleccionar Cancha</option>
+                    <option value="" selected>Seleccionar Cancha</option>
                     {% for key,sede in canchas %}
                       <optgroup label="{{key}}">	
                       {% for cancha in sede %}
-                        <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+                        <option value="{{ cancha['id'] }}" data-sede-id="{{ cancha['sedeId'] }}">{{ cancha['cancha'] }}</option>
                       {% endfor %}
                       </optgroup>
                     {% endfor %}
@@ -52,19 +100,32 @@
                 </td>
                 <td>
                     <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
-
-                      min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
-                      max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+                      min="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
+                      max="{{ partido.fechaFinTorneo|date('Y-m-d\\TH:i') }}"
+                      step="900"
                       data-force-inicio="{{ esPrimerPartido ? '1' : '0' }}"
                       data-inicio-torneo="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
                       disabled
                     >
+                    <small id="ayudaHorario{{ partido.id }}" class="form-text text-muted d-block mt-1">Seleccioná cancha para habilitar horario y ver disponibilidad.</small>
                 </td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
-                <td>{{ partido.equipoLocal }}</td>
+                <td>
+                  {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                      <img src="{{ asset(logoLocal|default('uploads/logos/sin_logo.png')) }}" alt="Logo de {{ partido.equipoLocal }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoLocal }}</span>
+                  </div>
+                </td>
                 <td>-</td>
-                <td>{{ partido.equipoVisitante }}</td>
+                <td>
+                  {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                      <img src="{{ asset(logoVisitante|default('uploads/logos/sin_logo.png')) }}" alt="Logo de {{ partido.equipoVisitante }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoVisitante }}</span>
+                  </div>
+                </td>
                 <td>
                   <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
                     <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
@@ -77,6 +138,7 @@
           {% endfor %}
         </tbody>
       </table>
+    </div>
       {% endif %}
       <h3>Partidos eliminatorios post grupos</h3>
       {% if partidosSinAsignar['eliminatorias']|length == 0 %}
@@ -84,7 +146,8 @@
             No hay partidos eliminatorios sin asignar
         </div>
       {% else %}
-      <table class="table table-striped">
+      <div class="table-responsive">
+      <table class="table table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -104,11 +167,11 @@
         <th scope="row">{{ partido.numero }}</th>
         <td>
           <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-            <option selected>Seleccionar Cancha</option>
+            <option value="" selected>Seleccionar Cancha</option>
             {% for key,sede in canchas %}
               <optgroup label="{{key}}">	
               {% for cancha in sede %}
-                <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+                <option value="{{ cancha['id'] }}" data-sede-id="{{ cancha['sedeId'] }}">{{ cancha['cancha'] }}</option>
               {% endfor %}
               </optgroup>
             {% endfor %}
@@ -116,19 +179,32 @@
         </td>
         <td>
             <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
-
-              min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
-              max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+              min="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
+              max="{{ partido.fechaFinTorneo|date('Y-m-d\\TH:i') }}"
+              step="900"
               data-force-inicio="{{ esPrimerPartido ? '1' : '0' }}"
               data-inicio-torneo="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
               disabled
             >
+            <small id="ayudaHorario{{ partido.id }}" class="form-text text-muted d-block mt-1">Seleccioná cancha para habilitar horario y ver disponibilidad.</small>
         </td>
         <td>{{ partido.categoria }}</td>
         <td>{{ partido.nombre }}</td>
-        <td>{{ partido.equipoLocal }}</td>
+        <td>
+          {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+          <div class="partido-logo-chip">
+            <img src="{{ asset(logoLocal) }}" alt="Logo de {{ partido.equipoLocal }}" class="partido-logo">
+            <span class="partido-nombre text-break">{{ partido.equipoLocal }}</span>
+          </div>
+        </td>
         <td>-</td>
-        <td>{{ partido.equipoVisitante }}</td>
+        <td>
+          {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+          <div class="partido-logo-chip">
+            <img src="{{ asset(logoVisitante) }}" alt="Logo de {{ partido.equipoVisitante }}" class="partido-logo">
+            <span class="partido-nombre text-break">{{ partido.equipoVisitante }}</span>
+          </div>
+        </td>
         <td>
           <form action="{{ path('admin_partido_editar', { 'ruta': torneo.ruta }) }}" method="post" style="display: inline;">
             <input type="hidden" name="var_partidoId" name="var_partidoId" value={{ partido.id }}>
@@ -141,6 +217,7 @@
       {% endfor %}
     </tbody>
   </table>
+      </div>
   {% endif %}
   <h3>Partidos eliminatorios finales</h3>
   {% if partidosSinAsignar['finales']|length == 0 %}
@@ -148,7 +225,8 @@
             No hay partidos eliminatorios sin asignar
         </div>
       {% else %}
-      <table class="table table-striped">
+      <div class="table-responsive">
+      <table class="table table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -168,11 +246,11 @@
         <th scope="row">{{ partido.numero }}</th>
         <td>
           <select class="form-select" aria-label="Default select example" id="cancha{{partido.id}}" name="cancha{{partido.id}}">
-            <option selected>Seleccionar Cancha</option>
+            <option value="" selected>Seleccionar Cancha</option>
             {% for key,sede in canchas %}
               <optgroup label="{{key}}">	
               {% for cancha in sede %}
-                <option value="{{ cancha['id'] }}">{{ cancha['cancha'] }}</option>
+                <option value="{{ cancha['id'] }}" data-sede-id="{{ cancha['sedeId'] }}">{{ cancha['cancha'] }}</option>
               {% endfor %}
               </optgroup>
             {% endfor %}
@@ -180,13 +258,14 @@
         </td>
         <td>
             <input type="datetime-local" class="form-control" id="horario{{partido.id}}" name="horario{{partido.id}}" 
-
-              min="{{ partido.fechaInicioTorneo|date('Y-m-d H:i') }}"
-              max="{{ partido.fechaFinTorneo|date('Y-m-d H:i') }}"
+              min="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
+              max="{{ partido.fechaFinTorneo|date('Y-m-d\\TH:i') }}"
+              step="900"
               data-force-inicio="{{ esPrimerPartido ? '1' : '0' }}"
               data-inicio-torneo="{{ partido.fechaInicioTorneo|date('Y-m-d\\TH:i') }}"
               disabled
             >
+            <small id="ayudaHorario{{ partido.id }}" class="form-text text-muted d-block mt-1">Seleccioná cancha para habilitar horario y ver disponibilidad.</small>
         </td>
         <td>{{ partido.categoria }}</td>
         <td>{{ partido.nombre }}</td>
@@ -239,9 +318,21 @@
                 <td>{{ partido.hora|date('H:i') }}</td>
                 <td>{{ partido.categoria }}</td>
                 <td>{{ partido.grupo }}</td>
-                <td>{{ partido.equipoLocal }} {{ partido.localSet1 }} {{ partido.localSet2 }} {{ partido.localSet3 }} {{ partido.localSet4 }} {{ partido.localSet5 }}</td>
+                <td>
+                  {% set logoLocal = partido.equipoLocalLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                    <img src="{{ asset(logoLocal) }}" alt="Logo de {{ partido.equipoLocal }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoLocal }} {{ partido.localSet1 }} {{ partido.localSet2 }} {{ partido.localSet3 }} {{ partido.localSet4 }} {{ partido.localSet5 }}</span>
+                  </div>
+                </td>
                 <td>-</td>
-                <td>{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</td>
+                <td>
+                  {% set logoVisitante = partido.equipoVisitanteLogoPath|default('uploads/logos/sin_logo.png') %}
+                  <div class="partido-logo-chip">
+                    <img src="{{ asset(logoVisitante) }}" alt="Logo de {{ partido.equipoVisitante }}" class="partido-logo">
+                    <span class="partido-nombre text-break">{{ partido.equipoVisitante }} {{ partido.visitanteSet1 }} {{ partido.visitanteSet2 }} {{ partido.visitanteSet3 }} {{ partido.visitanteSet4 }} {{ partido.visitanteSet5 }}</span>
+                  </div>
+                </td>
                 <td>
                   {% if partido.localSet1 is null and partido.visitanteSet1 is null %}
                     <a href="{{ path('admin_partido_resultado', { 'ruta': torneo.ruta, 'partidoNumero': partido.numero }) }}" class="btn btn-info">Cargar Resultado</a>
@@ -252,46 +343,106 @@
             {% endfor %}
             </tbody>
           </table>
+          </div>
         {% endfor %}
       {% endfor %}
       {% endfor %}
+  <script id="horarios-programados-payload" type="application/json">{{ horariosProgramados|json_encode|raw }}</script>
   <script>
-    const selec = document.querySelectorAll('select');
+    const payloadEl = document.getElementById('horarios-programados-payload');
+    const horariosProgramados = payloadEl ? JSON.parse(payloadEl.textContent || '{}') : {};
+    const porCancha = horariosProgramados.porCancha || {};
 
-    selec.forEach((element) => {
+    function toSet(values) {
+      return new Set(Array.isArray(values) ? values : []);
+    }
+
+    function actualizarAyudaHorario(partidoId, canchaId) {
+      const ayuda = document.getElementById('ayudaHorario' + partidoId);
+      if (!ayuda) {
+        return;
+      }
+
+      if (!canchaId) {
+        ayuda.textContent = 'Seleccioná cancha para habilitar horario y ver disponibilidad.';
+        return;
+      }
+
+      const canchaOcupados = (porCancha[canchaId] || []).slice(0, 3).join(', ');
+
+      if (!canchaOcupados) {
+        ayuda.textContent = 'No hay horarios ocupados para la cancha seleccionada.';
+        return;
+      }
+
+      ayuda.textContent = 'Ocupados en cancha: ' + canchaOcupados + '.';
+    }
+
+    function validarHorario(partidoId) {
+      const canchaSelect = document.getElementById('cancha' + partidoId);
+      const horarioInput = document.getElementById('horario' + partidoId);
+      const hiddenHorario = document.getElementById('var_horario' + partidoId);
+      const botonGuardar = document.getElementById('admin_partido_editar' + partidoId);
+
+      if (!canchaSelect || !horarioInput || !hiddenHorario || !botonGuardar) {
+        return;
+      }
+
+      const canchaId = canchaSelect.value;
+      const canchaSlots = toSet(porCancha[canchaId]);
+      const valor = horarioInput.value;
+
+      let error = '';
+      if (valor) {
+        if (canchaSlots.has(valor)) {
+          error = 'Ese horario ya está ocupado en la cancha seleccionada.';
+        }
+      }
+
+      horarioInput.setCustomValidity(error);
+      horarioInput.reportValidity();
+
+      const puedeGuardar = canchaId && valor && !error;
+      hiddenHorario.value = puedeGuardar ? valor : '';
+      botonGuardar.classList.toggle('disabled', !puedeGuardar);
+    }
+
+    document.querySelectorAll('select[id^="cancha"]').forEach((element) => {
       element.addEventListener('change', (event) => {
-        const cancha_partidoId = event.target.id.replace('cancha', '');
+        const partidoId = event.target.id.replace('cancha', '');
         const canchaId = event.target.value;
-        console.log("Cancha Partido ID ", cancha_partidoId);
-        console.log("Cancha ID ", canchaId);
-        const horarioInput = document.getElementById('horario' + cancha_partidoId);
-        const esPrimerPartido = horarioInput.dataset.forceInicio === '1';
+        const horarioInput = document.getElementById('horario' + partidoId);
+        const hiddenCancha = document.getElementById('var_cancha' + partidoId);
 
-        if (esPrimerPartido) {
-          const inicioTorneo = horarioInput.dataset.inicioTorneo;
-          horarioInput.value = inicioTorneo;
-          horarioInput.disabled = true;
-          document.getElementById('var_horario' + cancha_partidoId).value = inicioTorneo;
-          const botonGuardar = document.getElementById('admin_partido_editar' + cancha_partidoId);
-          botonGuardar.classList.remove('disabled');
-        } else {
-          horarioInput.disabled = false;
+        if (!horarioInput || !hiddenCancha) {
+          return;
         }
 
-        document.getElementById('var_cancha'+cancha_partidoId).value = canchaId;
+        hiddenCancha.value = canchaId || '';
+        actualizarAyudaHorario(partidoId, canchaId);
+
+        if (!canchaId) {
+          horarioInput.value = '';
+          horarioInput.disabled = true;
+          validarHorario(partidoId);
+          return;
+        }
+
+        horarioInput.disabled = false;
+
+        const esPrimerPartido = horarioInput.dataset.forceInicio === '1';
+        if (esPrimerPartido) {
+          horarioInput.value = horarioInput.dataset.inicioTorneo || '';
+        }
+
+        validarHorario(partidoId);
       });
     });
 
-    const horarios = document.querySelectorAll('input[type="datetime-local"]');
-    horarios.forEach((element, cancha_partidoId ) => {
+    document.querySelectorAll('input[id^="horario"]').forEach((element) => {
       element.addEventListener('change', (event) => {
-        const horario_partidoId = event.target.id.replace('horario', '');
-        const horario = event.target.value;
-        console.log("Horario Partido ID ",horario_partidoId);
-        console.log("Horario ", horario);
-        document.getElementById('var_horario'+horario_partidoId).value = horario;
-        const boton = document.getElementById('admin_partido_editar' + horario_partidoId);
-        boton.classList.remove('disabled');
+        const partidoId = event.target.id.replace('horario', '');
+        validarHorario(partidoId);
       });
     });
   </script>

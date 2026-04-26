@@ -47,78 +47,84 @@
                 {% endif %}
 
                 <article class="mobile-card {{ rowClass }} mb-3">
-                    <div class="p-3 p-sm-4 bg-white">
-                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div class="p-2 p-sm-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                             <div>
-                                <div class="text-uppercase text-muted small mb-1">Posición</div>
-                                <div class="display-6 fw-bold mb-0">{{ posicion }}</div>
+                                <div class="text-uppercase text-muted small mb-0">Pos</div>
+                                <div class="mobile-posicion mb-0">{{ posicion }}</div>
                             </div>
                             {% if rowLabel %}
                                 <span class="badge rounded-pill {{ rowBadge }} clasificacion-badge">{{ rowLabel }}</span>
                             {% endif %}
                         </div>
 
-                        <div class="fw-semibold fs-5 mb-3">{{ equipo.nombre }}</div>
+                        <div class="fw-semibold mobile-team-name mb-2">{{ equipo.nombre }}</div>
 
-                        <div class="row g-2 text-center">
+                        <div class="row g-1 text-center mobile-metrics-grid">
                             <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">PJ</div>
+                                <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                    <div class="text-muted small mb-0">PJ</div>
                                     <div class="metric-value">{{ equipo.partidosJugados }}</div>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">G / P</div>
+                                <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                    <div class="text-muted small mb-0">G / P</div>
                                     <div class="metric-value">{{ equipo.partidosGanados }} / {{ equipo.partidosPerdidos }}</div>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Pts</div>
+                                <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                    <div class="text-muted small mb-0">Pts</div>
                                     <div class="metric-value">{{ equipo.puntos }}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row g-2 mt-2 text-center">
-                            <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Set +</div>
-                                    <div class="metric-value">{{ equipo.setsFavor }}</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Set -</div>
-                                    <div class="metric-value">{{ equipo.setsContra }}</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Dif</div>
-                                    <div class="metric-value">{{ equipo.setsDiferencia }}</div>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn btn-link btn-sm p-0 mt-2 mobile-more-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#detalleEquipo{{ posicion }}" aria-expanded="false" aria-controls="detalleEquipo{{ posicion }}">
+                            Ver más datos
+                        </button>
 
-                        <div class="row g-2 mt-2 text-center">
-                            <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Puntos +</div>
-                                    <div class="metric-value">{{ equipo.puntosFavor }}</div>
+                        <div class="collapse mt-2" id="detalleEquipo{{ posicion }}">
+                            <div class="row g-1 text-center mobile-metrics-grid">
+                                <div class="col-4">
+                                    <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                        <div class="text-muted small mb-0">Set +</div>
+                                        <div class="metric-value">{{ equipo.setsFavor }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                        <div class="text-muted small mb-0">Set -</div>
+                                        <div class="metric-value">{{ equipo.setsContra }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                        <div class="text-muted small mb-0">Dif</div>
+                                        <div class="metric-value">{{ equipo.setsDiferencia }}</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Puntos -</div>
-                                    <div class="metric-value">{{ equipo.puntosContra }}</div>
+
+                            <div class="row g-1 mt-1 text-center mobile-metrics-grid">
+                                <div class="col-4">
+                                    <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                        <div class="text-muted small mb-0">P +</div>
+                                        <div class="metric-value">{{ equipo.puntosFavor }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="rounded-3 bg-body-tertiary py-2 h-100">
-                                    <div class="text-muted small">Dif</div>
-                                    <div class="metric-value">{{ equipo.puntosDiferencia }}</div>
+                                <div class="col-4">
+                                    <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                        <div class="text-muted small mb-0">P -</div>
+                                        <div class="metric-value">{{ equipo.puntosContra }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="rounded-3 bg-body-tertiary py-1 h-100 mobile-metric-box">
+                                        <div class="text-muted small mb-0">Dif</div>
+                                        <div class="metric-value">{{ equipo.puntosDiferencia }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

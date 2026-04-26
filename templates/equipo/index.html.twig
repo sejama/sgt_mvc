@@ -18,6 +18,7 @@
     {% elseif categoria.estado == 'Cerrada' %}
         <a href="{{ path('admin_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
     {% elseif categoria.estado == 'Zonas_creadas' %}
+        <a href="{{ path('admin_grupo_intercambiar_equipos', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-warning">Intercambiar Equipos</a>
         <a href="{{ path('admin_categoria_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
     {% endif %}
     <div class="table-responsive">
@@ -25,6 +26,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Logo</th>
                     <th>Nombre Corto</th>
                     <th>Nombre</th>
                     <th>Grupo</th>
@@ -37,6 +39,11 @@
                 {% for equipo in equipos %}
                     <tr>
                         <th class="p-1">{{ loop.index }}</th>
+                        <td class="p-1">
+                            {% if equipo.logoPath %}
+                                <img src="{{ asset(equipo.logoPath) }}" alt="Logo de {{ equipo.nombre }}" class="img-thumbnail" style="width: 48px; height: 48px; object-fit: contain;">
+                            {% endif %}
+                        </td>
                         <td class="p-1">{{ equipo.nombreCorto }}</td>
                         <td class="p-1">{{ equipo.nombre }}</td>
                         <td class="p-1">{{ equipo.grupo.nombre ?? '' }}</td>

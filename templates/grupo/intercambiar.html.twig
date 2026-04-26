@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+
+    <h1>{% block title %}SGT- Intercambio de Equipos{% endblock %}</h1>
+    <h3>{{ torneo.nombre }}</h3>
+    <h3>{{ categoria.nombre }}</h3>
+
+    <a href="{{ path('admin_equipo_index', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}" class="btn btn-secondary">Volver</a>
+    {% if categoria.estado == 'Zonas_creadas' %}
+        <a href="{{ path('admin_categoria_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}" class="btn btn-info">Armar Partidos</a>
+    {% endif %}
+
+    <form class="needs-validation mt-3" novalidate method="post" action="{{ path('admin_grupo_intercambiar_equipos', {'ruta': torneo.ruta, 'categoriaId': categoria.id}) }}">
+        <div class="row g-2 mt-2 mb-2">
+            <div class="col-md">
+                <label for="equipoOrigenId" class="form-label">Equipo Origen</label>
+                <select class="form-select" id="equipoOrigenId" name="equipoOrigenId" required>
+                    <option value="">Seleccione equipo</option>
+                    {% for equipo in equipos %}
+                        <option value="{{ equipo.id }}">{{ equipo.grupo.nombre }} - {{ equipo.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                    Debe seleccionar el equipo origen.
+                </div>
+            </div>
+            <div class="col-md">
+                <label for="equipoDestinoId" class="form-label">Equipo Destino</label>
+                <select class="form-select" id="equipoDestinoId" name="equipoDestinoId" required>
+                    <option value="">Seleccione equipo</option>
+                    {% for equipo in equipos %}
+                        <option value="{{ equipo.id }}">{{ equipo.grupo.nombre }} - {{ equipo.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                    Debe seleccionar el equipo destino.
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col">
+                <button type="submit" class="btn btn-success">Intercambiar</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach((form) => {
+                form.addEventListener('submit', (event) => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

@@ -169,6 +169,43 @@ class PartidoRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function buscarPartidoXSedeHorario(string $ruta, int $partidoId, int $sedeId, \DateTimeImmutable $horario): ?Partido
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->join('p.cancha', 'can')
+            ->join('can.sede', 's')
+            ->where('s.id = :sedeId')
+            ->andWhere('p.horario = :horario')
+            ->andWhere('t.ruta = :ruta')
+            ->andWhere('p.id != :partidoId')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('partidoId', $partidoId)
+            ->setParameter('sedeId', $sedeId)
+            ->setParameter('horario', $horario)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function obtenerHorariosProgramadosXTorneo(string $ruta): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.horario, can.id AS canchaId, s.id AS sedeId')
+            ->join('p.categoria', 'c')
+            ->join('c.torneo', 't')
+            ->join('p.cancha', 'can')
+            ->join('can.sede', 's')
+            ->where('t.ruta = :ruta')
+            ->andWhere('p.horario IS NOT NULL')
+            ->andWhere('p.estado != :estadoCancelado')
+            ->setParameter('ruta', $ruta)
+            ->setParameter('estadoCancelado', 'Cancelado')
+            ->orderBy('p.horario', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function existenOtrosPartidosProgramadosXTorneo(string $ruta, int $partidoId): bool
     {
         $cantidad = (int) $this->createQueryBuilder('p')
@@ -203,7 +240,7 @@ class PartidoRepository extends ServiceEntityRepository
         ORDER BY p.id ASC;
         */
         return $this->createQueryBuilder('p')
-            ->select('p.id AS id, p.numero, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
+            ->select('p.id AS id, p.numero, eLocal.nombre AS equipoLocal, eLocal.logoPath AS equipoLocalLogoPath, eVisitante.nombre AS equipoVisitante, eVisitante.logoPath AS equipoVisitanteLogoPath, g.nombre AS grupo, c.nombre AS categoria, t.fechaInicioTorneo AS fechaInicioTorneo, t.fechaFinTorneo AS fechaFinTorneo')
             ->join('p.grupo', 'g')
             ->join('g.categoria', 'c')
             ->join('c.torneo', 't')
@@ -305,7 +342,7 @@ class PartidoRepository extends ServiceEntityRepository
             ORDER BY s.id, c.id, hora;
         */
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eVisitante.nombre AS equipoVisitante, g.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5')
+            ->select('p.id, p.numero, s.nombre AS sede, c.nombre AS cancha, p.horario AS horario, eLocal.nombre AS equipoLocal, eLocal.logoPath AS equipoLocalLogoPath, eVisitante.nombre AS equipoVisitante, eVisitante.logoPath AS equipoVisitanteLogoPath, g.nombre AS grupo, cat.nombre AS categoria, p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, p.localSet3, p.visitanteSet3, p.localSet4, p.visitanteSet4, p.localSet5, p.visitanteSet5')
             ->join('p.cancha', 'c')
             ->join('c.sede', 's')
             ->join('p.grupo', 'g')
@@ -368,10 +405,12 @@ class PartidoRepository extends ServiceEntityRepository
                     WHEN p.equipoLocal IS NULL THEN CONCAT(g1.nombre, \' \', pc.posicionEquipo1)
                     ELSE eLocal.nombre 
                 END AS equipoLocal,
+                eLocal.logoPath AS equipoLocalLogoPath,
                 CASE 
                     WHEN p.equipoVisitante IS NULL THEN CONCAT(g2.nombre, \' \', pc.posicionEquipo2)
                     ELSE eVisitante.nombre 
                 END AS equipoVisitante,
+                eVisitante.logoPath AS equipoVisitanteLogoPath,
                 pc.nombre AS grupo, 
                 cat.nombre AS categoria, 
                 p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, 
@@ -460,18 +499,20 @@ class PartidoRepository extends ServiceEntityRepository
                     WHEN p.equipoLocal IS NULL THEN 
                         CASE 
                             WHEN pc.ganadorPartido1 IS NOT NULL THEN CONCAT(\'Ganador \', pc1.nombre)
-                            ELSE \'Sin definir\' -- Agregar un ELSE aquí
+                            ELSE \'Sin definir\'
                         END
                     ELSE eLocal.nombre 
                 END) AS equipoLocal,
+                eLocal.logoPath AS equipoLocalLogoPath,
             (CASE 
                 WHEN p.equipoVisitante IS NULL THEN 
                     CASE 
                         WHEN pc.ganadorPartido2 IS NOT NULL THEN CONCAT(\'Ganador \', pc2.nombre)
-                        ELSE \'Sin definir\' -- Agregar un ELSE aquí
+                        ELSE \'Sin definir\'
                     END
                 ELSE eVisitante.nombre 
             END) AS equipoVisitante,
+            eVisitante.logoPath AS equipoVisitanteLogoPath,
                 pc.nombre AS grupo, 
                 cat.nombre AS categoria, 
                 p.localSet1, p.visitanteSet1, p.localSet2, p.visitanteSet2, 

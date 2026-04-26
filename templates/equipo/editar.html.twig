@@ -13,7 +13,7 @@
     
     <h1>SGT - Editar Equipo</h1>
 
-    <form class="needs-validation" novalidate method="post" action="{{ path('admin_equipo_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id }) }}">
+    <form class="needs-validation" novalidate method="post" enctype="multipart/form-data" action="{{ path('admin_equipo_editar', {'ruta': ruta, 'categoriaId': categoriaId, 'equipoId': equipo.id }) }}">
         <div class="row g-1 mt-2 mb-2">
             <div class="col-md">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -51,6 +51,18 @@
                 <div id="localidadFeedback" class="invalid-feedback">
                     Localidad no es valido
                 </div>
+            </div>
+        </div>
+        <div class="row g-1 mt-2 mb-2 align-items-end">
+            <div class="col-md">
+                <label for="logo" class="form-label">Logo del equipo</label>
+                <input type="file" class="form-control" id="logo" name="logo" accept="image/png,image/jpeg,image/webp,image/gif">
+                <div class="form-text">Opcional. Si cargás uno nuevo, reemplaza el actual.</div>
+            </div>
+            <div class="col-md-auto">
+                {% if equipo.logoPath %}
+                    <img src="{{ asset(equipo.logoPath) }}" alt="Logo actual de {{ equipo.nombre }}" class="img-thumbnail" style="width: 72px; height: 72px; object-fit: contain;">
+                {% endif %}
             </div>
         </div>
         <a href="{{ path('admin_equipo_index', {'ruta': ruta, 'categoriaId': categoriaId }) }}" class="btn btn-secondary">Volver</a>

@@ -14,6 +14,7 @@ use App\Manager\CategoriaManager;
 use App\Manager\EquipoManager;
 use App\Manager\JugadorManager;
 use App\Manager\TorneoManager;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -114,6 +115,9 @@ class EquipoControllerTest extends TestCase
                 '2615551234'
             );
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->exactly(2))->method('flush');
+
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('info');
 
@@ -124,6 +128,7 @@ class EquipoControllerTest extends TestCase
             $equipoManager,
             $jugadorManager,
             $categoriaManager,
+            $entityManager,
             $logger
         );
 
@@ -166,6 +171,9 @@ class EquipoControllerTest extends TestCase
         $jugadorManager = $this->createMock(JugadorManager::class);
         $jugadorManager->expects($this->never())->method('crearJugador');
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('flush');
+
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
 
@@ -176,6 +184,7 @@ class EquipoControllerTest extends TestCase
             $equipoManager,
             $jugadorManager,
             $categoriaManager,
+            $entityManager,
             $logger
         );
 

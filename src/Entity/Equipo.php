@@ -32,6 +32,9 @@ class Equipo
     #[ORM\Column(length: 128, nullable: true)]
     private ?string $localidad = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logoPath = null;
+
     /**
      * @var Collection<int, Jugador>
      */
@@ -137,6 +140,18 @@ class Equipo
     public function setLocalidad(?string $localidad): static
     {
         $this->localidad = $localidad;
+
+        return $this;
+    }
+
+    public function getLogoPath(): ?string
+    {
+        return $this->logoPath;
+    }
+
+    public function setLogoPath(?string $logoPath): static
+    {
+        $this->logoPath = $logoPath;
 
         return $this;
     }

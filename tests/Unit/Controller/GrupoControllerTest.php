@@ -215,6 +215,120 @@ class GrupoControllerTest extends TestCase
         self::assertSame(['danger', 'una app exception'], $controller->lastFlash);
         self::assertSame('/admin_grupo_index', $response->headers->get('Location'));
     }
+
+    public function testIntercambiarEquiposGetRenderizaFormulario(): void
+    {
+        $controller = new TestableGrupoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $torneo = $this->createMock(Torneo::class);
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneoManager->expects($this->once())
+            ->method('obtenerTorneo')
+            ->with('ruta-test')
+            ->willReturn($torneo);
+
+        $categoria = $this->createMock(Categoria::class);
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $categoriaManager->expects($this->once())
+            ->method('obtenerCategoria')
+            ->with(8)
+            ->willReturn($categoria);
+
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $grupoManager->expects($this->once())
+            ->method('obtenerEquiposDeCategoriaConGrupo')
+            ->with($categoria)
+            ->willReturn([]);
+
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'GET');
+
+        $response = $controller->intercambiarEquipos('ruta-test', 8, $request, $torneoManager, $categoriaManager, $grupoManager, $logger);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('grupo/intercambiar.html.twig', $controller->lastTemplate);
+        self::assertSame($torneo, $controller->lastParameters['torneo']);
+        self::assertSame($categoria, $controller->lastParameters['categoria']);
+        self::assertSame([], $controller->lastParameters['equipos']);
+    }
+
+    public function testIntercambiarEquiposPostExitosoRedirigeConFlashSuccess(): void
+    {
+        $controller = new TestableGrupoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'POST', [
+            'equipoOrigenId' => '101',
+            'equipoDestinoId' => '102',
+        ]);
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn($this->createMock(Torneo::class));
+
+        $categoria = $this->createMock(Categoria::class);
+        $categoria->method('getId')->willReturn(8);
+
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn($categoria);
+
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $grupoManager->expects($this->once())
+            ->method('intercambiarEquiposEntreGrupos')
+            ->with($categoria, 101, 102);
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('info');
+
+        $response = $controller->intercambiarEquipos('ruta-test', 8, $request, $torneoManager, $categoriaManager, $grupoManager, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame(['success', 'Equipos intercambiados correctamente.'], $controller->lastFlash);
+        self::assertSame('/admin_grupo_intercambiar_equipos', $response->headers->get('Location'));
+    }
+
+    public function testIntercambiarEquiposPostConAppExceptionRedirigeConFlashError(): void
+    {
+        $controller = new TestableGrupoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'POST', [
+            'equipoOrigenId' => '101',
+            'equipoDestinoId' => '102',
+        ]);
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn($this->createMock(Torneo::class));
+
+        $categoria = $this->createMock(Categoria::class);
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn($categoria);
+
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $grupoManager->expects($this->once())
+            ->method('intercambiarEquiposEntreGrupos')
+            ->with($categoria, 101, 102)
+            ->willThrowException(new AppException('No permitido'));
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->intercambiarEquipos('ruta-test', 8, $request, $torneoManager, $categoriaManager, $grupoManager, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame(['error', 'No permitido'], $controller->lastFlash);
+        self::assertSame('/admin_grupo_intercambiar_equipos', $response->headers->get('Location'));
+    }
 }
 
 class TestableGrupoController extends GrupoController

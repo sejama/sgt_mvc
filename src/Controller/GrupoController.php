@@ -19,6 +19,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class GrupoController extends AbstractController
 {
+    private function getLogUserId(): string
+    {
+        $user = $this->getUser();
+
+        if ($user instanceof \App\Entity\Usuario) {
+            $id = $user->getId();
+            return $id !== null ? (string) $id : 'anon';
+        }
+
+        return 'anon';
+    }
+
     #[Route('/grupos', name: 'admin_grupo_index', methods: ['GET'])]
     public function gruposIndex(
         string $ruta,
@@ -73,7 +85,7 @@ class GrupoController extends AbstractController
             }
             $categoriaManager->armarPlayOff($categoria);
             $this->addFlash('success', 'Playoff armado con éxito para la categoría ' . $categoria->getNombre() . '.');
-            $logger->info('PlayOff armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+            $logger->info('PlayOff armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' . $this->getLogUserId());
             return $this->redirectToRoute('admin_grupo_index', ['ruta' => $ruta, 'categoriaId' => $categoriaId]);
         } catch (AppException $ae) {
             $this->addFlash('danger', "una app exception");
@@ -121,7 +133,7 @@ class GrupoController extends AbstractController
                 $grupoManager->crearGrupos($grupos);
 
                 $this->addFlash('success', "Grupo creado con éxito.");
-                $logger->info('Grupo armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Grupo armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' . $this->getLogUserId());
                 return $this->redirectToRoute('admin_equipo_index', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,
@@ -142,7 +154,7 @@ class GrupoController extends AbstractController
         );
     }
 
-    #[Route('/grupo/{grupoId}', name: 'admin_grupo_ver', methods: ['GET'])]
+    #[Route('/grupo/{grupoId}', name: 'admin_grupo_ver', methods: ['GET'], requirements: ['grupoId' => '\\d+'])]
     public function index(
         string $ruta,
         int $categoriaId,
@@ -172,5 +184,58 @@ class GrupoController extends AbstractController
             'partidosBronce' => [],
             ]
         );
+    }
+
+    #[Route('/grupo/intercambiar-equipos', name: 'admin_grupo_intercambiar_equipos', methods: ['GET', 'POST'])]
+    public function intercambiarEquipos(
+        string $ruta,
+        int $categoriaId,
+        Request $request,
+        TorneoManager $torneoManager,
+        CategoriaManager $categoriaManager,
+        GrupoManager $grupoManager,
+        LoggerInterface $logger
+    ): Response {
+        $torneo = $torneoManager->obtenerTorneo($ruta);
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+
+        if ($request->isMethod('POST')) {
+            try {
+                $equipoOrigenId = (int) $request->request->get('equipoOrigenId', 0);
+                $equipoDestinoId = (int) $request->request->get('equipoDestinoId', 0);
+
+                $grupoManager->intercambiarEquiposEntreGrupos($categoria, $equipoOrigenId, $equipoDestinoId);
+
+                $this->addFlash('success', 'Equipos intercambiados correctamente.');
+                $logger->info('Intercambio de equipos realizado en categoria: ' . $categoria->getId() . ', por el usuario: ' . $this->getLogUserId());
+
+                return $this->redirectToRoute('admin_grupo_intercambiar_equipos', [
+                    'ruta' => $ruta,
+                    'categoriaId' => $categoriaId,
+                ]);
+            } catch (AppException $ae) {
+                $this->addFlash('error', $ae->getMessage());
+                $logger->error($ae->getMessage());
+
+                return $this->redirectToRoute('admin_grupo_intercambiar_equipos', [
+                    'ruta' => $ruta,
+                    'categoriaId' => $categoriaId,
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Ocurrio un error al intercambiar los equipos.');
+                $logger->error($e->getMessage());
+
+                return $this->redirectToRoute('admin_grupo_intercambiar_equipos', [
+                    'ruta' => $ruta,
+                    'categoriaId' => $categoriaId,
+                ]);
+            }
+        }
+
+        return $this->render('grupo/intercambiar.html.twig', [
+            'torneo' => $torneo,
+            'categoria' => $categoria,
+            'equipos' => $grupoManager->obtenerEquiposDeCategoriaConGrupo($categoria),
+        ]);
     }
 }
