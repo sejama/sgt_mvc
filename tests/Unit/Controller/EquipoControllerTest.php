@@ -151,133 +151,6 @@ class EquipoControllerTest extends TestCase
             'provincia' => 'Cba',
             'localidad' => 'Centro',
             'delegado' => [[
-    
-                public function testCrearEquipoManejaExcepcionGenericaYMuestraError(): void
-                {
-                    $controller = new TestableEquipoController();
-                    $controller->testUser = (new Usuario())
-                        ->setUsername('admin')
-                        ->setPassword('hash')
-                        ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-
-                    $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/nuevo', 'POST', [
-                        'nombre' => 'Equipo Nuevo',
-                        'nombreCorto' => 'EQN',
-                        'pais' => 'Argentina',
-                        'provincia' => 'Cba',
-                        'localidad' => 'Centro',
-                        'delegado' => [[
-                            'nombre' => 'Juan',
-                            'apellido' => 'Perez',
-                            'tipoDocumento' => 'DNI',
-                            'numeroDocumento' => '12345678',
-                            'email' => 'juan@example.com',
-                            'celular' => '2615551234',
-                        ]],
-                    ]);
-
-                    $categoriaManager = $this->createMock(CategoriaManager::class);
-                    $categoria = $this->createMock(Categoria::class);
-                    $categoriaManager->method('obtenerCategoria')->willReturn($categoria);
-
-                    $equipoManager = $this->createMock(EquipoManager::class);
-                    $equipoManager->method('crearEquipo')
-                        ->willThrowException(new \RuntimeException('Error inesperado'));
-
-                    $jugadorManager = $this->createMock(JugadorManager::class);
-                    $jugadorManager->expects($this->never())->method('crearJugador');
-
-                    $entityManager = $this->createMock(EntityManagerInterface::class);
-                    $entityManager->expects($this->never())->method('flush');
-
-                    $logger = $this->createMock(LoggerInterface::class);
-                    $logger->expects($this->once())->method('error');
-
-                    $response = $controller->crearEquipo(
-                        'ruta-test',
-                        7,
-                        $request,
-                        $equipoManager,
-                        $jugadorManager,
-                        $categoriaManager,
-                        $entityManager,
-                        $logger
-                    );
-
-                    self::assertInstanceOf(Response::class, $response);
-                    self::assertSame('equipo/nuevo.html.twig', $controller->lastTemplate);
-                    self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
-                }
-
-                public function testEditarEquipoManejaAppExceptionYMantieneFormulario(): void
-                {
-                    $controller = new TestableEquipoController();
-                    $controller->testUser = (new Usuario())
-                        ->setUsername('admin')
-                        ->setPassword('hash')
-                        ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-
-                    $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/99/editar', 'POST', [
-                        'nombre' => 'Equipo Editado',
-                        'nombreCorto' => 'EQE',
-                        'pais' => 'Argentina',
-                        'provincia' => 'Cba',
-                        'localidad' => 'Centro',
-                    ]);
-
-                    $equipo = $this->createMock(Equipo::class);
-                    $equipo->method('getId')->willReturn(null);
-
-                    $equipoManager = $this->createMock(EquipoManager::class);
-                    $equipoManager->expects($this->once())
-                        ->method('obtenerEquipo')
-                        ->with(99)
-                        ->willReturn($equipo);
-
-                    $logger = $this->createMock(LoggerInterface::class);
-                    $logger->expects($this->once())->method('error');
-
-                    $response = $controller->editarEquipo('ruta-test', 7, 99, $request, $equipoManager, $logger);
-
-                    self::assertInstanceOf(Response::class, $response);
-                    self::assertSame('equipo/editar.html.twig', $controller->lastTemplate);
-                    self::assertSame(['error', 'No fue posible identificar el equipo a editar.'], $controller->lastFlash);
-                }
-
-                public function testEliminarEquipoManejaExcepcionGenerica(): void
-                {
-                    $controller = new TestableEquipoController();
-                    $controller->testUser = (new Usuario())
-                        ->setUsername('admin')
-                        ->setPassword('hash')
-                        ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-
-                    $equipo = $this->createMock(Equipo::class);
-                    $equipo->method('getId')->willReturn(99);
-
-                    $equipoManager = $this->createMock(EquipoManager::class);
-                    $equipoManager->expects($this->once())
-                        ->method('obtenerEquipo')
-                        ->with(99)
-                        ->willReturn($equipo);
-                    $equipoManager->expects($this->once())
-                        ->method('eliminarEquipo')
-                        ->with($equipo)
-                        ->willThrowException(new \RuntimeException('boom-delete'));
-
-                    $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/99/eliminar', 'POST', [
-                        '_token' => 'test-token-delete_equipo_99',
-                    ]);
-
-                    $logger = $this->createMock(LoggerInterface::class);
-                    $logger->expects($this->once())->method('error');
-
-                    $response = $controller->eliminarEquipo('ruta-test', 7, 99, $request, $equipoManager, $logger);
-
-                    self::assertInstanceOf(RedirectResponse::class, $response);
-                    self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
-                }
-
                 'nombre' => 'Juan',
                 'apellido' => 'Perez',
                 'tipoDocumento' => 'DNI',
@@ -320,6 +193,63 @@ class EquipoControllerTest extends TestCase
         self::assertSame(['error', 'Equipo duplicado'], $controller->lastFlash);
     }
 
+    public function testCrearEquipoManejaExcepcionGenericaYMuestraError(): void
+    {
+        $controller = new TestableEquipoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/nuevo', 'POST', [
+            'nombre' => 'Equipo Nuevo',
+            'nombreCorto' => 'EQN',
+            'pais' => 'Argentina',
+            'provincia' => 'Cba',
+            'localidad' => 'Centro',
+            'delegado' => [[
+                'nombre' => 'Juan',
+                'apellido' => 'Perez',
+                'tipoDocumento' => 'DNI',
+                'numeroDocumento' => '12345678',
+                'email' => 'juan@example.com',
+                'celular' => '2615551234',
+            ]],
+        ]);
+
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $categoria = $this->createMock(Categoria::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn($categoria);
+
+        $equipoManager = $this->createMock(EquipoManager::class);
+        $equipoManager->method('crearEquipo')
+            ->willThrowException(new \RuntimeException('Error inesperado'));
+
+        $jugadorManager = $this->createMock(JugadorManager::class);
+        $jugadorManager->expects($this->never())->method('crearJugador');
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('flush');
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->crearEquipo(
+            'ruta-test',
+            7,
+            $request,
+            $equipoManager,
+            $jugadorManager,
+            $categoriaManager,
+            $entityManager,
+            $logger
+        );
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('equipo/nuevo.html.twig', $controller->lastTemplate);
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
+    }
+
     public function testEditarEquipoPorPostYActualiza(): void
     {
         $controller = new TestableEquipoController();
@@ -357,6 +287,41 @@ class EquipoControllerTest extends TestCase
         self::assertSame(['success', 'Equipo editado con éxito.'], $controller->lastFlash);
     }
 
+    public function testEditarEquipoManejaAppExceptionYMantieneFormulario(): void
+    {
+        $controller = new TestableEquipoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/99/editar', 'POST', [
+            'nombre' => 'Equipo Editado',
+            'nombreCorto' => 'EQE',
+            'pais' => 'Argentina',
+            'provincia' => 'Cba',
+            'localidad' => 'Centro',
+        ]);
+
+        $equipo = $this->createMock(Equipo::class);
+        $equipo->method('getId')->willReturn(null);
+
+        $equipoManager = $this->createMock(EquipoManager::class);
+        $equipoManager->expects($this->once())
+            ->method('obtenerEquipo')
+            ->with(99)
+            ->willReturn($equipo);
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->editarEquipo('ruta-test', 7, 99, $request, $equipoManager, $logger);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame('equipo/editar.html.twig', $controller->lastTemplate);
+        self::assertSame(['error', 'No fue posible identificar el equipo a editar.'], $controller->lastFlash);
+    }
+
     public function testEliminarEquipoPorGetYRedirige(): void
     {
         $controller = new TestableEquipoController();
@@ -388,6 +353,40 @@ class EquipoControllerTest extends TestCase
 
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame(['success', 'Equipo eliminado con éxito.'], $controller->lastFlash);
+    }
+
+    public function testEliminarEquipoManejaExcepcionGenerica(): void
+    {
+        $controller = new TestableEquipoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $equipo = $this->createMock(Equipo::class);
+        $equipo->method('getId')->willReturn(99);
+
+        $equipoManager = $this->createMock(EquipoManager::class);
+        $equipoManager->expects($this->once())
+            ->method('obtenerEquipo')
+            ->with(99)
+            ->willReturn($equipo);
+        $equipoManager->expects($this->once())
+            ->method('eliminarEquipo')
+            ->with($equipo)
+            ->willThrowException(new \RuntimeException('boom-delete'));
+
+        $request = Request::create('/admin/torneo/ruta-test/categoria/7/equipo/99/eliminar', 'POST', [
+            '_token' => 'test-token-delete_equipo_99',
+        ]);
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->eliminarEquipo('ruta-test', 7, 99, $request, $equipoManager, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
     }
 
     public function testCambiarEstadoEquipoPorGetYRedirige(): void

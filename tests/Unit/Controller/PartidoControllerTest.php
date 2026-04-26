@@ -10,6 +10,7 @@ use App\Entity\Usuario;
 use App\Exception\AppException;
 use App\Manager\PartidoManager;
 use App\Utils\GenerarPdf;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -249,7 +250,7 @@ class PartidoControllerTest extends TestCase
         $grupo->method('getClasificaBronce')->willReturn(8);
 
         $categoria = $this->createMock(\App\Entity\Categoria::class);
-        $categoria->method('getGrupos')->willReturn([$grupo]);
+        $categoria->method('getGrupos')->willReturn(new ArrayCollection([$grupo]));
 
         $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
         $categoriaManager->expects(self::once())
@@ -406,6 +407,9 @@ class TestablePartidoController extends PartidoController
 {
     public ?UserInterface $testUser = null;
     public string $projectDir = '';
+    public ?string $lastTemplate = null;
+    public array $lastParameters = [];
+    public array $lastFlash = [];
 
     public function getUser(): ?UserInterface
     {
@@ -424,6 +428,9 @@ class TestablePartidoController extends PartidoController
 
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
+        $this->lastTemplate = $view;
+        $this->lastParameters = $parameters;
+
         return $response ?? new Response('ok');
     }
 
@@ -436,6 +443,7 @@ class TestablePartidoController extends PartidoController
 
     public function addFlash(string $type, mixed $message): void
     {
+        $this->lastFlash = [$type, (string) $message];
     }
 
     public function getParameter(string $name): array|string|int|bool|float|null
