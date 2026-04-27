@@ -18,6 +18,7 @@
     {% elseif categoria.estado == 'Cerrada' %}
         <a href="{{ path('admin_grupo_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id })}}" class="btn btn-info">Armar grupos</a>
     {% elseif categoria.estado == 'Zonas_creadas' %}
+        <a href="{{ path('admin_grupo_intercambiar_equipos', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-warning">Intercambiar Equipos</a>
         <a href="{{ path('admin_categoria_partido_crear', {'ruta': torneo.ruta, 'categoriaId': categoria.id }) }}" class="btn btn-info">Armar Partidos</a>
     {% endif %}
     <div class="table-responsive">
