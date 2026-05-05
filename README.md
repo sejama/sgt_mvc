@@ -32,6 +32,52 @@ Este módulo concentra la lógica y la interfaz para administrar y consultar la 
 
 La aplicación expone controladores, managers, repositorios y entidades para operar sobre ese dominio, con vistas Twig y soporte de autenticación/autorización.
 
+## Análisis y Calidad de Código
+
+### Herramientas de Análisis Estático
+
+- **PHPStan**: Análisis estático avanzado
+  ```bash
+  composer phpstan
+  composer phpstan:baseline  # Generar baseline para errores existentes
+  ```
+
+- **PHP CodeSniffer (PHPCS)**: Análisis de estilo de código PSR-12
+  ```bash
+  composer phpcs
+  ```
+
+### Refactorización y Mejora de Código
+
+- **PHP CS Fixer**: Formateo automático de código
+  ```bash
+  composer phpcs:fix
+  ```
+
+### Testing y Cobertura
+
+- **PHPUnit**: Framework de testing
+  ```bash
+  composer test
+  composer test:coverage
+  ```
+
+### Suite de Calidad Completa
+
+```bash
+composer quality      # Ejecutar análisis estático y estilo de código
+composer quality:fix  # Aplicar correcciones automáticas de formato
+```
+
+## Integración con MCP y Context7
+
+El proyecto está configurado para trabajar con herramientas de IA y análisis de contexto:
+
+- **PHPStan**: Proporciona análisis estático detallado para detectar errores potenciales
+- **PHPCS**: Asegura consistencia en el estilo de código
+- **PHP CS Fixer**: Automatiza el formateo y mejora la legibilidad
+- **Configuraciones**: Archivos de configuración específicos para cada herramienta
+
 ## Desarrollo
 
 ### Stack

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="https://infection.github.io/schema/infection.xsd"
+           timeout="10"
+           source="./src">
+    <tests>
+        <phpunit>
+            <binary>./vendor/bin/phpunit</binary>
+        </phpunit>
+    </tests>
+
+    <mutators>
+        <mutator name="global-ignoreSourceCodeByRegex" />
+        <mutator name="PregQuote" />
+        <mutator name="CastString" />
+        <mutator name="UnwrapArrayChangeKeyCase" />
+        <mutator name="UnwrapArrayChunk" />
+        <mutator name="UnwrapArrayColumn" />
+        <mutator name="UnwrapArrayCombine" />
+        <mutator name="UnwrapArrayCountValues" />
+        <mutator name="UnwrapArrayDiff" />
+        <mutator name="UnwrapArrayDiffAssoc" />
+        <mutator name="UnwrapArrayDiffKey" />
+        <mutator name="UnwrapArrayDiffUassoc" />
+        <mutator name="UnwrapArrayDiffUkey" />
+        <mutator name="UnwrapArrayFill" />
+        <mutator name="UnwrapArrayFillKeys" />
+        <mutator name="UnwrapArrayFilter" />
+        <mutator name="UnwrapArrayFlip" />
+        <mutator name="UnwrapArrayIntersect" />
+        <mutator name="UnwrapArrayIntersectAssoc" />
+        <mutator name="UnwrapArrayIntersectKey" />
+        <mutator name="UnwrapArrayIntersectUassoc" />
+        <mutator name="UnwrapArrayIntersectUkey" />
+        <mutator name="UnwrapArrayKeys" />
+        <mutator name="UnwrapArrayMap" />
+        <mutator name="UnwrapArrayMerge" />
+        <mutator name="UnwrapArrayMergeRecursive" />
+        <mutator name="UnwrapArrayPad" />
+        <mutator name="UnwrapArrayPop" />
+        <mutator name="UnwrapArrayProduct" />
+        <mutator name="UnwrapArrayPush" />
+        <mutator name="UnwrapArrayRand" />
+        <mutator name="UnwrapArrayReduce" />
+        <mutator name="UnwrapArrayReplace" />
+        <mutator name="UnwrapArrayReplaceRecursive" />
+        <mutator name="UnwrapArrayReverse" />
+        <mutator name="UnwrapArraySearch" />
+        <mutator name="UnwrapArrayShift" />
+        <mutator name="UnwrapArrayShuffle" />
+        <mutator name="UnwrapArraySlice" />
+        <mutator name="UnwrapArraySplice" />
+        <mutator name="UnwrapArraySum" />
+        <mutator name="UnwrapArrayUnique" />
+        <mutator name="UnwrapArrayUnshift" />
+        <mutator name="UnwrapArrayValues" />
+        <mutator name="UnwrapArrayWalk" />
+        <mutator name="UnwrapArrayWalkRecursive" />
+        <mutator name="UnwrapLcFirst" />
+        <mutator name="UnwrapStrRepeat" />
+        <mutator name="UnwrapStrToLower" />
+        <mutator name="UnwrapStrToUpper" />
+        <mutator name="UnwrapSubstr" />
+        <mutator name="UnwrapTrim" />
+        <mutator name="UnwrapUcFirst" />
+        <mutator name="UnwrapUcWords" />
+    </mutators>
+
+    <logs>
+        <text name="infection.log" />
+        <html name="infection.html" />
+    </logs>
+</infection>

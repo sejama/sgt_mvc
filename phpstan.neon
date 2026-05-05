@@ -1,0 +1,10 @@
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - src/Kernel.php
+    ignoreErrors:
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)\.#'
+        - '#Access to an undefined property Doctrine\\ORM\\Mapping\\ClassMetadataInfo::\$discriminatorMap\.#'
