@@ -1,6 +1,6 @@
 # SGT
 
-Sistema de gestión de torneos de fútbol construido con Symfony 6.4, Doctrine ORM y PHPUnit.
+Sistema de gestión de torneos de voley construido con Symfony 6.4, Doctrine ORM y PHPUnit.
 
 ## Quick Start
 
