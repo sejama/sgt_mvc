@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
+use App\Entity\Cancha;
 use App\Entity\Categoria;
+use App\Entity\Partido;
 use App\Entity\Sede;
 use App\Entity\Torneo;
 use App\Entity\Usuario;
@@ -852,6 +854,104 @@ class AdminBusinessFlowTorneoUsuarioFunctionalTest extends AdminBusinessFlowFunc
 
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('Volver', $this->client->getResponse()->getContent());
+    }
+
+    public function testVistaTorneoMuestraTabsPorSedeYOrdenCronologico(): void
+    {
+        $suffix = substr(md5(uniqid('', true)), 0, 8);
+        $ruta = $this->buildRuta('ft-main-tabs', $suffix);
+        $admin = $this->crearUsuario('admin_main_tabs_' . $suffix, ['ROLE_ADMIN', 'ROLE_USER']);
+
+        $torneo = $this->crearTorneo($admin, $ruta, $suffix);
+        $categoria = $this->crearCategoria($torneo, $suffix);
+        $grupo = $this->crearGrupo($categoria, $suffix);
+
+        $equipoA = $this->crearEquipo($categoria, $suffix . 'a');
+        $equipoB = $this->crearEquipo($categoria, $suffix . 'b');
+        $equipoC = $this->crearEquipo($categoria, $suffix . 'c');
+        $equipoD = $this->crearEquipo($categoria, $suffix . 'd');
+
+        $equipoA->setGrupo($grupo);
+        $equipoB->setGrupo($grupo);
+        $equipoC->setGrupo($grupo);
+        $equipoD->setGrupo($grupo);
+
+        $sedeA = $this->crearSede($torneo, $suffix . 'sa')->setNombre('Sede A ' . $suffix);
+        $sedeB = $this->crearSede($torneo, $suffix . 'sb')->setNombre('Sede B ' . $suffix);
+
+        $canchaA = (new Cancha())
+            ->setNombre('Cancha A ' . $suffix)
+            ->setDescripcion('Cancha A')
+            ->setSede($sedeA);
+
+        $canchaB = (new Cancha())
+            ->setNombre('Cancha B ' . $suffix)
+            ->setDescripcion('Cancha B')
+            ->setSede($sedeB);
+
+        $partidoTemprano = (new Partido())
+            ->setCategoria($categoria)
+            ->setGrupo($grupo)
+            ->setCancha($canchaA)
+            ->setHorario(new \DateTimeImmutable('2026-05-10 09:00:00'))
+            ->setEquipoLocal($equipoA)
+            ->setEquipoVisitante($equipoB)
+            ->setEstado('Programado')
+            ->setTipo('Clasificatorio')
+            ->setNumero(1001);
+
+        $partidoTarde = (new Partido())
+            ->setCategoria($categoria)
+            ->setGrupo($grupo)
+            ->setCancha($canchaA)
+            ->setHorario(new \DateTimeImmutable('2026-05-10 12:00:00'))
+            ->setEquipoLocal($equipoC)
+            ->setEquipoVisitante($equipoD)
+            ->setEstado('Programado')
+            ->setTipo('Clasificatorio')
+            ->setNumero(1002);
+
+        $partidoOtraSede = (new Partido())
+            ->setCategoria($categoria)
+            ->setGrupo($grupo)
+            ->setCancha($canchaB)
+            ->setHorario(new \DateTimeImmutable('2026-05-11 10:00:00'))
+            ->setEquipoLocal($equipoA)
+            ->setEquipoVisitante($equipoC)
+            ->setEstado('Programado')
+            ->setTipo('Clasificatorio')
+            ->setNumero(1003);
+
+        $this->entityManager->persist($canchaA);
+        $this->entityManager->persist($canchaB);
+        $this->entityManager->persist($partidoTemprano);
+        $this->entityManager->persist($partidoTarde);
+        $this->entityManager->persist($partidoOtraSede);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/torneo/' . $ruta);
+
+        self::assertResponseIsSuccessful();
+        $html = $this->client->getResponse()->getContent();
+        self::assertIsString($html);
+
+        self::assertStringContainsString('id="sedesTab"', $html);
+        self::assertStringContainsString('Sede A ' . $suffix, $html);
+        self::assertStringContainsString('Sede B ' . $suffix, $html);
+        self::assertStringContainsString('09:00 hs', $html);
+        self::assertStringContainsString('12:00 hs', $html);
+
+        $posSedeA = strpos($html, 'Sede A ' . $suffix);
+        $posSedeB = strpos($html, 'Sede B ' . $suffix);
+        self::assertIsInt($posSedeA);
+        self::assertIsInt($posSedeB);
+        self::assertTrue($posSedeA < $posSedeB, 'La sede A debe mostrarse antes que la sede B en tabs.');
+
+        $posHoraTemprano = strpos($html, '09:00 hs');
+        $posHoraTarde = strpos($html, '12:00 hs');
+        self::assertIsInt($posHoraTemprano);
+        self::assertIsInt($posHoraTarde);
+        self::assertTrue($posHoraTemprano < $posHoraTarde, 'Los partidos deben mostrarse en orden cronologico dentro del dia.');
     }
 
 }

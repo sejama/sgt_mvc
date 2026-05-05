@@ -268,6 +268,133 @@ class MainControllerTest extends TestCase
         self::assertSame('Equipo Azul', $controller->lastParameters['partidosProgramados']['Sede 1']['Cancha 1']['2026-05-01'][0]['equipoLocal']);
     }
 
+    public function testTorneoOrdenaPorSedeCanchaFechaYHora(): void
+    {
+        $controller = new TestableMainController();
+
+        $torneo = new Torneo();
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn($torneo);
+
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $partidoManager->method('obtenerPartidosProgramadosXTorneo')->willReturn([
+            'Sede B' => [
+                'Cancha 2' => [
+                    '2026-05-02' => [
+                        ['hora' => '12:00', 'categoria' => 'Cat A', 'equipoLocal' => 'B', 'equipoVisitante' => 'C'],
+                        ['hora' => '09:00', 'categoria' => 'Cat A', 'equipoLocal' => 'A', 'equipoVisitante' => 'D'],
+                    ],
+                ],
+            ],
+            'Sede A' => [
+                'Cancha 3' => [
+                    '2026-05-03' => [
+                        ['hora' => '11:00', 'categoria' => 'Cat A', 'equipoLocal' => 'E', 'equipoVisitante' => 'F'],
+                    ],
+                ],
+                'Cancha 1' => [
+                    '2026-05-01' => [
+                        ['hora' => '10:00', 'categoria' => 'Cat A', 'equipoLocal' => 'G', 'equipoVisitante' => 'H'],
+                    ],
+                ],
+            ],
+        ]);
+
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $equipoManager = $this->createMock(EquipoManager::class);
+
+        $controller->torneo(
+            $torneoManager,
+            $partidoManager,
+            $categoriaManager,
+            $grupoManager,
+            $equipoManager,
+            new Request(),
+            'ruta-test'
+        );
+
+        $partidosOrdenados = $controller->lastParameters['partidosProgramados'];
+
+        self::assertSame(['Sede A', 'Sede B'], array_keys($partidosOrdenados));
+        self::assertSame(['Cancha 1', 'Cancha 3'], array_keys($partidosOrdenados['Sede A']));
+        self::assertSame(['2026-05-01'], array_keys($partidosOrdenados['Sede A']['Cancha 1']));
+        self::assertSame('09:00', $partidosOrdenados['Sede B']['Cancha 2']['2026-05-02'][0]['hora']);
+        self::assertSame('12:00', $partidosOrdenados['Sede B']['Cancha 2']['2026-05-02'][1]['hora']);
+    }
+
+    public function testTorneoConFiltroGrupoFiltraPartidosYEquipos(): void
+    {
+        $controller = new TestableMainController();
+
+        $categoria = (new Categoria())
+            ->setNombre('Cat A')
+            ->setNombreCorto('CA')
+            ->setEstado('activa')
+            ->setGenero(\App\Enum\Genero::MASCULINO);
+
+        $grupo = (new Grupo())
+            ->setNombre('Grupo 1')
+            ->setClasificaOro(1)
+            ->setEstado('activo')
+            ->setCategoria($categoria);
+
+        $equipoGrupo = (new Equipo())
+            ->setNombre('Equipo Azul')
+            ->setNombreCorto('AZ')
+            ->setEstado('activo')
+            ->setNumero(1)
+            ->setGrupo($grupo)
+            ->setCategoria($categoria);
+
+        $grupo->addEquipo($equipoGrupo);
+        $categoria->addEquipo($equipoGrupo);
+
+        $torneo = new Torneo();
+        $torneo->addCategoria($categoria);
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn($torneo);
+
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $partidoManager->method('obtenerPartidosProgramadosXTorneo')->willReturn([
+            'Sede 1' => [
+                'Cancha 1' => [
+                    '2026-05-01' => [
+                        ['hora' => '10:00', 'categoria' => 'Cat A', 'grupo' => 'Grupo 1', 'equipoLocal' => 'Equipo Azul', 'equipoVisitante' => 'Equipo Rojo'],
+                        ['hora' => '12:00', 'categoria' => 'Cat A', 'grupo' => 'Grupo 2', 'equipoLocal' => 'Equipo Verde', 'equipoVisitante' => 'Equipo Amarillo'],
+                    ],
+                ],
+            ],
+        ]);
+
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn($categoria);
+
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $grupoManager->method('obtenerGrupos')->willReturn([$grupo]);
+        $grupoManager->method('obtenerGrupo')->with(7)->willReturn($grupo);
+
+        $equipoManager = $this->createMock(EquipoManager::class);
+
+        $controller->torneo(
+            $torneoManager,
+            $partidoManager,
+            $categoriaManager,
+            $grupoManager,
+            $equipoManager,
+            new Request(['categoria' => 1, 'grupo' => 7]),
+            'ruta-test'
+        );
+
+        self::assertSame(7, $controller->lastParameters['selectedGrupoId']);
+        self::assertCount(1, $controller->lastParameters['grupos']);
+        self::assertCount(1, $controller->lastParameters['equipos']);
+        self::assertCount(1, $controller->lastParameters['partidosProgramados']['Sede 1']['Cancha 1']['2026-05-01']);
+        self::assertSame('Grupo 1', $controller->lastParameters['partidosProgramados']['Sede 1']['Cancha 1']['2026-05-01'][0]['grupo']);
+    }
+
     private function setPrivateProperty(object $object, string $property, mixed $value): void
     {
         $reflection = new \ReflectionProperty($object, $property);

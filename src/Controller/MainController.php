@@ -64,6 +64,53 @@ class MainController extends AbstractController
         return $partidosProgramados;
     }
 
+    /**
+     * @param array<string, mixed> $partidosProgramados
+     * @return array<string, mixed>
+     */
+    private function ordenarPartidosProgramados(array $partidosProgramados): array
+    {
+        ksort($partidosProgramados, SORT_NATURAL | SORT_FLAG_CASE);
+
+        foreach ($partidosProgramados as $sede => $canchas) {
+            if (!is_array($canchas)) {
+                continue;
+            }
+
+            ksort($canchas, SORT_NATURAL | SORT_FLAG_CASE);
+
+            foreach ($canchas as $cancha => $fechas) {
+                if (!is_array($fechas)) {
+                    continue;
+                }
+
+                ksort($fechas);
+
+                foreach ($fechas as $fecha => $partidos) {
+                    if (!is_array($partidos)) {
+                        $fechas[$fecha] = [];
+                        continue;
+                    }
+
+                    usort($partidos, static function (array $a, array $b): int {
+                        $horaA = (string) ($a['hora'] ?? ($a['horario'] ?? ''));
+                        $horaB = (string) ($b['hora'] ?? ($b['horario'] ?? ''));
+
+                        return strcmp($horaA, $horaB);
+                    });
+
+                    $fechas[$fecha] = $partidos;
+                }
+
+                $canchas[$cancha] = $fechas;
+            }
+
+            $partidosProgramados[$sede] = $canchas;
+        }
+
+        return $partidosProgramados;
+    }
+
     #[Route('/', name: 'app_main', methods: ['GET'])]
     public function index(
         TorneoManager $torneoManager
@@ -178,6 +225,8 @@ class MainController extends AbstractController
             }
             $partidosProgramados = $filtrados;
     }
+
+    $partidosProgramados = $this->ordenarPartidosProgramados($partidosProgramados);
 
     return $this->render(
         'main/torneo.html.twig',
