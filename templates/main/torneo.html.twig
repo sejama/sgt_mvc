@@ -31,6 +31,31 @@
       border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
 
+    .torneo-page .hero-torneo .filtros-toggle {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      backdrop-filter: blur(6px);
+    }
+
+    .torneo-page .hero-torneo .filtros-toggle:hover,
+    .torneo-page .hero-torneo .filtros-toggle:focus {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.55);
+    }
+
+    .torneo-page .hero-torneo .filtros-resumen {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.86rem;
+    }
+
+    .torneo-page .hero-torneo .filtros-torneo .filtro-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
     .torneo-page .hero-torneo .filtros-torneo .form-label {
       color: rgba(255, 255, 255, 0.75);
       margin-bottom: 0.35rem;
@@ -251,16 +276,33 @@
         padding-top: 0.75rem;
       }
 
+      .torneo-page .hero-torneo .filtros-panel {
+        padding-top: 0.75rem;
+      }
+
+      .torneo-page .hero-torneo .filtros-torneo .row {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+      }
+
       .torneo-page .hero-torneo .filtros-torneo .form-label {
-        font-size: 0.75rem;
-        margin-bottom: 0.2rem;
+        font-size: 0.78rem;
+        margin-bottom: 0;
       }
 
       .torneo-page .hero-torneo .filtros-torneo .form-select,
       .torneo-page .hero-torneo .filtros-torneo .btn {
-        font-size: 0.85rem;
-        padding-top: 0.35rem;
-        padding-bottom: 0.35rem;
+        font-size: 0.92rem;
+        padding-top: 0.55rem;
+        padding-bottom: 0.55rem;
+      }
+
+      .torneo-page .hero-torneo .filtros-torneo .btn {
+        min-height: 2.75rem;
+      }
+
+      .torneo-page .hero-torneo .filtros-torneo .btn-limpiar-filtros {
+        width: 100%;
       }
 
       .torneo-page .container-fluid .row.g-3 {
@@ -376,7 +418,7 @@
       <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
         <div class="flex-grow-1">
           <h1 class="h3 mb-2">{{ torneo.nombre }}</h1>
-          <p class="mb-0 text-muted">Partidos programados y filtros por categoría y equipo.</p>
+          <p class="mb-0 text-muted">Partidos programados y filtros por categoría, grupo y equipo.</p>
         </div>
         <div class="d-flex flex-column align-items-start align-items-lg-end gap-2">
           <label for="selectorTablaCategoria" class="small text-white-50 mb-0">Ver tabla por categoría</label>
@@ -391,35 +433,57 @@
         </div>
       </div>
 
-      <form method="get" id="filtersForm" class="filtros-torneo">
-        <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-5 col-lg-4">
-            <label for="filtroCategoria" class="form-label">Filtrar por categoría</label>
-            <select id="filtroCategoria" name="categoria" class="form-select" onchange="document.getElementById('filtersForm').submit();">
-              <option value="">Todas las categorías</option>
-              {% for categoria in categorias %}
-                <option value="{{ categoria.id }}" {% if categoria.id == selectedCategoriaId %}selected{% endif %}>{{ categoria.nombre }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="col-6 col-md-5 col-lg-4">
-            <label for="filtroEquipo" class="form-label">Filtrar por equipo</label>
-            <select id="filtroEquipo" name="equipo" class="form-select" onchange="document.getElementById('filtersForm').submit();">
-              <option value="">Todos los equipos</option>
-              {% if equipos is defined %}
-                {% for equipo in equipos %}
-                  <option value="{{ equipo.id }}" {% if equipo.id == selectedEquipoId %}selected{% endif %}>{{ equipo.nombre }}</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-          </div>
-
-          <div class="col-12 col-md-2 col-lg-2">
-            <a href="{{ path('app_main_torneo', {'ruta': torneo.ruta}) }}" class="btn btn-outline-light btn-limpiar-filtros w-100">Limpiar</a>
-          </div>
+      <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-2 mt-3">
+        <button class="btn btn-outline-light filtros-toggle d-md-none w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosTorneoPanel" aria-expanded="false" aria-controls="filtrosTorneoPanel">
+          <i class="bi bi-funnel me-2"></i>Filtrar partidos
+        </button>
+        <div class="filtros-resumen d-none d-md-block">
+          Usa los filtros para reducir la lista por categoría, grupo o equipo.
         </div>
-      </form>
+      </div>
+
+      <div class="collapse d-md-block filtros-panel" id="filtrosTorneoPanel">
+        <form method="get" id="filtersForm" class="filtros-torneo">
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-4 col-lg-3 filtro-item">
+              <label for="filtroCategoria" class="form-label">Categoría</label>
+              <select id="filtroCategoria" name="categoria" class="form-select" onchange="document.getElementById('filtersForm').submit();">
+                <option value="">Todas las categorías</option>
+                {% for categoria in categorias %}
+                  <option value="{{ categoria.id }}" {% if categoria.id == selectedCategoriaId %}selected{% endif %}>{{ categoria.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12 col-md-4 col-lg-3 filtro-item">
+              <label for="filtroGrupo" class="form-label">Grupo</label>
+              <select id="filtroGrupo" name="grupo" class="form-select" onchange="document.getElementById('filtersForm').submit();">
+                <option value="">Todos los grupos</option>
+                {% if grupos is defined %}
+                  {% for grupo in grupos %}
+                    <option value="{{ grupo.id }}" {% if grupo.id == selectedGrupoId %}selected{% endif %}>{{ grupo.nombre }}</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+
+            <div class="col-12 col-md-4 col-lg-3 filtro-item">
+              <label for="filtroEquipo" class="form-label">Equipo</label>
+              <select id="filtroEquipo" name="equipo" class="form-select" onchange="document.getElementById('filtersForm').submit();">
+                <option value="">Todos los equipos</option>
+                {% if equipos is defined %}
+                  {% for equipo in equipos %}
+                    <option value="{{ equipo.id }}" {% if equipo.id == selectedEquipoId %}selected{% endif %}>{{ equipo.nombre }}</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+
+            <div class="col-12 col-lg-3 d-grid filtro-item">
+              <a href="{{ path('app_main_torneo', {'ruta': torneo.ruta}) }}" class="btn btn-outline-light btn-limpiar-filtros w-100">Limpiar</a>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

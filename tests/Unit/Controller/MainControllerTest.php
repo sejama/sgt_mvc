@@ -14,6 +14,7 @@ use App\Manager\CategoriaManager;
 use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TablaManager;
+use App\Manager\GrupoManager;
 use App\Manager\TorneoManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,6 +96,9 @@ class MainControllerTest extends TestCase
         $categoriaManager = $this->createMock(CategoriaManager::class);
         $categoriaManager->method('obtenerCategoria')->willReturn($categoria);
 
+        $grupoManager = $this->createMock(GrupoManager::class);
+        $grupoManager->method('obtenerGrupos')->willReturn([]);
+
         $equipoManager = $this->createMock(EquipoManager::class);
         $equipoManager->method('obtenerEquipo')->willThrowException(new \RuntimeException('no existe'));
 
@@ -104,6 +108,7 @@ class MainControllerTest extends TestCase
             $torneoManager,
             $partidoManager,
             $categoriaManager,
+            $grupoManager,
             $equipoManager,
             $request,
             'ruta-test'
@@ -179,6 +184,7 @@ class MainControllerTest extends TestCase
         $partidoManager->method('obtenerPartidosProgramadosXTorneo')->willReturn($partidosProgramados);
 
         $categoriaManager = $this->createMock(CategoriaManager::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
         $equipoManager = $this->createMock(EquipoManager::class);
         $equipoManager->expects($this->never())->method('obtenerEquipo');
 
@@ -188,6 +194,7 @@ class MainControllerTest extends TestCase
             $torneoManager,
             $partidoManager,
             $categoriaManager,
+            $grupoManager,
             $equipoManager,
             $request,
             'ruta-test'
@@ -229,6 +236,7 @@ class MainControllerTest extends TestCase
         ]);
 
         $categoriaManager = $this->createMock(CategoriaManager::class);
+        $grupoManager = $this->createMock(GrupoManager::class);
 
         $equipoSeleccionado = (new Equipo())
             ->setNombre('Azul')
@@ -248,6 +256,7 @@ class MainControllerTest extends TestCase
             $torneoManager,
             $partidoManager,
             $categoriaManager,
+            $grupoManager,
             $equipoManager,
             $request,
             'ruta-test'

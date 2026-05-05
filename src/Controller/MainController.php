@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Manager\CategoriaManager;
+use App\Manager\GrupoManager;
 use App\Manager\EquipoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TablaManager;
@@ -86,6 +87,7 @@ class MainController extends AbstractController
         TorneoManager $torneoManager,
         PartidoManager $partidoManager,
         CategoriaManager $categoriaManager,
+        GrupoManager $grupoManager,
         EquipoManager $equipoManager,
         Request $request,
         string $ruta
@@ -98,17 +100,34 @@ class MainController extends AbstractController
 
         // Leer filtros de query string
         $selectedCategoriaId = $request->query->getInt('categoria') ?: null;
+        $selectedGrupoId = $request->query->getInt('grupo') ?: null;
         $selectedEquipoId = $request->query->getInt('equipo') ?: null;
 
         $categoriaSelected = null;
+        $grupoSelected = null;
         $equipoSelected = null;
         $equipos = [];
+        $grupos = [];
 
         if ($selectedCategoriaId) {
             $categoriaSelected = $categoriaManager->obtenerCategoria($selectedCategoriaId);
             if ($categoriaSelected) {
-                // Colección de equipos de la categoría (puede iterarse desde Twig)
+                // Lista de grupos de la categoría
+                $grupos = $grupoManager->obtenerGrupos($categoriaSelected);
+                // Colección de equipos de la categoría (se puede sobrescribir si hay grupo seleccionado)
                 $equipos = $categoriaSelected->getEquipos();
+            }
+        }
+
+        if ($selectedGrupoId) {
+            try {
+                $grupoSelected = $grupoManager->obtenerGrupo($selectedGrupoId);
+                if ($grupoSelected) {
+                    // Equipos limitados al grupo seleccionado
+                    $equipos = $grupoSelected->getEquipo();
+                }
+            } catch (\Exception $e) {
+                $grupoSelected = null;
             }
         }
 
@@ -121,30 +140,35 @@ class MainController extends AbstractController
         }
 
         // Aplicar filtros sobre la estructura de partidos programados
-        if ($selectedCategoriaId || $selectedEquipoId) {
+        if ($selectedCategoriaId || $selectedGrupoId || $selectedEquipoId) {
             $filtrados = [];
             foreach ($partidosProgramados as $sede => $canchas) {
                 foreach ($canchas as $cancha => $fechas) {
                     foreach ($fechas as $fecha => $partidos) {
                         $nuevos = [];
-                        foreach ($partidos as $partido) {
-                            $matchCategoria = true;
-                            $matchEquipo = true;
+                                    foreach ($partidos as $partido) {
+                                        $matchCategoria = true;
+                                        $matchGrupo = true;
+                                        $matchEquipo = true;
 
-                            if ($categoriaSelected) {
-                                $matchCategoria = ($partido['categoria'] ?? '') === $categoriaSelected->getNombre();
-                            }
+                                        if ($categoriaSelected) {
+                                            $matchCategoria = ($partido['categoria'] ?? '') === $categoriaSelected->getNombre();
+                                        }
 
-                            if ($equipoSelected) {
-                                $nombreEquipo = $equipoSelected->getNombre();
-                                $local = $partido['equipoLocal'] ?? '';
-                                $visitante = $partido['equipoVisitante'] ?? '';
-                                $matchEquipo = (stripos($local, $nombreEquipo) !== false) || (stripos($visitante, $nombreEquipo) !== false);
-                            }
+                                        if ($grupoSelected) {
+                                            $matchGrupo = ($partido['grupo'] ?? '') === $grupoSelected->getNombre();
+                                        }
 
-                            if ($matchCategoria && $matchEquipo) {
-                                $nuevos[] = $partido;
-                            }
+                                        if ($equipoSelected) {
+                                            $nombreEquipo = $equipoSelected->getNombre();
+                                            $local = $partido['equipoLocal'] ?? '';
+                                            $visitante = $partido['equipoVisitante'] ?? '';
+                                            $matchEquipo = (stripos($local, $nombreEquipo) !== false) || (stripos($visitante, $nombreEquipo) !== false);
+                                        }
+
+                                        if ($matchCategoria && $matchGrupo && $matchEquipo) {
+                                            $nuevos[] = $partido;
+                                        }
                         }
                         if (count($nuevos) > 0) {
                             $filtrados[$sede][$cancha][$fecha] = $nuevos;
@@ -162,7 +186,9 @@ class MainController extends AbstractController
             'categorias' => $categorias,
             'partidosProgramados' => $partidosProgramados,
             'selectedCategoriaId' => $selectedCategoriaId,
+            'selectedGrupoId' => $selectedGrupoId,
             'selectedEquipoId' => $selectedEquipoId,
+            'grupos' => $grupos,
             'equipos' => $equipos,
         ]
     );
