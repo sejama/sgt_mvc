@@ -11,13 +11,17 @@ use App\Enum\EstadoPartido;
 use App\Exception\AppException;
 use App\Repository\EquipoRepository;
 use App\Repository\PartidoRepository;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class EquipoManager
 {
     public function __construct(
         private EquipoRepository $equipoRepository,
         private PartidoRepository $partidoRepository,
-        private ValidadorManager $validadorManager
+        private ValidadorManager $validadorManager,
+        #[Autowire(service: 'monolog.logger.sgt')]
+        private LoggerInterface $logger
     ) {
     }
 
@@ -80,6 +84,13 @@ class EquipoManager
 
         $this->equipoRepository->guardar($equipo, false);
 
+        $this->logger->info('Equipo creado', [
+            'equipo_id' => $equipo->getId(),
+            'nombre' => $equipo->getNombre(),
+            'categoria_id' => $categoria->getId(),
+            'torneo' => $categoria->getTorneo()->getRuta(),
+        ]);
+
         return $equipo;
     }
 
@@ -123,10 +134,20 @@ class EquipoManager
         }
 
         $this->equipoRepository->guardar($equipo, true);
+
+        $this->logger->info('Equipo editado', [
+            'equipo_id' => $equipo->getId(),
+            'nombre' => $equipo->getNombre(),
+        ]);
     }
 
     public function eliminarEquipo(Equipo $equipo): void
     {
+        $this->logger->info('Equipo eliminado', [
+            'equipo_id' => $equipo->getId(),
+            'nombre' => $equipo->getNombre(),
+        ]);
+
         $this->equipoRepository->eliminar($equipo, true);
     }
 
@@ -135,16 +156,25 @@ class EquipoManager
         $equipo->setEstado(EstadoEquipo::NO_PARTICIPA->value);
         $this->equipoRepository->guardar($equipo, true);
 
+        $cancelados = 0;
         $partidos = $equipo->getPartidosLocal();
         foreach ($partidos as $partido) {
             $partido->setEstado(EstadoPartido::CANCELADO->value);
             $this->partidoRepository->guardar($partido);
+            $cancelados++;
         }
 
         $partidos = $equipo->getPartidosVisitante();
         foreach ($partidos as $partido) {
             $partido->setEstado(EstadoPartido::CANCELADO->value);
             $this->partidoRepository->guardar($partido);
+            $cancelados++;
         }
+
+        $this->logger->warning('Equipo dado de baja', [
+            'equipo_id' => $equipo->getId(),
+            'nombre' => $equipo->getNombre(),
+            'partidos_cancelados' => $cancelados,
+        ]);
     }
 }

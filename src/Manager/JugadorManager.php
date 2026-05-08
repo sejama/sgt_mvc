@@ -8,12 +8,16 @@ use App\Entity\Equipo;
 use App\Entity\Jugador;
 use App\Exception\AppException;
 use App\Repository\JugadorRepository;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class JugadorManager
 {
     public function __construct(
         private JugadorRepository $jugadorRepository,
-        private ValidadorManager $validadorManager
+        private ValidadorManager $validadorManager,
+        #[Autowire(service: 'monolog.logger.sgt')]
+        private LoggerInterface $logger
     ) {
     }
 
@@ -80,6 +84,13 @@ class JugadorManager
         $jugador->setCelular($celular);
 
         $this->jugadorRepository->guardar($jugador, true);
+
+        $this->logger->info('Jugador creado', [
+            'jugador_id' => $jugador->getId(),
+            'nombre' => $jugador->getNombre() . ' ' . $jugador->getApellido(),
+            'equipo_id' => $equipo->getId(),
+            'equipo' => $equipo->getNombre(),
+        ]);
     }
 
     public function editarJugador(
@@ -118,10 +129,21 @@ class JugadorManager
             $jugador->setCelular($celular);
 
             $this->jugadorRepository->guardar($jugador, true);
+
+        $this->logger->info('Jugador editado', [
+            'jugador_id' => $jugador->getId(),
+            'nombre' => $jugador->getNombre() . ' ' . $jugador->getApellido(),
+        ]);
     }
 
     public function eliminarJugador(Jugador $jugador): void
     {
+        $this->logger->info('Jugador eliminado', [
+            'jugador_id' => $jugador->getId(),
+            'nombre' => $jugador->getNombre() . ' ' . $jugador->getApellido(),
+            'equipo_id' => $jugador->getEquipo()?->getId(),
+        ]);
+
         $this->jugadorRepository->eliminar($jugador, true);
     }
 }

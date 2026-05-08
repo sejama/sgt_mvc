@@ -8,6 +8,7 @@ use App\Manager\JugadorManager;
 use App\Manager\ValidadorManager;
 use App\Repository\JugadorRepository;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class JugadorManagerTest extends TestCase
 {
@@ -16,7 +17,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $this->assertIsArray($jugadorManager->obtenerJugadores());
         $this->assertEquals([], $jugadorManager->obtenerJugadores());
@@ -27,7 +28,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $jugadorRepository->expects($this->once())
             ->method('find')
@@ -41,7 +42,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $jugadorRepository->expects($this->once())
             ->method('find')
@@ -56,7 +57,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $jugadorRepository->expects($this->once())
             ->method('findBy')
@@ -70,7 +71,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $equipo = new Equipo();
 
@@ -100,7 +101,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $equipo = new Equipo();
 
@@ -128,7 +129,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $jugador = new Jugador();
 
@@ -158,7 +159,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $jugador = new Jugador();
 
@@ -186,7 +187,7 @@ class JugadorManagerTest extends TestCase
         $jugadorRepository = $this->createMock(JugadorRepository::class);
         $validadorManager = $this->createMock(ValidadorManager::class);
 
-        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager);
+        $jugadorManager = new JugadorManager($jugadorRepository, $validadorManager, new NullLogger());
 
         $jugador = new Jugador();
 

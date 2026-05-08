@@ -14,6 +14,8 @@ use App\Repository\CategoriaRepository;
 use App\Repository\EquipoRepository;
 use App\Repository\PartidoConfigRepository;
 use App\Repository\PartidoRepository;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class PartidoManager
 {
@@ -24,7 +26,9 @@ class PartidoManager
         private EquipoRepository $equipoRepository,
         private PartidoRepository $partidoRepository,
         private PartidoConfigRepository $partidoConfigRepository,
-        private ValidadorPartidoManager $validadorPartidoManager
+        private ValidadorPartidoManager $validadorPartidoManager,
+        #[Autowire(service: 'monolog.logger.sgt')]
+        private LoggerInterface $logger
     ) {
     }
 
@@ -133,6 +137,14 @@ class PartidoManager
                 $this->crearPartidosXGrupo($grupo);
             }
             $cantidadPartidosPlayOff = $this->contarPartidosPlayOff($partidosPlayOff);
+
+            $this->logger->info('Partidos creados por categoría', [
+                'categoria_id' => $categoria->getId(),
+                'nombre' => $categoria->getNombre(),
+                'torneo' => $categoria->getTorneo()->getRuta(),
+                'partidos_playoff' => $cantidadPartidosPlayOff,
+            ]);
+
             if ($cantidadPartidosPlayOff === 0) {
                 return;
             }
@@ -192,6 +204,13 @@ class PartidoManager
             if ($cantidadCruces === 0) {
                 return;
             }
+
+            $this->logger->info('Partidos creados por grupo', [
+                'grupo_id' => $grupo->getId(),
+                'grupo' => $grupo->getNombre(),
+                'categoria_id' => $grupo->getCategoria()?->getId(),
+                'partidos_generados' => $cantidadCruces,
+            ]);
 
             $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($grupo->getCategoria()->getTorneo()->getRuta(), $cantidadCruces);
             for ($i = 0; $i < count($equipos); $i++) {
@@ -290,7 +309,15 @@ class PartidoManager
         $partido->setEstado(\App\Enum\EstadoPartido::PROGRAMADO->value);
 
         $this->partidoRepository->guardar($partido);
-        
+
+        $this->logger->info('Partido programado', [
+            'partido_id' => $partido->getId(),
+            'numero' => $partido->getNumero(),
+            'cancha_id' => $canchaId,
+            'horario' => $horario->format('Y-m-d H:i'),
+            'torneo' => $ruta,
+        ]);
+
         if ($partido->getEquipoLocal() !== null) {
             $equipoLocal = $partido->getEquipoLocal();
             if ($equipoLocal->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
@@ -339,6 +366,14 @@ class PartidoManager
                 $this->sincronizarConfiguracionPartido($partido, $data, 'crear_');
             }
 
+            $this->logger->info('Partido creado manualmente', [
+                'partido_id' => $partido->getId(),
+                'numero' => $partido->getNumero(),
+                'tipo' => $partido->getTipo(),
+                'categoria_id' => $categoria->getId(),
+                'torneo' => $ruta,
+            ]);
+
             return $partido;
         });
     }
@@ -376,6 +411,12 @@ class PartidoManager
         if ($usarConfig) {
             $this->sincronizarConfiguracionPartido($partido, $data, 'editar_');
         }
+
+        $this->logger->info('Partido editado manualmente', [
+            'partido_id' => $partido->getId(),
+            'numero' => $partido->getNumero(),
+            'torneo' => $ruta,
+        ]);
 
         return $partido;
     }
@@ -531,7 +572,7 @@ class PartidoManager
     }
 
     public function cargarResultado(Partido $partido, array $resultadoLocal, array $resultadoVisitante): void
-    {   
+    {
         $partido->setLocalSet1($resultadoLocal[0] ? (int)$resultadoLocal[0] : null);
         $partido->setLocalSet2($resultadoLocal[1] ? (int)$resultadoLocal[1] : null);
         $partido->setLocalSet3($resultadoLocal[2] ? (int)$resultadoLocal[2] : null);
@@ -539,9 +580,19 @@ class PartidoManager
         $partido->setVisitanteSet1($resultadoVisitante[0] ? (int)$resultadoVisitante[0] : null);
         $partido->setVisitanteSet2($resultadoVisitante[1] ? (int)$resultadoVisitante[1] : null);
         $partido->setVisitanteSet3($resultadoVisitante[2] ? (int)$resultadoVisitante[2] : null);
-        
+
         $partido->setEstado(\App\Enum\EstadoPartido::FINALIZADO->value);
         $this->partidoRepository->guardar($partido);
+
+        $this->logger->info('Resultado cargado', [
+            'partido_id' => $partido->getId(),
+            'numero' => $partido->getNumero(),
+            'local' => $partido->getEquipoLocal()?->getNombre(),
+            'visitante' => $partido->getEquipoVisitante()?->getNombre(),
+            'sets_local' => array_filter($resultadoLocal),
+            'sets_visitante' => array_filter($resultadoVisitante),
+            'torneo' => $partido->getCategoria()?->getTorneo()?->getRuta(),
+        ]);
 
         $partidoConfig = $this->partidoConfigRepository->obtenerPartidoConfigXGanadorPartido($partido);
         $ganador = null; 

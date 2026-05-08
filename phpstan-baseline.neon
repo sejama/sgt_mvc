@@ -1,0 +1,2281 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Cancha\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Sede\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on Symfony\\Component\\Security\\Core\\User\\UserInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Cannot call method getTorneo\(\) on App\\Entity\\Sede\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#1 \$cancha of method App\\Manager\\CanchaManager\:\:editarCancha\(\) expects App\\Entity\\Cancha, App\\Entity\\Cancha\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#1 \$cancha of method App\\Manager\\CanchaManager\:\:eliminarCancha\(\) expects App\\Entity\\Cancha, App\\Entity\\Cancha\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#1 \$sede of method App\\Manager\\CanchaManager\:\:crearCancha\(\) expects App\\Entity\\Sede, App\\Entity\\Sede\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\CanchaManager\:\:crearCancha\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\CanchaManager\:\:editarCancha\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#3 \$descripcion of method App\\Manager\\CanchaManager\:\:crearCancha\(\) expects string, bool\|float\|int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Parameter \#3 \$descripcion of method App\\Manager\\CanchaManager\:\:editarCancha\(\) expects string, bool\|float\|int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CanchaController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on Symfony\\Component\\Security\\Core\\User\\UserInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\CategoriaManager\:\:cerrarCategoria\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\CategoriaManager\:\:editarCategoria\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\CategoriaManager\:\:editarDisputa\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#2 \$disputa of method App\\Manager\\CategoriaManager\:\:editarDisputa\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#2 \$genero of method App\\Manager\\CategoriaManager\:\:crearCategoria\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#2 \$genero of method App\\Manager\\CategoriaManager\:\:editarCategoria\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#3 \$nombre of method App\\Manager\\CategoriaManager\:\:crearCategoria\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#3 \$nombre of method App\\Manager\\CategoriaManager\:\:editarCategoria\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#4 \$nombreCorto of method App\\Manager\\CategoriaManager\:\:crearCategoria\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Parameter \#4 \$nombreCorto of method App\\Manager\\CategoriaManager\:\:editarCategoria\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CategoriaController.php
+
+		-
+			message: '#^Binary operation "\." between array\|bool\|float\|int\|string\|UnitEnum\|null and ''/public/'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Binary operation "\." between array\|bool\|float\|int\|string\|UnitEnum\|null and ''/public/uploads…'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Equipo\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Cannot call method getLogoPath\(\) on App\\Entity\\Equipo\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Comparison operation "\<\=" between int\<1, max\> and 0 is always false\.$#'
+			identifier: smallerOrEqual.alwaysFalse
+			count: 2
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Offset ''mime'' on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\EquipoManager\:\:crearEquipo\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\EquipoManager\:\:obtenerEquiposPorCategoria\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#1 \$equipo of method App\\Manager\\EquipoManager\:\:bajarEquipo\(\) expects App\\Entity\\Equipo, App\\Entity\\Equipo\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#1 \$equipo of method App\\Manager\\EquipoManager\:\:editarEquipo\(\) expects App\\Entity\\Equipo, App\\Entity\\Equipo\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#1 \$equipo of method App\\Manager\\EquipoManager\:\:eliminarEquipo\(\) expects App\\Entity\\Equipo, App\\Entity\\Equipo\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\EquipoManager\:\:crearEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\EquipoManager\:\:editarEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#3 \$nombreCorto of method App\\Manager\\EquipoManager\:\:crearEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#3 \$nombreCorto of method App\\Manager\\EquipoManager\:\:editarEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#4 \$pais of method App\\Manager\\EquipoManager\:\:crearEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#4 \$pais of method App\\Manager\\EquipoManager\:\:editarEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#5 \$provincia of method App\\Manager\\EquipoManager\:\:crearEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#5 \$provincia of method App\\Manager\\EquipoManager\:\:editarEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#6 \$color of function imagefilledrectangle expects int, int\<0, max\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#6 \$localidad of method App\\Manager\\EquipoManager\:\:crearEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Parameter \#6 \$localidad of method App\\Manager\\EquipoManager\:\:editarEquipo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Result of \|\| is always false\.$#'
+			identifier: booleanOr.alwaysFalse
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between \(int\|false\) and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Controller/EquipoController.php
+
+		-
+			message: '#^Cannot call method getGrupos\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Cannot call method getNombre\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\CategoriaManager\:\:armarPlayOff\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\GrupoManager\:\:intercambiarEquiposEntreGrupos\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\GrupoManager\:\:obtenerEquiposDeCategoriaConGrupo\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\PartidoManager\:\:obtenerPartidosXCategoriaClasificatorio\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\PartidoManager\:\:obtenerPartidosXCategoriaEliminatoriaPostClasificatorio\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/GrupoController.php
+
+		-
+			message: '#^Cannot call method getApellido\(\) on App\\Entity\\Jugador\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Equipo\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on Symfony\\Component\\Security\\Core\\User\\UserInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Cannot call method getNombre\(\) on App\\Entity\\Jugador\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Cannot call method isResponsable\(\) on App\\Entity\\Jugador\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#1 \$equipo of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects App\\Entity\\Equipo, App\\Entity\\Equipo\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#1 \$equipo of method App\\Manager\\JugadorManager\:\:obtenerJugadoresPorEquipo\(\) expects App\\Entity\\Equipo, App\\Entity\\Equipo\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#1 \$jugador of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects App\\Entity\\Jugador, App\\Entity\\Jugador\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#1 \$jugador of method App\\Manager\\JugadorManager\:\:eliminarJugador\(\) expects App\\Entity\\Jugador, App\\Entity\\Jugador\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#10 \$celular of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#10 \$celular of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#3 \$apellido of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#3 \$apellido of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#4 \$tipoDocumento of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#4 \$tipoDocumento of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#5 \$numeroDocumento of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#5 \$numeroDocumento of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#6 \$fechaNacimiento of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string\|null, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#6 \$fechaNacimiento of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string\|null, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#7 \$tipo of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#7 \$tipo of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#8 \$responsable of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects bool, bool\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#9 \$email of method App\\Manager\\JugadorManager\:\:crearJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Parameter \#9 \$email of method App\\Manager\\JugadorManager\:\:editarJugador\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/JugadorController.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getCreatedAt\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getId\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getUpdatedAt\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^Cannot call method getGrupos\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^Method App\\Controller\\MainController\:\:completarLogosPartidosProgramados\(\) has parameter \$categorias with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^Parameter \#2 \$needle of function stripos expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Controller/MainController.php
+
+		-
+			message: '#^Binary operation "\." between array\|bool\|float\|int\|string\|UnitEnum\|null and ''/public/assets…'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Controller/PartidoController.php
+
+		-
+			message: '#^Cannot call method getGrupos\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/PartidoController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/PartidoController.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\PartidoManager\:\:crearPartidoXCategoria\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/PartidoController.php
+
+		-
+			message: '#^Parameter \#4 \$horario of method App\\Manager\\PartidoManager\:\:editarPartido\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/PartidoController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Sede\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on Symfony\\Component\\Security\\Core\\User\\UserInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Parameter \#1 \$sede of method App\\Manager\\SedeManager\:\:eliminarSede\(\) expects App\\Entity\\Sede, App\\Entity\\Sede\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\SedeManager\:\:crearSede\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Parameter \#2 \$sede of method App\\Manager\\SedeManager\:\:editarSede\(\) expects App\\Entity\\Sede, App\\Entity\\Sede\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Parameter \#3 \$direccion of method App\\Manager\\SedeManager\:\:crearSede\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Parameter \#3 \$nombre of method App\\Manager\\SedeManager\:\:editarSede\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Parameter \#4 \$direccion of method App\\Manager\\SedeManager\:\:editarSede\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/SedeController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Usuario\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#1 \$nombre of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#2 \$ruta of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#3 \$descripcion of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#3 \$ruta of method App\\Manager\\TorneoManager\:\:editarTorneo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, float\|int\<min, \-1\>\|int\<1, max\>\|string\|true given\.$#'
+			identifier: argument.type
+			count: 4
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#4 \$descripcion of method App\\Manager\\TorneoManager\:\:editarTorneo\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#4 \$fecha_inicio_torneo of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#5 \$fecha_fin_torneo of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#6 \$fecha_inicio_inscripcion of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#7 \$fecha_fin_inscripcion of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Parameter \#8 \$user of method App\\Manager\\TorneoManager\:\:crearTorneo\(\) expects App\\Entity\\Usuario, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/TorneoController.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getId\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Usuario\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on Symfony\\Component\\Security\\Core\\User\\UserInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Method App\\Controller\\UsuarioController\:\:editarUsuario\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Method App\\Controller\\UsuarioController\:\:eliminarUsuario\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#1 \$nombre of method App\\Manager\\UsuarioManager\:\:registrarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#1 \$usuario of method App\\Manager\\UsuarioManager\:\:cambiarPassword\(\) expects App\\Entity\\Usuario, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#1 \$usuario of method App\\Manager\\UsuarioManager\:\:editarUsuario\(\) expects App\\Entity\\Usuario, App\\Entity\\Usuario\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#1 \$usuario of method App\\Manager\\UsuarioManager\:\:eliminarUsuario\(\) expects App\\Entity\\Usuario, App\\Entity\\Usuario\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#2 \$apellido of method App\\Manager\\UsuarioManager\:\:registrarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#2 \$nombre of method App\\Manager\\UsuarioManager\:\:editarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#2 \$password of method App\\Manager\\UsuarioManager\:\:cambiarPassword\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#3 \$apellido of method App\\Manager\\UsuarioManager\:\:editarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#3 \$email of method App\\Manager\\UsuarioManager\:\:registrarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#4 \$email of method App\\Manager\\UsuarioManager\:\:editarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#4 \$username of method App\\Manager\\UsuarioManager\:\:registrarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#5 \$password of method App\\Manager\\UsuarioManager\:\:registrarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Parameter \#5 \$username of method App\\Manager\\UsuarioManager\:\:editarUsuario\(\) expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Variable \$rolesAsignados in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: src/Controller/UsuarioController.php
+
+		-
+			message: '#^Property App\\Entity\\Cancha\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Cancha.php
+
+		-
+			message: '#^Property App\\Entity\\Categoria\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Categoria.php
+
+		-
+			message: '#^Property App\\Entity\\Equipo\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Equipo.php
+
+		-
+			message: '#^Property App\\Entity\\Grupo\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Grupo.php
+
+		-
+			message: '#^Property App\\Entity\\Jugador\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Jugador.php
+
+		-
+			message: '#^Property App\\Entity\\Partido\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Partido.php
+
+		-
+			message: '#^Class App\\Entity\\Grupo referenced with incorrect case\: App\\Entity\\grupo\.$#'
+			identifier: class.nameCase
+			count: 3
+			path: src/Entity/PartidoConfig.php
+
+		-
+			message: '#^Property App\\Entity\\PartidoConfig\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/PartidoConfig.php
+
+		-
+			message: '#^Property App\\Entity\\Sede\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Sede.php
+
+		-
+			message: '#^Property App\\Entity\\Torneo\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Torneo.php
+
+		-
+			message: '#^Method App\\Entity\\Usuario\:\:getRoles\(\) should return list\<string\> but returns array\<int\<0, max\>, string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Usuario.php
+
+		-
+			message: '#^Property App\\Entity\\Usuario\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Usuario.php
+
+		-
+			message: '#^Method App\\Enum\\EstadoCategoria\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/EstadoCategoria.php
+
+		-
+			message: '#^Method App\\Enum\\EstadoEquipo\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/EstadoEquipo.php
+
+		-
+			message: '#^Method App\\Enum\\EstadoGrupo\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/EstadoGrupo.php
+
+		-
+			message: '#^Method App\\Enum\\EstadoPartido\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/EstadoPartido.php
+
+		-
+			message: '#^Method App\\Enum\\EstadoTorneo\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/EstadoTorneo.php
+
+		-
+			message: '#^Method App\\Enum\\Genero\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/Genero.php
+
+		-
+			message: '#^Method App\\Enum\\TipoPartido\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Enum/TipoPartido.php
+
+		-
+			message: '#^Method App\\Manager\\CanchaManager\:\:obtenerCanchas\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/CanchaManager.php
+
+		-
+			message: '#^Method App\\Manager\\CanchaManager\:\:obtenerSedesYCanchasByTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/CanchaManager.php
+
+		-
+			message: '#^Cannot access property \$value on App\\Enum\\Genero\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Cannot call method getGrupoEquipo1\(\) on App\\Entity\\PartidoConfig\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Cannot call method getGrupoEquipo2\(\) on App\\Entity\\PartidoConfig\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Cannot call method getPosicionEquipo1\(\) on App\\Entity\\PartidoConfig\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Cannot call method getPosicionEquipo2\(\) on App\\Entity\\PartidoConfig\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Cannot call method getRuta\(\) on App\\Entity\\Torneo\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Method App\\Manager\\CategoriaManager\:\:obtenerCategorias\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Method App\\Manager\\CategoriaManager\:\:obtenerCategoriasPorTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/CategoriaManager.php
+
+		-
+			message: '#^Cannot call method getRuta\(\) on App\\Entity\\Torneo\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/EquipoManager.php
+
+		-
+			message: '#^Method App\\Manager\\EquipoManager\:\:obtenerEquipos\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/EquipoManager.php
+
+		-
+			message: '#^Method App\\Manager\\EquipoManager\:\:obtenerEquiposPorCategoria\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/EquipoManager.php
+
+		-
+			message: '#^Parameter \#1 \$ruta of method App\\Repository\\EquipoRepository\:\:buscarEquiposXTorneo\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Manager/EquipoManager.php
+
+		-
+			message: '#^Cannot call method getEquipos\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Cannot call method setEstado\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Method App\\Manager\\GrupoManager\:\:crearGrupos\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Method App\\Manager\\GrupoManager\:\:crearGrupos\(\) has parameter \$grupos with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Method App\\Manager\\GrupoManager\:\:obtenerEquiposDeCategoriaConGrupo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Method App\\Manager\\GrupoManager\:\:obtenerGrupos\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Parameter \#1 \$categoria of method App\\Manager\\CategoriaManager\:\:guardar\(\) expects App\\Entity\\Categoria, App\\Entity\\Categoria\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Manager/GrupoManager.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: src/Manager/JugadorManager.php
+
+		-
+			message: '#^Method App\\Manager\\JugadorManager\:\:obtenerJugadores\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/JugadorManager.php
+
+		-
+			message: '#^Method App\\Manager\\JugadorManager\:\:obtenerJugadoresPorEquipo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/JugadorManager.php
+
+		-
+			message: '#^Parameter \#1 \$datetime of class DateTimeImmutable constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Manager/JugadorManager.php
+
+		-
+			message: '#^Cannot call method getEstado\(\) on App\\Entity\\Equipo\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Cannot call method getRuta\(\) on App\\Entity\\Torneo\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Cannot call method getSede\(\) on App\\Entity\\Cancha\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Cannot call method getTorneo\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Cannot call method setEquipoLocal\(\) on App\\Entity\\Partido\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Cannot call method setEquipoVisitante\(\) on App\\Entity\\Partido\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Cannot call method setEstado\(\) on App\\Entity\\Equipo\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:agruparPartidosProgramados\(\) has parameter \$partidos with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:agruparPartidosProgramados\(\) has parameter \$partidosOrdenados with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:agruparPartidosProgramados\(\) has parameter \$partidosProcesados with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:cargarResultado\(\) has parameter \$resultadoLocal with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:cargarResultado\(\) has parameter \$resultadoVisitante with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:contarPartidosPlayOff\(\) has parameter \$partidosPlayOff with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:crearPartidoManual\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:crearPartidoXCategoria\(\) has parameter \$partidosPlayOff with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:editarPartidoManual\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerCategoriaDesdeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerEquiposDesdeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerEquiposDesdeData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerGrupoDesdeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerHorariosProgramadosXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartido\(\) should return App\\Entity\\Partido but returns App\\Entity\\Partido\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidoXCancha\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosProgramadosXTorneo\(\) has parameter \$ruta with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosProgramadosXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosSinAsignarXTorneo\(\) has parameter \$ruta with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosSinAsignarXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosXCategoriaClasificatorio\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosXCategoriaEliminatoriaPostClasificatorio\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosXGrupo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidosXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerPartidoxId\(\) should return App\\Entity\\Partido but returns App\\Entity\\Partido\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerSedesyCanchasXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:obtenerTipoDesdeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\PartidoManager\:\:sincronizarConfiguracionPartido\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Parameter \#1 \$categoriaId of method App\\Repository\\PartidoRepository\:\:obtenerPartidosXCategoriaClasificatorio\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Parameter \#1 \$categoriaId of method App\\Repository\\PartidoRepository\:\:obtenerPartidosXCategoriaEliminatoriaPostClasificatorio\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Parameter \#1 \$entity of method App\\Repository\\EquipoRepository\:\:guardar\(\) expects App\\Entity\\Equipo, App\\Entity\\Equipo\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Parameter \#1 \$numero of method App\\Repository\\PartidoRepository\:\:obtenerPartidoXNumero\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Parameter \#1 \$ruta of method App\\Repository\\PartidoRepository\:\:reservarRangoNumerosXTorneo\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Manager/PartidoManager.php
+
+		-
+			message: '#^Method App\\Manager\\SedeManager\:\:obtenerSedes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/SedeManager.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Equipo\|null\.$#'
+			identifier: method.nonObject
+			count: 24
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Method App\\Manager\\TablaManager\:\:calcularPosiciones\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosGanados'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>, puntos\: int\<0, max\>\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>, puntos\: int\<0, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosGanados'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>\}\|non\-empty\-array\{partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosGanados'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosJugados'' might not exist on non\-empty\-array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<0, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosPerdidos'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\: int\<1, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, partidosGanados\: int\<1, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosPerdidos'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{partidosGanados\: int\<1, max\>\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, partidosGanados\?\: int\<1, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosPerdidos'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>, puntos\: int\<0, max\>\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>, puntos\: int\<0, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''partidosPerdidos'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>\}\|non\-empty\-array\{partidosGanados\?\: int\<1, max\>, partidosPerdidos\?\: int\<1, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''puntos'' might not exist on non\-empty\-array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<0, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 4
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''puntosContra'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''puntosContra'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\|array\{puntosFavor\: int\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''puntosDiferencia'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<0, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''puntosDiferencia'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''puntosFavor'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''setsContra'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int\}\|array\{setsFavor\: int\<0, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''setsContra'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''setsDiferencia'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<0, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 4
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''setsDiferencia'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\?\: int\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''setsDiferencia'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\|array\{setsFavor\: int\<0, max\>, setsContra\: int\<0, max\>\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Offset ''setsFavor'' might not exist on array\{nombre\?\: string\|null, equipo\?\: App\\Entity\\Equipo, partidosJugados\?\: int\<2, max\>, partidosGanados\?\: int\<0, max\>, partidosPerdidos\?\: int\<0, max\>, setsFavor\?\: int\<0, max\>, setsContra\?\: int\<0, max\>, setsDiferencia\?\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Property App\\Manager\\TablaManager\:\:\$categoriaRepository is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Manager/TablaManager.php
+
+		-
+			message: '#^Method App\\Entity\\Torneo\:\:setFechaFinInscripcion\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Entity\\Torneo\:\:setFechaFinTorneo\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Entity\\Torneo\:\:setFechaInicioInscripcion\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Entity\\Torneo\:\:setFechaInicioTorneo\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Manager\\TorneoManager\:\:editarTorneo\(\) has parameter \$nombre with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Manager\\TorneoManager\:\:obtenerTorneos\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Manager\\TorneoManager\:\:obtenerTorneosXCreador\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Parameter \#8 \$user of method App\\Manager\\ValidadorManager\:\:validarTorneo\(\) expects App\\Entity\\Usuario, App\\Entity\\Usuario\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Manager/TorneoManager.php
+
+		-
+			message: '#^Method App\\Manager\\UsuarioManager\:\:editarUsuario\(\) has parameter \$roles with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/UsuarioManager.php
+
+		-
+			message: '#^Method App\\Manager\\UsuarioManager\:\:obtenerUsuarios\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/UsuarioManager.php
+
+		-
+			message: '#^Method App\\Manager\\UsuarioManager\:\:registrarUsuario\(\) has parameter \$roles with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/UsuarioManager.php
+
+		-
+			message: '#^Method App\\Manager\\ValidadorManager\:\:validarUsuario\(\) has parameter \$password with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/ValidadorManager.php
+
+		-
+			message: '#^Method App\\Manager\\ValidadorManager\:\:validarUsuario\(\) has parameter \$username with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Manager/ValidadorManager.php
+
+		-
+			message: '#^Method App\\Manager\\ValidadorPartidoManager\:\:validarPlayOff\(\) has parameter \$partidosPlayOff with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Manager/ValidadorPartidoManager.php
+
+		-
+			message: '#^Method App\\Repository\\CanchaRepository\:\:buscarSedesYCanchasByTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/CanchaRepository.php
+
+		-
+			message: '#^Method App\\Repository\\EquipoRepository\:\:buscarEquiposXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/EquipoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoConfigRepository\:\:obtenerPartidoConfig\(\) has parameter \$CategoriaId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Repository/PartidoConfigRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoConfigRepository\:\:obtenerPartidoConfig\(\) has parameter \$nombre with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Repository/PartidoConfigRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosPlayOffFinalesXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosPlayOffGrupoXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosProgramadosClasificatorioXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosProgramadosPlayOffFinalesXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosProgramadosPlayOffXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosSinAsignarXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:buscarPartidosXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:obtenerHorariosProgramadosXTorneo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:obtenerPartidoXNumero\(\) should return App\\Entity\\Partido but returns App\\Entity\\Partido\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:obtenerPartidosXCategoriaClasificatorio\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Method App\\Repository\\PartidoRepository\:\:obtenerPartidosXCategoriaEliminatoriaPostClasificatorio\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PartidoRepository.php
+
+		-
+			message: '#^Class App\\Security\\Voter\\PartidoVoter extends generic class Symfony\\Component\\Security\\Core\\Authorization\\Voter\\Voter but does not specify its types\: TAttribute, TSubject$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Security/Voter/PartidoVoter.php
+
+		-
+			message: '#^Cannot call method getNombre\(\) on App\\Entity\\Sede\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Utils/GenerarPdf.php
+
+		-
+			message: '#^Cannot call method getNombre\(\) on App\\Entity\\Torneo\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Utils/GenerarPdf.php
+
+		-
+			message: '#^Cannot call method getNombreCorto\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Utils/GenerarPdf.php
+
+		-
+			message: '#^Cannot call method getTorneo\(\) on App\\Entity\\Categoria\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Utils/GenerarPdf.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtoupper expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Utils/GenerarPdf.php
+
+		-
+			message: '#^Parameter \#2 \$txt of method TCPDF\:\:Write\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Utils/GenerarPdf.php
+
+		-
+			message: '#^Offset ''\*'' on array\{''\*''\: array\{''class'', ''style''\}, a\: array\{''href'', ''target'', ''rel''\}\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Utils/RichTextSanitizer.php
+
+		-
+			message: '#^Cannot call method getNombre\(\) on App\\Entity\\Sede\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Functional/AdminBusinessFlowFunctionalTest.php
+
+		-
+			message: '#^Parameter \#1 \$needle of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 4
+			path: tests/Functional/AdminBusinessFlowFunctionalTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 7
+			path: tests/Functional/AdminBusinessFlowFunctionalTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getToken\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Functional/AdminBusinessFlowFunctionalTestCase.php
+
+		-
+			message: '#^Method App\\Tests\\Functional\\AdminBusinessFlowFunctionalTestCase\:\:crearUsuario\(\) has parameter \$roles with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Functional/AdminBusinessFlowFunctionalTestCase.php
+
+		-
+			message: '#^Parameter \#1 \$roles of method App\\Entity\\Usuario\:\:setRoles\(\) expects list\<string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Functional/AdminBusinessFlowFunctionalTestCase.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 4
+			path: tests/Functional/AdminBusinessFlowJugadorGrupoFunctionalTest.php
+
+		-
+			message: '#^Cannot call method getNombre\(\) on App\\Entity\\Cancha\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Functional/AdminBusinessFlowPartidoFunctionalTest.php
+
+		-
+			message: '#^Parameter \#1 \$needle of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Functional/AdminBusinessFlowPartidoFunctionalTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 8
+			path: tests/Functional/AdminBusinessFlowPartidoFunctionalTest.php
+
+		-
+			message: '#^Parameter \#1 \$needle of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 5
+			path: tests/Functional/AdminBusinessFlowTorneoUsuarioFunctionalTest.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Functional/AdminBusinessFlowTorneoUsuarioFunctionalTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of static method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 18
+			path: tests/Functional/AdminBusinessFlowTorneoUsuarioFunctionalTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getToken\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Functional/SecurityAccessFunctionalTest.php
+
+		-
+			message: '#^Method App\\Tests\\Functional\\SecurityAccessFunctionalTest\:\:provideAdminRoutes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Functional/SecurityAccessFunctionalTest.php
+
+		-
+			message: '#^Method App\\Tests\\Functional\\SecurityAccessFunctionalTest\:\:provideAdminRoutesForAdmin\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Functional/SecurityAccessFunctionalTest.php
+
+		-
+			message: '#^Parameter \#1 \$roles of method App\\Entity\\Usuario\:\:setRoles\(\) expects list\<string\>, array\<string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Functional/SecurityAccessFunctionalTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\CanchaRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/CanchaRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\CategoriaRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/CategoriaRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\EquipoRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/EquipoRepositoryIntegrationTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/Repository/GrupoRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\GrupoRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/GrupoRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\JugadorRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/JugadorRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\PartidoConfigRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/PartidoConfigRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\PartidoRepositoryIntegrationTestCase\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/PartidoRepositoryIntegrationTestCase.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\SedeRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/SedeRepositoryIntegrationTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/Repository/TorneoRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\TorneoRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/TorneoRepositoryIntegrationTest.php
+
+		-
+			message: '#^Method Symfony\\Component\\Security\\Core\\User\\PasswordAuthenticatedUserInterface@anonymous/tests/Integration/Repository/UsuarioRepositoryIntegrationTest\.php\:100\:\:getPassword\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: tests/Integration/Repository/UsuarioRepositoryIntegrationTest.php
+
+		-
+			message: '#^Property App\\Tests\\Integration\\Repository\\UsuarioRepositoryIntegrationTest\:\:\$entityManager \(Doctrine\\ORM\\EntityManagerInterface\) does not accept Doctrine\\Persistence\\ObjectManager\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Integration/Repository/UsuarioRepositoryIntegrationTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/LoginControllerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getConnection\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/LoginControllerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/LoginControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Support\\TestCsrfTokenManager\:\:removeToken\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: tests/Support/TestCsrfTokenManager.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableCanchaController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CanchaControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableCanchaController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CanchaControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableCanchaController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CanchaControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableCanchaController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CanchaControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableCategoriaController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CategoriaControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableCategoriaController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CategoriaControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableCategoriaController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CategoriaControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableCategoriaController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/CategoriaControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\EquipoControllerTest\:\:invokePrivateMethod\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/EquipoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableEquipoController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/EquipoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableEquipoController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/EquipoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableEquipoController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/EquipoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableEquipoController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/EquipoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableErrorController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/ErrorControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableErrorController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/ErrorControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableGrupoController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/GrupoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableGrupoController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/GrupoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableGrupoController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/GrupoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableGrupoController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/GrupoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableJugadorController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/JugadorControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableJugadorController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/JugadorControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableJugadorController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/JugadorControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableJugadorController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/JugadorControllerTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertNull\(\) with null will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Controller/MainControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableMainController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/MainControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableMainController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/MainControllerTest.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between 999999 and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: tests/Unit/Controller/MainControllerTest.php
+
+		-
+			message: '#^Method App\\Controller\\PartidoController@anonymous/tests/Unit/Controller/PartidoControllerTest\.php\:49\:\:getUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestablePartidoController\:\:getParameter\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestablePartidoController\:\:getParameter\(\) should return array\|bool\|float\|int\|string\|null but returns array\|bool\|float\|int\|string\|UnitEnum\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestablePartidoController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestablePartidoController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestablePartidoController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestablePartidoController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/PartidoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableSecurityController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SecurityControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableSecurityController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SecurityControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableSecurityController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SecurityControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableSecurityController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SecurityControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableSedeController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SedeControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableSedeController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SedeControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableSedeController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SedeControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableSedeController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/SedeControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableTorneoController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerRealTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableTorneoController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerRealTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableTorneoController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerRealTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableTorneoController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerRealTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableTorneoControllerForTesting\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableTorneoControllerForTesting\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableTorneoControllerForTesting\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/TorneoControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableUsuarioController\:\:redirectToRoute\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/UsuarioControllerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Controller\\TestableUsuarioController\:\:render\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/UsuarioControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableUsuarioController\:\:\$lastFlash type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/UsuarioControllerTest.php
+
+		-
+			message: '#^Property App\\Tests\\Unit\\Controller\\TestableUsuarioController\:\:\$lastParameters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Controller/UsuarioControllerTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Entity/UsuarioEntityTest.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: tests/Unit/Entity/UsuarioEntityTest.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Symfony\\Component\\HttpFoundation\\Response\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: tests/Unit/EventSubscriber/HttpErrorPageSubscriberTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Unit/Manager/CategoriaManagerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Unit/Manager/EquipoManagerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Unit/Manager/JugadorManagerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Manager/SedeManagerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Manager/TorneoManagerTest.php
+
+		-
+			message: '#^Method App\\Manager\\TorneoManager\:\:obtenerTorneos\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: tests/Unit/Manager/TorneoManagerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 6
+			path: tests/Unit/Manager/ValidadorManagerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Manager/ValidadorPartidoManagerTest.php
+
+		-
+			message: '#^Method App\\Tests\\Unit\\Security\\Voter\\PartidoVoterTest\:\:invokePrivateMethod\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Unit/Security/Voter/PartidoVoterTest.php

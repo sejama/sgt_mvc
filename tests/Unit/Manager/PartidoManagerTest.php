@@ -27,6 +27,7 @@ use App\Repository\EquipoRepository;
 use App\Repository\PartidoConfigRepository;
 use App\Repository\PartidoRepository;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class PartidoManagerTest extends TestCase
 {
@@ -77,7 +78,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $categoria = new Categoria();
@@ -118,7 +120,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $resultado = $manager->obtenerPartidosSinAsignarXTorneo('ruta-test');
@@ -178,7 +181,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $resultado = $manager->obtenerPartidosProgramadosXTorneo('ruta-test');
@@ -224,7 +228,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $resultado = $manager->obtenerPartidosProgramadosXTorneo('ruta-test');
@@ -263,7 +268,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $resultado = $manager->obtenerPartidosProgramadosXTorneo('ruta-test');
@@ -296,7 +302,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $resultado = $manager->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria);
@@ -353,7 +360,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $this->expectException(AppException::class);
@@ -454,7 +462,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $manager->editarPartido('ruta-test', 7, 5, '2026-05-01 10:30');
@@ -521,7 +530,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $manager->crearPartidosXGrupo($grupo);
@@ -586,7 +596,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $manager->crearPartidosXGrupo($grupo);
@@ -607,7 +618,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC');
@@ -651,7 +663,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC');
@@ -687,7 +700,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $equipoLocal = (new Equipo())->setNombre('Local')->setNombreCorto('LOC');
@@ -758,7 +772,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $validadorPartidoManager
+            $validadorPartidoManager,
+            new NullLogger(),
         );
 
         $manager->crearPartidoXCategoria($categoria, []);
@@ -846,7 +861,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $partidoConfigRepository,
-            $validadorPartidoManager
+            $validadorPartidoManager,
+            new NullLogger(),
         );
 
         $manager->crearPartidoXCategoria($categoria, $playOff);
@@ -891,7 +907,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $manager->crearPartidosXGrupo($grupo);
@@ -969,7 +986,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $partido = $manager->crearPartidoManual('ruta-test', [
@@ -1050,7 +1068,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $partido = $manager->crearPartidoManual('ruta-test', [
@@ -1131,7 +1150,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $editado = $manager->editarPartidoManual('ruta-test', [
@@ -1168,7 +1188,8 @@ class PartidoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $partidoRepository,
             $this->createMock(PartidoConfigRepository::class),
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $this->expectException(AppException::class);
@@ -1218,7 +1239,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $this->expectException(AppException::class);
@@ -1287,7 +1309,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $this->expectException(AppException::class);
@@ -1343,7 +1366,8 @@ class PartidoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $partidoConfigRepository,
-            $this->createMock(ValidadorPartidoManager::class)
+            $this->createMock(ValidadorPartidoManager::class),
+            new NullLogger(),
         );
 
         $this->expectException(AppException::class);

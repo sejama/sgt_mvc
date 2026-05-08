@@ -11,6 +11,7 @@ use App\Manager\ValidadorManager;
 use App\Repository\EquipoRepository;
 use App\Repository\PartidoRepository;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class EquipoManagerTest extends TestCase
 {
@@ -20,6 +21,7 @@ class EquipoManagerTest extends TestCase
             $this->createMock(EquipoRepository::class),
             $this->createMock(PartidoRepository::class),
             $this->createMock(ValidadorManager::class),
+            new NullLogger(),
         );
 
         $this->assertIsArray($equipoManager->obtenerEquipos());
@@ -36,6 +38,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipo = $this->createMock(Equipo::class);
@@ -56,6 +59,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipoRepository->method('find')->willReturn(null);
@@ -72,6 +76,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $categoria = $this->createMock(Categoria::class);
@@ -90,6 +95,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipoRepository->expects($this->exactly(2))
@@ -132,6 +138,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipoRepository->expects($this->once())
@@ -163,6 +170,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipoRepository->expects($this->exactly(2))
@@ -193,6 +201,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipo = new Equipo();
@@ -227,6 +236,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipo = new Equipo();
@@ -259,6 +269,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipo = new Equipo();
@@ -289,6 +300,7 @@ class EquipoManagerTest extends TestCase
             $equipoRepository,
             $partidoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $equipo = new Equipo();

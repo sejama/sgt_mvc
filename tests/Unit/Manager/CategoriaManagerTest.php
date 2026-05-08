@@ -11,6 +11,7 @@ use App\Repository\CategoriaRepository;
 use App\Repository\PartidoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 use function PHPUnit\Framework\exactly;
 
@@ -27,7 +28,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $this->assertIsArray($categoriaManager->obtenerCategorias());
@@ -45,7 +47,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $categoria = $this->createMock(Categoria::class);
@@ -65,7 +68,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $this->assertNull($categoriaManager->obtenerCategoria(1));
@@ -82,7 +86,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $torneo = new Torneo();
@@ -104,7 +109,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $torneo = new Torneo();
@@ -133,7 +139,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $torneo = new Torneo();
@@ -157,7 +164,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $torneo = new Torneo();
@@ -181,7 +189,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $categoria = new Categoria();
@@ -219,7 +228,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $this->expectExceptionMessage('No se encontró la categoría');
@@ -278,7 +288,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $categoriaManager->armarPlayOff($categoria);
@@ -303,7 +314,8 @@ class CategoriaManagerTest extends TestCase
             $categoriaRepository,
             $partidoRepository,
             $validadorManager,
-            $tablaManager
+            $tablaManager,
+            new NullLogger(),
         );
 
         $this->expectExceptionMessage('No se puede armar el play off si no se han finalizado todos los grupos');

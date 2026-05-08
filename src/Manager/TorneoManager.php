@@ -10,12 +10,16 @@ use App\Enum\EstadoTorneo;
 use App\Exception\AppException;
 use App\Repository\TorneoRepository;
 use App\Utils\RichTextSanitizer;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class TorneoManager
 {
     public function __construct(
         private TorneoRepository $torneoRepository,
-        private ValidadorManager $validadorManager
+        private ValidadorManager $validadorManager,
+        #[Autowire(service: 'monolog.logger.sgt')]
+        private LoggerInterface $logger
     ) {
     }
 
@@ -78,6 +82,12 @@ class TorneoManager
         $torneo->setEstado(EstadoTorneo::BORRADOR->value);
         $this->torneoRepository->guardar($torneo, false);
 
+        $this->logger->info('Torneo creado', [
+            'torneo_id' => $torneo->getId(),
+            'nombre' => $torneo->getNombre(),
+            'ruta' => $torneo->getRuta(),
+        ]);
+
         return $torneo;
     }
 
@@ -120,6 +130,12 @@ class TorneoManager
 
             $this->torneoRepository->guardar($torneo);
 
+            $this->logger->info('Torneo editado', [
+                'torneo_id' => $torneo->getId(),
+                'nombre' => $torneo->getNombre(),
+                'ruta' => $torneo->getRuta(),
+            ]);
+
             return $torneo;
         } catch (AppException $e) {
             throw $e;
@@ -131,11 +147,22 @@ class TorneoManager
         $torneo->setReglamento(RichTextSanitizer::sanitize($reglamento));
         $this->torneoRepository->guardar($torneo, true);
 
+        $this->logger->info('Reglamento de torneo editado', [
+            'torneo_id' => $torneo->getId(),
+            'nombre' => $torneo->getNombre(),
+        ]);
+
         return $torneo;
     }
 
     public function eliminarTorneo(Torneo $torneo): void
     {
+        $this->logger->info('Torneo eliminado', [
+            'torneo_id' => $torneo->getId(),
+            'nombre' => $torneo->getNombre(),
+            'ruta' => $torneo->getRuta(),
+        ]);
+
         $this->torneoRepository->eliminar($torneo, true);
     }
 }

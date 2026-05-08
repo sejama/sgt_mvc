@@ -20,6 +20,13 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+when@prod:
+    services:
+        Logtail\Monolog\SynchronousLogtailHandler:
+            arguments:
+                $sourceToken: '%env(LOGTAIL_SOURCE_TOKEN)%'
+                $level: 200 # Monolog\Level::Info
+
 when@test:
     services:
         App\Tests\Support\TestCsrfTokenManager:

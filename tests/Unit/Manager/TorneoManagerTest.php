@@ -9,6 +9,7 @@ use App\Manager\TorneoManager;
 use App\Manager\ValidadorManager;
 use App\Repository\TorneoRepository;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class TorneoManagerTest extends TestCase
 {
@@ -19,6 +20,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $this->assertIsArray($torneoManager->obtenerTorneos(1));
@@ -32,6 +34,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $this->expectException(AppException::class);
@@ -46,6 +49,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $torneo = new Torneo();
@@ -61,6 +65,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $torneoRepository->method('findOneBy')->with(['nombre' => 'nombre'])->willReturn(new Torneo());
@@ -86,6 +91,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $torneoRepository->expects($this->exactly(2))
@@ -116,6 +122,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $validadorManager->method('validarTorneo')->with(
@@ -149,6 +156,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $validadorManager->method('validarTorneo')->with(
@@ -182,6 +190,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $validadorManager->method('validarTorneo')->with(
@@ -215,6 +224,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $user = new Usuario();
@@ -239,6 +249,7 @@ class TorneoManagerTest extends TestCase
         $torneoManager = new TorneoManager(
             $torneoRepository,
             $validadorManager,
+            new NullLogger(),
         );
 
         $torneo = new Torneo();

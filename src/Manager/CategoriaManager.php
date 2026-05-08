@@ -13,6 +13,8 @@ use App\Enum\Genero;
 use App\Exception\AppException;
 use App\Repository\PartidoRepository;
 use App\Utils\RichTextSanitizer;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class CategoriaManager
 {
@@ -20,7 +22,9 @@ class CategoriaManager
         private CategoriaRepository $categoriaRepository,
         private PartidoRepository $partidoRepository,
         private ValidadorManager $validadorManager,
-        private TablaManager $tablaManager
+        private TablaManager $tablaManager,
+        #[Autowire(service: 'monolog.logger.sgt')]
+        private LoggerInterface $logger
     ) {
     }
 
@@ -68,6 +72,14 @@ class CategoriaManager
         $categoria->setNombreCorto($nombreCorto);
         $categoria->setEstado(EstadoCategoria::BORRADOR->value);
         $this->categoriaRepository->guardar($categoria, false);
+
+        $this->logger->info('Categoría creada', [
+            'categoria_id' => $categoria->getId(),
+            'nombre' => $categoria->getNombre(),
+            'genero' => $genero,
+            'torneo_id' => $torneo->getId(),
+            'torneo' => $torneo->getRuta(),
+        ]);
     }
 
     public function editarCategoria(
@@ -99,6 +111,12 @@ class CategoriaManager
         $categoria->setNombre($nombre);
         $categoria->setNombreCorto($nombreCorto);
         $this->categoriaRepository->guardar($categoria, true);
+
+        $this->logger->info('Categoría editada', [
+            'categoria_id' => $categoria->getId(),
+            'nombre' => $categoria->getNombre(),
+            'genero' => $genero,
+        ]);
     }
 
     public function editarDisputa(Categoria $categoria, string $disputa): void
@@ -118,11 +136,22 @@ class CategoriaManager
         if ($categoria === null) {
             throw new AppException('No se encontró la categoría');
         }
+
+        $this->logger->info('Categoría eliminada', [
+            'categoria_id' => $categoria->getId(),
+            'nombre' => $categoria->getNombre(),
+        ]);
+
         $this->categoriaRepository->eliminar($categoria, true);
     }
 
     public function eliminarCategoriaEntidad(Categoria $categoria): void
     {
+        $this->logger->info('Categoría eliminada', [
+            'categoria_id' => $categoria->getId(),
+            'nombre' => $categoria->getNombre(),
+        ]);
+
         $this->categoriaRepository->eliminar($categoria, true);
     }
 
@@ -156,10 +185,22 @@ class CategoriaManager
 
         $categoria->setEstado(EstadoCategoria::ZONAS_CERRADAS->value);
         $this->categoriaRepository->guardar($categoria, true);
+
+        $this->logger->info('Playoff armado', [
+            'categoria_id' => $categoria->getId(),
+            'nombre' => $categoria->getNombre(),
+            'torneo' => $categoria->getTorneo()->getRuta(),
+        ]);
     }
 
-    public function cerrarCategoria(Categoria $categoria){
+    public function cerrarCategoria(Categoria $categoria): void
+    {
         $categoria->setEstado(EstadoCategoria::CERRADA->value);
         $this->categoriaRepository->guardar($categoria, true);
+
+        $this->logger->info('Categoría cerrada', [
+            'categoria_id' => $categoria->getId(),
+            'nombre' => $categoria->getNombre(),
+        ]);
     }
 }

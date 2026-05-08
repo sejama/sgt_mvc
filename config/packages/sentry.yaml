@@ -1,0 +1,7 @@
+when@prod:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        register_error_listener: true
+        options:
+            environment: prod
+            send_default_pii: false

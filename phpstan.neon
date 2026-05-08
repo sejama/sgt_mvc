@@ -1,10 +1,10 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
-    level: 6
+    level: 8
     paths:
         - src
         - tests
     excludePaths:
         - src/Kernel.php
-    ignoreErrors:
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)\.#'
-        - '#Access to an undefined property Doctrine\\ORM\\Mapping\\ClassMetadataInfo::\$discriminatorMap\.#'
