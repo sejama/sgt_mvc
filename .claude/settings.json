@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "mysql": {
+      "command": "/home/smaidana/.nvm/versions/node/v24.15.0/bin/npx",
+      "args": ["-y", "@benborla29/mcp-server-mysql"],
+      "env": {
+        "PATH": "/home/smaidana/.nvm/versions/node/v24.15.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "MYSQL_HOST": "127.0.0.1",
+        "MYSQL_PORT": "3307",
+        "MYSQL_USER": "root",
+        "MYSQL_PASS": "root",
+        "MYSQL_DB": "sgt"
+      }
+    },
+    "context7": {
+      "command": "/home/smaidana/.nvm/versions/node/v24.15.0/bin/npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "env": {
+        "PATH": "/home/smaidana/.nvm/versions/node/v24.15.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      }
+    }
+  }
+}
