@@ -16,6 +16,9 @@ class TorneoManagerTest extends TestCase
     public function testObtenerTorneos(): void
     {
         $torneoRepository = $this->createMock(TorneoRepository::class);
+        $torneo = new Torneo();
+        $torneo->setNombre('Torneo Test');
+        $torneoRepository->method('findAll')->willReturn([$torneo]);
         $validadorManager = $this->createMock(ValidadorManager::class);
         $torneoManager = new TorneoManager(
             $torneoRepository,

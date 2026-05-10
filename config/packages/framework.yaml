@@ -19,6 +19,12 @@ framework:
     php_errors:
         log: true
 
+    cache:
+        pools:
+            doctrine.result_cache_pool:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 3600  # 1 hora para resultados de queries
+
 when@test:
     framework:
         test: true

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Usuario;
 use App\Exception\AppException;
 use App\Manager\CanchaManager;
 use App\Manager\SedeManager;
@@ -47,6 +48,7 @@ class CanchaController extends AbstractController
         if ($sede === null) {
             throw $this->createNotFoundException('Sede no encontrada');
         }
+        /** @var \App\Entity\Sede $sede */
 
         if ($request->isMethod('POST')) {
             // Procesar el formulario
@@ -59,6 +61,7 @@ class CanchaController extends AbstractController
                 if ($user === null) {
                     throw $this->createAccessDeniedException('Usuario no autenticado');
                 }
+                /** @var Usuario $user */
                 $logger->info('Cancha creada: ' . 'nueva' . ', por el usuario: ' .  $user->getId());
                 return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
@@ -95,10 +98,12 @@ class CanchaController extends AbstractController
         if ($sede === null) {
             throw $this->createNotFoundException('Sede no encontrada');
         }
+        /** @var \App\Entity\Sede $sede */
         $cancha = $canchaManager->obtenerCancha($canchaId);
         if ($cancha === null) {
             throw $this->createNotFoundException('Cancha no encontrada');
         }
+        /** @var \App\Entity\Cancha $cancha */
 
         if ($request->isMethod('POST')) {
             // Procesar el formulario
@@ -111,6 +116,7 @@ class CanchaController extends AbstractController
                 if ($user === null) {
                     throw $this->createAccessDeniedException('Usuario no autenticado');
                 }
+                /** @var Usuario $user */
                 $logger->info('Cancha editada: ' . $cancha->getId() . ', por el usuario: ' .  $user->getId());
                 return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
             } catch (AppException $ae) {
@@ -144,10 +150,12 @@ class CanchaController extends AbstractController
         if ($sede === null) {
             throw $this->createNotFoundException('Sede no encontrada');
         }
+        /** @var \App\Entity\Sede $sede */
         $cancha = $canchaManager->obtenerCancha($canchaId);
         if ($cancha === null) {
             throw $this->createNotFoundException('Cancha no encontrada');
         }
+        /** @var \App\Entity\Cancha $cancha */
         if (!$this->isCsrfTokenValid('delete_cancha_' . $canchaId, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF inválido.');
         }
@@ -159,6 +167,7 @@ class CanchaController extends AbstractController
             if ($user === null) {
                 throw $this->createAccessDeniedException('Usuario no autenticado');
             }
+            /** @var Usuario $user */
             $logger->info('Cancha eliminada: ' . $cancha->getId() . ', por el usuario: ' .  $user->getId());
             return $this->redirectToRoute('admin_cancha_index', ['ruta' => $ruta, 'sedeId' => $sede->getId()]);
         } catch (AppException $ae) {

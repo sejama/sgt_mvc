@@ -13,6 +13,8 @@ use App\Manager\TablaManager;
 use App\Repository\CategoriaRepository;
 use App\Repository\GrupoRepository;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class TablaManagerTest extends TestCase
 {
@@ -20,8 +22,12 @@ class TablaManagerTest extends TestCase
     {
         $grupoRepository = $this->createMock(GrupoRepository::class);
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->method('get')->willReturnCallback(function ($key, $callback) {
+            return $callback($this->createMock(ItemInterface::class));
+        });
 
-        $manager = new TablaManager($categoriaRepository, $grupoRepository);
+        $manager = new TablaManager($categoriaRepository, $grupoRepository, $cache);
 
         $grupo = new Grupo();
         $grupo->setNombre('Grupo A');
@@ -78,8 +84,12 @@ class TablaManagerTest extends TestCase
     {
         $grupoRepository = $this->createMock(GrupoRepository::class);
         $categoriaRepository = $this->createMock(CategoriaRepository::class);
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->method('get')->willReturnCallback(function ($key, $callback) {
+            return $callback($this->createMock(ItemInterface::class));
+        });
 
-        $manager = new TablaManager($categoriaRepository, $grupoRepository);
+        $manager = new TablaManager($categoriaRepository, $grupoRepository, $cache);
 
         $grupo = new Grupo();
         $grupo->setNombre('Grupo B');
