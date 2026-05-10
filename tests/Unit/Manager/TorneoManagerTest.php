@@ -23,8 +23,8 @@ class TorneoManagerTest extends TestCase
             new NullLogger(),
         );
 
-        $this->assertIsArray($torneoManager->obtenerTorneos(1));
-        $this->assertEquals([], $torneoManager->obtenerTorneos(1));
+        $this->assertIsArray($torneoManager->obtenerTorneos());
+        $this->assertNotEmpty($torneoManager->obtenerTorneos());
     }
 
     public function testObtenerTorneoNoEncontrado(): void

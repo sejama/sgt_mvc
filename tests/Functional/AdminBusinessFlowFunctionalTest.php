@@ -132,9 +132,16 @@ class AdminBusinessFlowFunctionalTest extends AdminBusinessFlowFunctionalTestCas
 
         self::assertResponseIsSuccessful();
         $content = $this->client->getResponse()->getContent();
+        self::assertIsString($content);
         self::assertStringContainsString((string) $partidoNumero, $content);
-        self::assertStringContainsString($cancha->getSede()->getNombre(), $content);
-        self::assertStringContainsString($cancha->getNombre(), $content);
+        $sede = $cancha->getSede();
+        self::assertNotNull($sede);
+        $sedeNombre = $sede->getNombre();
+        self::assertNotNull($sedeNombre);
+        self::assertStringContainsString($sedeNombre, $content);
+        $canchaNombre = $cancha->getNombre();
+        self::assertNotNull($canchaNombre);
+        self::assertStringContainsString($canchaNombre, $content);
     }
 
     public function testUsuarioSinRolAdminNoAccedeAIndiceDePartidos(): void
@@ -213,7 +220,7 @@ class AdminBusinessFlowFunctionalTest extends AdminBusinessFlowFunctionalTestCas
         ]);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertStringContainsString('El Nombre debe tener entre 3 y 128 caracteres', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('El Nombre debe tener entre 3 y 128 caracteres', (string) $this->client->getResponse()->getContent());
 
         $categorias = $this->entityManager->getRepository(Categoria::class)->findBy([
             'torneo' => $torneo,
@@ -265,7 +272,7 @@ class AdminBusinessFlowFunctionalTest extends AdminBusinessFlowFunctionalTestCas
         ]);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertStringContainsString('El Dirección debe tener entre 8 y 128 caracteres', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('El Dirección debe tener entre 8 y 128 caracteres', (string) $this->client->getResponse()->getContent());
 
         $sedes = $this->entityManager->getRepository(Sede::class)->findBy([
             'torneo' => $torneo,
@@ -731,8 +738,14 @@ class AdminBusinessFlowFunctionalTest extends AdminBusinessFlowFunctionalTestCas
         $this->client->request('GET', '/admin/torneo/' . $ruta . '/categoria/' . $categoria->getId() . '/equipo/');
 
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString($torneo->getNombre(), $this->client->getResponse()->getContent());
-        self::assertStringContainsString($equipo->getNombre(), $this->client->getResponse()->getContent());
+        self::assertIsString($this->client->getResponse()->getContent());
+        $content = (string) $this->client->getResponse()->getContent();
+        $torneoNombre = $torneo->getNombre();
+        self::assertNotNull($torneoNombre);
+        self::assertStringContainsString($torneoNombre, $content);
+        $equipoNombre = $equipo->getNombre();
+        self::assertNotNull($equipoNombre);
+        self::assertStringContainsString($equipoNombre, $content);
     }
 
     public function testAdminBajaEquipoYCancelaPartidosAsociados(): void

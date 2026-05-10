@@ -70,22 +70,26 @@ class GenerarPdf
 
         $pdf->SetFont('helvetica', 'B', 20);
         $pdf->SetXY(60, 15);
-        $pdf->Write(0, $partido->getCategoria()->getTorneo()->getNombre());
+        $categoria = $partido->getCategoria();
+        $torneo = $categoria?->getTorneo();
+        $pdf->Write(0, $torneo?->getNombre() ?? 'TORNEO DESCONOCIDO');
 
         $pdf->SetFont('helvetica', 'B', 10);
         $texto = '';
         //Sede
         $pdf->SetXY(35, 32);
-        if ($partido->getCancha() != null) {
-            $texto = strtoupper($partido->getCancha()->getSede()->getNombre());
+        $cancha = $partido->getCancha();
+        if ($cancha !== null) {
+            $sede = $cancha->getSede();
+            $texto = strtoupper($sede?->getNombre() ?? 'SIN SEDE');
         } else {
             $texto = 'SIN SEDE';
         }
 
         //Cancha
         //$pdf->SetXY(98, 32);
-        if ($partido->getCancha() != null) {
-            $texto = $texto . ' - ' . strtoupper($partido->getCancha()->getNombre());
+        if ($cancha !== null) {
+            $texto = $texto . ' - ' . strtoupper($cancha->getNombre() ?? 'SIN CANCHA');
         } else {
             $texto = $texto . ' - ' . 'SIN CANCHA';
         }
@@ -102,7 +106,7 @@ class GenerarPdf
 
         //Categoria
         //$pdf->SetXY(147, 32);
-        $texto = $texto . ' | ' . strtoupper($partido->getCategoria()->getNombreCorto());
+        $texto = $texto . ' | ' . strtoupper($categoria?->getNombreCorto() ?? 'SIN CATEGORIA');
 
 
         //Rama
@@ -110,14 +114,16 @@ class GenerarPdf
         // $pdf->Write(0, strtoupper($partido->getEquipoLocal()->getTorneoGeneroCategoria()->getGenero()->getNombre()));
 
         // Local
-        if ($partido->getEquipoLocal() != null) {
-            $texto = $texto . ' - ' . strtoupper($partido->getEquipoLocal()->getNombre());
-        } 
+        $equipoLocal = $partido->getEquipoLocal();
+        if ($equipoLocal !== null) {
+            $texto = $texto . ' - ' . strtoupper($equipoLocal->getNombre() ?? 'SIN LOCAL');
+        }
 
         // Visitante
-        if ($partido->getEquipoVisitante() != null) {
-            $texto = $texto . ' vs ' . strtoupper($partido->getEquipoVisitante()->getNombre());
-        } 
+        $equipoVisitante = $partido->getEquipoVisitante();
+        if ($equipoVisitante !== null) {
+            $texto = $texto . ' vs ' . strtoupper($equipoVisitante->getNombre() ?? 'SIN VISITANTE');
+        }
 
         if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
             $partidoConfig = $partido->getPartidoConfig();

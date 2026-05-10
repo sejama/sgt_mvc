@@ -338,7 +338,7 @@ class AdminBusinessFlowPartidoFunctionalTest extends AdminBusinessFlowFunctional
         ]);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertStringContainsString('Ya existe una cancha con ese nombre', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('Ya existe una cancha con ese nombre', (string) $this->client->getResponse()->getContent());
 
         $canchas = $this->entityManager->getRepository(Cancha::class)->findBy([
             'sede' => $sede,
@@ -391,10 +391,11 @@ class AdminBusinessFlowPartidoFunctionalTest extends AdminBusinessFlowFunctional
         ]);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertStringContainsString('El Nombre debe tener entre 1 y 128 caracteres', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('El Nombre debe tener entre 1 y 128 caracteres', (string) $this->client->getResponse()->getContent());
 
         $this->entityManager->clear();
         $canchaNoEditada = $this->entityManager->getRepository(Cancha::class)->find($cancha->getId());
+        self::assertNotNull($canchaNoEditada);
         self::assertNotSame('', $canchaNoEditada->getNombre());
     }
 
@@ -490,7 +491,7 @@ class AdminBusinessFlowPartidoFunctionalTest extends AdminBusinessFlowFunctional
             'sedeDireccion' => 'Calle Funcional 456',
         ]);
 
-        self::assertStringContainsString('Ya existe una sede con ese nombre', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('Ya existe una sede con ese nombre', (string) $this->client->getResponse()->getContent());
 
         $sedes = $this->entityManager->getRepository(Sede::class)->findBy([
             'torneo' => $torneo,
@@ -794,8 +795,14 @@ class AdminBusinessFlowPartidoFunctionalTest extends AdminBusinessFlowFunctional
 
         self::assertResponseIsSuccessful();
         $content = $this->client->getResponse()->getContent();
-        self::assertStringContainsString($equipoLocal->getNombre(), $content);
-        self::assertStringContainsString($equipoVisitante->getNombre(), $content);
+        self::assertIsString($content);
+        $content = (string) $content;
+        $equipoLocalNombre = $equipoLocal->getNombre();
+        self::assertNotNull($equipoLocalNombre);
+        self::assertStringContainsString($equipoLocalNombre, $content);
+        $equipoVisitanteNombre = $equipoVisitante->getNombre();
+        self::assertNotNull($equipoVisitanteNombre);
+        self::assertStringContainsString($equipoVisitanteNombre, $content);
     }
 
     public function testAdminGeneraPdfDePartido(): void

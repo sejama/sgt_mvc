@@ -77,8 +77,14 @@ class CategoriaController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
-        if ($this->getUser() !== null) {
-            $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        $user = $this->getUser();
+        if ($user === null) {
+            return $this->redirectToRoute('security_login');
+        }
+        $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        if ($categoria === null) {
+            throw $this->createNotFoundException('Categoria no encontrada');
+        }
             if ($request->isMethod('POST')) {
                 try {
                     $genero = $request->request->get('genero');
@@ -91,7 +97,7 @@ class CategoriaController extends AbstractController
                         $nombreCorto
                     );
                     $this->addFlash('success', "Categoría editada con éxito.");
-                    $logger->info('Categoria editada: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Categoria editada: ' . $categoria->getId() . ', por el usuario: ' .  $user->getId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -112,7 +118,6 @@ class CategoriaController extends AbstractController
                     'categoria' => $categoria,
                 ]
             );
-        }
         return $this->redirectToRoute('security_login');
     }
 

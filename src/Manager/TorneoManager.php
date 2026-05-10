@@ -23,11 +23,17 @@ class TorneoManager
     ) {
     }
 
+    /**
+     * @return Torneo[]
+     */
     public function obtenerTorneos(): array
     {
         return $this->torneoRepository->findAll();
     }
 
+    /**
+     * @return Torneo[]
+     */
     public function obtenerTorneosXCreador(int $userId): array
     {
         return $this->torneoRepository->findBy(['creador' => $userId]);
@@ -74,10 +80,10 @@ class TorneoManager
         $torneo->setNombre($nombre);
         $torneo->setRuta($ruta);
         $torneo->setDescripcion($descripcion);
-        $torneo->setFechaInicioTorneo(new \DateTimeImmutable($fecha_inicio_torneo), $timezone);
-        $torneo->setFechaFinTorneo(new \DateTimeImmutable($fecha_fin_torneo), $timezone);
-        $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion), $timezone);
-        $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion), $timezone);
+        $torneo->setFechaInicioTorneo(new \DateTimeImmutable($fecha_inicio_torneo, $timezone));
+        $torneo->setFechaFinTorneo(new \DateTimeImmutable($fecha_fin_torneo, $timezone));
+        $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion, $timezone));
+        $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion, $timezone));
         $torneo->setCreador($user);
         $torneo->setEstado(EstadoTorneo::BORRADOR->value);
         $this->torneoRepository->guardar($torneo, false);
@@ -93,7 +99,7 @@ class TorneoManager
 
     public function editarTorneo(
         Torneo $torneo,
-        $nombre,
+        string $nombre,
         string $ruta,
         string $descripcion,
         string $fecha_inicio_torneo,
@@ -102,6 +108,10 @@ class TorneoManager
         string $fecha_fin_inscripcion
     ): Torneo {
         $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
+        $creador = $torneo->getCreador();
+        if ($creador === null) {
+            throw new AppException('El torneo no tiene creador asignado');
+        }
         try {
             $this->validadorManager->validarTorneo(
                 $nombre,
@@ -111,7 +121,7 @@ class TorneoManager
                 $fecha_fin_torneo,
                 $fecha_inicio_inscripcion,
                 $fecha_fin_inscripcion,
-                $torneo->getCreador()
+                $creador
             );
             if ($torneo->getNombre() !== $nombre && $this->torneoRepository->findOneBy(['nombre' => $nombre])) {
                 throw new AppException('El nombre ya se encuentra registrado');
@@ -122,10 +132,10 @@ class TorneoManager
             $torneo->setNombre($nombre);
             $torneo->setRuta($ruta);
             $torneo->setDescripcion($descripcion);
-            $torneo->setFechaInicioTorneo(new \DateTimeImmutable($fecha_inicio_torneo), $timezone);
-            $torneo->setFechaFinTorneo(new \DateTimeImmutable($fecha_fin_torneo), $timezone);
-            $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion), $timezone);
-            $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion), $timezone);
+            $torneo->setFechaInicioTorneo(new \DateTimeImmutable($fecha_inicio_torneo, $timezone));
+            $torneo->setFechaFinTorneo(new \DateTimeImmutable($fecha_fin_torneo, $timezone));
+            $torneo->setFechaInicioInscripcion(new \DateTimeImmutable($fecha_inicio_inscripcion, $timezone));
+            $torneo->setFechaFinInscripcion(new \DateTimeImmutable($fecha_fin_inscripcion, $timezone));
             $torneo->setEstado(EstadoTorneo::BORRADOR->value);
 
             $this->torneoRepository->guardar($torneo);
