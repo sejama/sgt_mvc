@@ -19,6 +19,16 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class CategoriaController extends AbstractController
 {
+    private function getLogUserId(): string
+    {
+        $user = $this->getUser();
+        if ($user instanceof \App\Entity\Usuario) {
+            $id = $user->getId();
+            return $id !== null ? (string) $id : 'anon';
+        }
+        return 'anon';
+    }
+
     #[Route('/nuevo', name: 'admin_categoria_crear', methods: ['GET', 'POST'])]
     public function crearCategoria(
         string $ruta,
@@ -43,7 +53,7 @@ class CategoriaController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Categoría creada con éxito.");
-                    $logger->info('Categoria creada: ' . 'nueva' . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Categoria creada: ' . 'nueva' . ', por el usuario: ' .  $this->getLogUserId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -78,7 +88,7 @@ class CategoriaController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $user = $this->getUser();
-        if ($user === null) {
+        if (!$user instanceof \App\Entity\Usuario) {
             return $this->redirectToRoute('security_login');
         }
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
@@ -137,12 +147,15 @@ class CategoriaController extends AbstractController
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
             $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+            if ($categoria === null) {
+                throw $this->createNotFoundException('Categoría no encontrada.');
+            }
             if ($request->isMethod('POST')) {
                 try {
                     $disputa = $request->request->get('disputa');
                     $categoriaManager->editarDisputa($categoria, $disputa);
                     $this->addFlash('success', "Disputa editada con éxito.");
-                    $logger->info('Disputa editada en la categoria: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Disputa editada en la categoria: ' . $categoria->getId() . ', por el usuario: ' .  $this->getLogUserId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -181,7 +194,7 @@ class CategoriaController extends AbstractController
             try {
                 $categoriaManager->eliminarCategoria($categoriaId);
                 $this->addFlash('success', "Categoría eliminada con éxito.");
-                $logger->info('Categoria eliminada: ' . $categoriaId . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Categoria eliminada: ' . $categoriaId . ', por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -204,9 +217,12 @@ class CategoriaController extends AbstractController
         if ($this->getUser() !== null) {
             try {
                 $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+                if ($categoria === null) {
+                    throw $this->createNotFoundException('Categoría no encontrada.');
+                }
                 $categoriaManager->cerrarCategoria($categoria);
                 $this->addFlash('success', "Categoría cerrada con éxito.");
-                $logger->info('Categoria cerrada: ' . $categoria->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Categoria cerrada: ' . $categoria->getId() . ', por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute('admin_equipo_index', [
                     'ruta' => $ruta,
                     'categoriaId' => $categoriaId,

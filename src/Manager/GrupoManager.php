@@ -44,6 +44,9 @@ class GrupoManager
         $inicio = 0;
 
         $categoria = $this->categoriaManager->obtenerCategoria($gruposDTO[0]->categoria);
+        if ($categoria === null) {
+            throw new AppException('Categoría no encontrada');
+        }
         $equipos = $categoria->getEquipos();
 
         $totalEquipos = count($equipos);

@@ -180,7 +180,7 @@ class TorneoController extends AbstractController
         $user = $this->getUser();
         if ($user instanceof Usuario) {
             $torneo = $torneoManager->obtenerTorneo($ruta);
-            if ($torneo->getCreador()->getId() === $user->getId()) {
+            if ($torneo->getCreador()?->getId() === $user->getId()) {
                 if ($request->isMethod('POST')) {
                     try {
                         // Handle the submission of the form
@@ -244,7 +244,7 @@ class TorneoController extends AbstractController
         $user = $this->getUser();
         if ($user instanceof Usuario) {
             $torneo = $torneoManager->obtenerTorneo($ruta);
-            if ($torneo->getCreador()->getId() === $user->getId()) {
+            if ($torneo->getCreador()?->getId() === $user->getId()) {
                 if ($request->isMethod('POST')) {
                     try {
                         $reglamento = $request->request->get('reglamento');

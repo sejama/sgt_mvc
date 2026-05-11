@@ -252,6 +252,9 @@ class MainController extends AbstractController
         int $categoriaId
     ): Response {
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        if ($categoria === null) {
+            throw $this->createNotFoundException('Categoría no encontrada.');
+        }
         $grupos = $categoria->getGrupos();
         $gruposPosiciones = [];
         foreach ($grupos as $grupo) {

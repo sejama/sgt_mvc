@@ -16,6 +16,16 @@ use Throwable;
 #[Route('/admin/usuario')]
 class UsuarioController extends AbstractController
 {
+    private function getLogUserId(): string
+    {
+        $user = $this->getUser();
+        if ($user instanceof \App\Entity\Usuario) {
+            $id = $user->getId();
+            return $id !== null ? (string) $id : 'anon';
+        }
+        return 'anon';
+    }
+
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/', name: 'admin_usuario_index', methods: ['GET'])]
     public function obtenerUsuarios(
@@ -34,7 +44,7 @@ class UsuarioController extends AbstractController
                     );
                 } else {
                     $this->addFlash('error', "Debe tener el rol de administrador.");
-                    $logger->error('Acceso denegado al index de usuarios por el usuario: ' .  $this->getUser()->getId());
+                    $logger->error('Acceso denegado al index de usuarios por el usuario: ' .  $this->getLogUserId());
                     return $this->redirectToRoute('app_main');
                 }
             }
@@ -115,7 +125,7 @@ class UsuarioController extends AbstractController
 
                     $usuarioManager->registrarUsuario($nombre, $apellido, $email, $username, $password, $rolesAsignados);
                     $this->addFlash('success', 'Usuario registrado correctamente');
-                    $logger->info('Usuario registrado: ' . $username . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Usuario registrado: ' . $username . ', por el usuario: ' .  $this->getLogUserId());
                     return $this->redirectToRoute('admin_usuario_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -146,7 +156,7 @@ class UsuarioController extends AbstractController
                 $password = $request->request->get('password');
                 $usuarioManager->cambiarPassword($this->getUser(), $password);
                 $this->addFlash('success', 'Contraseña cambiada correctamente');
-                $logger->info('Contraseña cambiada por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Contraseña cambiada por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute('app_main');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -168,6 +178,9 @@ class UsuarioController extends AbstractController
         LoggerInterface $logger, $id): Response
     {
         $usuario = $usuarioManager->buscarUsuario((int)$id);
+        if ($usuario === null) {
+            throw $this->createNotFoundException('Usuario no encontrado.');
+        }
         if ($request->isMethod('POST')) {
             try {
                 // Procesar el formulario
@@ -191,7 +204,7 @@ class UsuarioController extends AbstractController
                     $roles
                 );
                 $this->addFlash('success', 'Usuario editado correctamente');
-                $logger->info('Usuario editado: ' . $usuario->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Usuario editado: ' . $usuario->getId() . ', por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute('admin_usuario_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());
@@ -223,9 +236,12 @@ class UsuarioController extends AbstractController
 
         try {
             $usuario = $usuarioManager->buscarUsuario((int)$id);
+            if ($usuario === null) {
+                throw $this->createNotFoundException('Usuario no encontrado.');
+            }
             $usuarioManager->eliminarUsuario($usuario);
             $this->addFlash('success', 'Usuario eliminado correctamente');
-            $logger->info('Usuario eliminado: ' . $usuario->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+            $logger->info('Usuario eliminado: ' . $usuario->getId() . ', por el usuario: ' .  $this->getLogUserId());
             return $this->redirectToRoute('admin_usuario_index');
         } catch (AppException $ae) {
             $logger->error($ae->getMessage());

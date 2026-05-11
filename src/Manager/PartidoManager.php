@@ -138,10 +138,15 @@ class PartidoManager
             }
             $cantidadPartidosPlayOff = $this->contarPartidosPlayOff($partidosPlayOff);
 
+            $torneo = $categoria->getTorneo();
+            if ($torneo === null) {
+                throw new AppException('La categoría no tiene torneo asignado');
+            }
+
             $this->logger->info('Partidos creados por categoría', [
                 'categoria_id' => $categoria->getId(),
                 'nombre' => $categoria->getNombre(),
-                'torneo' => $categoria->getTorneo()->getRuta(),
+                'torneo' => $torneo->getRuta(),
                 'partidos_playoff' => $cantidadPartidosPlayOff,
             ]);
 
@@ -149,7 +154,7 @@ class PartidoManager
                 return;
             }
 
-            $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($categoria->getTorneo()->getRuta(), $cantidadPartidosPlayOff);
+            $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($torneo->getRuta(), $cantidadPartidosPlayOff);
             
             foreach ($partidosPlayOff as $tiposPlayOff) {
                 $partidoId = [];
@@ -197,7 +202,7 @@ class PartidoManager
     public function crearPartidosXGrupo(Grupo $grupo): void
     {
         $this->partidoRepository->ejecutarEnTransaccion(function () use ($grupo): void {
-            $equipos = $grupo->getEquipo();
+            $equipos = $grupo->getEquipo()->toArray();
             $cantidadEquipos = count($equipos);
             $cantidadCruces = (int) (($cantidadEquipos * ($cantidadEquipos - 1)) / 2);
 
@@ -205,36 +210,47 @@ class PartidoManager
                 return;
             }
 
+            $categoriaGrupo = $grupo->getCategoria();
+            if ($categoriaGrupo === null) {
+                throw new AppException('El grupo no tiene categoría asignada');
+            }
+            $torneoGrupo = $categoriaGrupo->getTorneo();
+            if ($torneoGrupo === null) {
+                throw new AppException('La categoría no tiene torneo asignado');
+            }
+
             $this->logger->info('Partidos creados por grupo', [
                 'grupo_id' => $grupo->getId(),
                 'grupo' => $grupo->getNombre(),
-                'categoria_id' => $grupo->getCategoria()?->getId(),
+                'categoria_id' => $categoriaGrupo->getId(),
                 'partidos_generados' => $cantidadCruces,
             ]);
 
-            $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($grupo->getCategoria()->getTorneo()->getRuta(), $cantidadCruces);
-            for ($i = 0; $i < count($equipos); $i++) {
-                for ($j = $i + 1; $j < count($equipos); $j++) {
+            $numero = $this->partidoRepository->reservarRangoNumerosXTorneo($torneoGrupo->getRuta(), $cantidadCruces);
+            for ($i = 0; $i < $cantidadEquipos; $i++) {
+                for ($j = $i + 1; $j < $cantidadEquipos; $j++) {
+                    $equipoI = $equipos[$i];
+                    $equipoJ = $equipos[$j];
                     $partido = new Partido();
                     $partido->setCancha(null);
                     $partido->setGrupo($grupo);
-                    $partido->setCategoria($grupo->getCategoria());
+                    $partido->setCategoria($categoriaGrupo);
                     $partido->setEstado(\App\Enum\EstadoPartido::BORRADOR->value);
                     $partido->setTipo(\App\Enum\TipoPartido::CLASIFICATORIO->value);
-                    $partido->setEquipoLocal($equipos[$i]);
-                    $partido->setEquipoVisitante($equipos[$j]);
+                    $partido->setEquipoLocal($equipoI);
+                    $partido->setEquipoVisitante($equipoJ);
                     $partido->setNumero($numero++);
 
                     $this->partidoRepository->guardar($partido, false);
 
-                    if ($equipos[$i]->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
-                        $equipos[$i]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
-                        $this->equipoRepository->guardar($equipos[$i], false);
+                    if ($equipoI->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+                        $equipoI->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+                        $this->equipoRepository->guardar($equipoI, false);
                     }
 
-                    if ($equipos[$j]->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
-                        $equipos[$j]->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
-                        $this->equipoRepository->guardar($equipos[$j], false);
+                    if ($equipoJ->getEstado() === \App\Enum\EstadoEquipo::BORRADOR->value) {
+                        $equipoJ->setEstado(\App\Enum\EstadoEquipo::ACTIVO->value);
+                        $this->equipoRepository->guardar($equipoJ, false);
                     }
                 }
             }
@@ -281,6 +297,9 @@ class PartidoManager
         $horario = new \DateTimeImmutable(substr_replace($horario, '00', -2));
 
         $cancha = $this->canchaManager->obtenerCancha($canchaId);
+        if ($cancha === null) {
+            throw new AppException('La cancha seleccionada no existe.');
+        }
         $sede = $cancha->getSede();
 
         if ($sede === null || $sede->getTorneo()?->getRuta() !== $ruta) {
@@ -629,20 +648,19 @@ class PartidoManager
 
         if ($partidoConfig) {
             $partidoSiguiente = $partidoConfig->getPartido();
-            if ($partidoConfig->getGanadorPartido1() === $partido) {
-                $partidoSiguiente->setEquipoLocal($ganador);  
-            } elseif ($partidoConfig->getGanadorPartido2() === $partido) {
-                $partidoSiguiente->setEquipoVisitante($ganador); 
-            }
+            if ($partidoSiguiente !== null) {
+                if ($partidoConfig->getGanadorPartido1() === $partido) {
+                    $partidoSiguiente->setEquipoLocal($ganador);
+                } elseif ($partidoConfig->getGanadorPartido2() === $partido) {
+                    $partidoSiguiente->setEquipoVisitante($ganador);
+                }
 
-            if ($partidoConfig->getPerdedorPartido1() === $partido) {
-                $partidoSiguiente->setEquipoLocal($perdedor);
-            } elseif ($partidoConfig->getPerdedorPartido2() === $partido) {
-                $partidoSiguiente->setEquipoVisitante($perdedor);
-            }
+                if ($partidoConfig->getPerdedorPartido1() === $partido) {
+                    $partidoSiguiente->setEquipoLocal($perdedor);
+                } elseif ($partidoConfig->getPerdedorPartido2() === $partido) {
+                    $partidoSiguiente->setEquipoVisitante($perdedor);
+                }
 
-            // Guardar solo si $partidoSiguiente está definido
-             if (isset($partidoSiguiente)) {
                 $this->partidoRepository->guardar($partidoSiguiente);
             }
         }

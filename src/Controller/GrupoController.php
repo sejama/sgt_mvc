@@ -43,13 +43,16 @@ class GrupoController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        if ($categoria === null) {
+            throw $this->createNotFoundException('Categoría no encontrada.');
+        }
         $grupos = $categoria->getGrupos();
         $gruposPosiciones = [];
         foreach ($grupos as $grupo) {
             $gruposPosiciones[$grupo->getId()][] = $grupo;
             $gruposPosiciones[$grupo->getId()][] = $tablaManager->calcularPosiciones($grupo);
         }
-    
+
         $partidosClasificatorios = $partidoManager->obtenerPartidosXCategoriaClasificatorio($categoria);
         $partidosPlayOff = $partidoManager->obtenerPartidosXCategoriaEliminatoriaPostClasificatorio($categoria);
 
@@ -78,6 +81,9 @@ class GrupoController extends AbstractController
         try {
             $torneo = $torneoManager->obtenerTorneo($ruta);
             $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+            if ($categoria === null) {
+                throw $this->createNotFoundException('Categoría no encontrada.');
+            }
             $grupos = $categoria->getGrupos();
             $gruposPosiciones = [];
             foreach ($grupos as $grupo) {
@@ -110,6 +116,9 @@ class GrupoController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        if ($categoria === null) {
+            throw $this->createNotFoundException('Categoría no encontrada.');
+        }
         if ($request->isMethod('POST')) {
             try {
                 $gruposDTO = [];
@@ -192,6 +201,9 @@ class GrupoController extends AbstractController
     ): Response {
         $torneo = $torneoManager->obtenerTorneo($ruta);
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        if ($categoria === null) {
+            throw $this->createNotFoundException('Categoría no encontrada.');
+        }
 
         if ($request->isMethod('POST')) {
             try {

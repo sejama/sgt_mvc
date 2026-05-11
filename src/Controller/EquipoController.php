@@ -137,6 +137,9 @@ class EquipoController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
+        if ($equipo === null) {
+            throw $this->createNotFoundException('Equipo no encontrado.');
+        }
         if ($request->isMethod('POST')) {
             try {
                 $nombre = $request->request->get('nombre');
@@ -186,6 +189,9 @@ class EquipoController extends AbstractController
 
         try {
             $equipo = $equipoManager->obtenerEquipo($equipoId);
+            if ($equipo === null) {
+                throw $this->createNotFoundException('Equipo no encontrado.');
+            }
             $equipoManager->eliminarEquipo($equipo);
             $this->addFlash('success', "Equipo eliminado con éxito.");
             $logger->info('Equipo eliminado: ' . $equipo->getId() . ', por el usuario: ' . $this->getLogUserId());
@@ -214,6 +220,9 @@ class EquipoController extends AbstractController
 
         try {
             $equipo = $equipoManager->obtenerEquipo($equipoId);
+            if ($equipo === null) {
+                throw $this->createNotFoundException('Equipo no encontrado.');
+            }
             $equipoManager->bajarEquipo($equipo);
             $this->addFlash('success', "Equipo dado de baja con éxito.");
             $logger->info('Equipo dado de baja: ' . $equipo->getId() . ', por el usuario: ' . $this->getLogUserId());

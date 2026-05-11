@@ -51,6 +51,9 @@ class PartidoController extends AbstractController
 ): Response {
     try {
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
+        if ($categoria === null) {
+            throw $this->createNotFoundException('Categoría no encontrada.');
+        }
         $grupos = $categoria->getGrupos();
         $tipoOro =  $tipoPlata = $tipoBronce = [];
         $equiposOro = $equiposPlata = $equiposBronce = 0;

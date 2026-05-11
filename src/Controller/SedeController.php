@@ -18,6 +18,16 @@ use Throwable;
 #[IsGranted('ROLE_ADMIN')]
 class SedeController extends AbstractController
 {
+    private function getLogUserId(): string
+    {
+        $user = $this->getUser();
+        if ($user instanceof \App\Entity\Usuario) {
+            $id = $user->getId();
+            return $id !== null ? (string) $id : 'anon';
+        }
+        return 'anon';
+    }
+
     #[Route('/nuevo', name: 'admin_sede_crear', methods: ['GET', 'POST'])]
     public function crearSede(
         string $ruta,
@@ -40,7 +50,7 @@ class SedeController extends AbstractController
                     );
                     $entityManager->flush();
                     $this->addFlash('success', "Sede creada con éxito.");
-                    $logger->info('Sede creada: ' . $nombre . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Sede creada: ' . $nombre . ', por el usuario: ' .  $this->getLogUserId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -72,6 +82,9 @@ class SedeController extends AbstractController
         $torneo = $torneoManager->obtenerTorneo($ruta);
         if ($this->getUser() !== null) {
             $sede = $sedeManager->obtenerSede($sedeId);
+            if ($sede === null) {
+                throw $this->createNotFoundException('Sede no encontrada.');
+            }
             if ($request->isMethod('POST')) {
                 try {
                     $nombre = $request->request->get('sedeNombre');
@@ -83,7 +96,7 @@ class SedeController extends AbstractController
                         $direccion
                     );
                     $this->addFlash('success', "Sede editada con éxito.");
-                    $logger->info('Sede editada: ' . $sede->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                    $logger->info('Sede editada: ' . $sede->getId() . ', por el usuario: ' .  $this->getLogUserId());
                     return $this->redirectToRoute('admin_torneo_index');
                 } catch (AppException $ae) {
                     $logger->error($ae->getMessage());
@@ -121,9 +134,12 @@ class SedeController extends AbstractController
 
             try {
                 $sede = $sedeManager->obtenerSede($sedeId);
+                if ($sede === null) {
+                    throw $this->createNotFoundException('Sede no encontrada.');
+                }
                 $sedeManager->eliminarSede($sede);
                 $this->addFlash('success', "Sede eliminada con éxito.");
-                $logger->info('Sede eliminada: ' . $sede->getId() . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Sede eliminada: ' . $sede->getId() . ', por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute('admin_torneo_index');
             } catch (AppException $ae) {
                 $logger->error($ae->getMessage());

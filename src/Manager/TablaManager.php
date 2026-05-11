@@ -53,6 +53,10 @@ class TablaManager {
                     $equipoLocal = $partido->getEquipoLocal();
                     $equipoVisitante = $partido->getEquipoVisitante();
 
+                    if ($equipoLocal === null || $equipoVisitante === null) {
+                        continue;
+                    }
+
                     $posiciones[$equipoLocal->getId()]['partidosJugados']++;
                     $posiciones[$equipoVisitante->getId()]['partidosJugados']++;
 

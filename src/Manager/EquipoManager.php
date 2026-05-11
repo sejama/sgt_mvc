@@ -68,7 +68,11 @@ class EquipoManager
             $provincia,
             $localidad
         );
-        $ruta = $categoria->getTorneo()->getRuta();
+        $torneo = $categoria->getTorneo();
+        if ($torneo === null) {
+            throw new AppException('La categoría no tiene torneo asignado');
+        }
+        $ruta = $torneo->getRuta();
         $numeroEquipo = count($this->equipoRepository->buscarEquiposXTorneo($ruta)) + 1;
 
         $equipo = new Equipo();
@@ -88,7 +92,7 @@ class EquipoManager
             'equipo_id' => $equipo->getId(),
             'nombre' => $equipo->getNombre(),
             'categoria_id' => $categoria->getId(),
-            'torneo' => $categoria->getTorneo()->getRuta(),
+            'torneo' => $ruta,
         ]);
 
         return $equipo;

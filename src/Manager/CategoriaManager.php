@@ -168,16 +168,17 @@ class CategoriaManager
 
         foreach ($categoria->getPartidos() as $partido) {
             if ($partido->getEquipoLocal() == null && $partido->getEquipoVisitante() == null) {
-                if ($partido->getPartidoConfig()->getGrupoEquipo1() !== null && $partido->getPartidoConfig()->getGrupoEquipo2() !== null) {
-                    $grupoEquipo1 = $partido->getPartidoConfig()->getGrupoEquipo1();
-                    $posicionEquipo1 = $partido->getPartidoConfig()->getPosicionEquipo1();
-                    
-                    $grupoEquipo2 = $partido->getPartidoConfig()->getGrupoEquipo2();
-                    $posicionEquipo2 = $partido->getPartidoConfig()->getPosicionEquipo2();
-                    
+                $config = $partido->getPartidoConfig();
+                if ($config !== null && $config->getGrupoEquipo1() !== null && $config->getGrupoEquipo2() !== null) {
+                    $grupoEquipo1 = $config->getGrupoEquipo1();
+                    $posicionEquipo1 = $config->getPosicionEquipo1();
+
+                    $grupoEquipo2 = $config->getGrupoEquipo2();
+                    $posicionEquipo2 = $config->getPosicionEquipo2();
+
                     $partido->setEquipoLocal($gruposPosiciones[$grupoEquipo1->getNombre()][$posicionEquipo1 - 1]['equipo']);
                     $partido->setEquipoVisitante($gruposPosiciones[$grupoEquipo2->getNombre()][$posicionEquipo2 - 1]['equipo']);
-                    
+
                     $this->partidoRepository->guardar($partido);
                 }
             }
@@ -189,7 +190,7 @@ class CategoriaManager
         $this->logger->info('Playoff armado', [
             'categoria_id' => $categoria->getId(),
             'nombre' => $categoria->getNombre(),
-            'torneo' => $categoria->getTorneo()->getRuta(),
+            'torneo' => $categoria->getTorneo()?->getRuta(),
         ]);
     }
 

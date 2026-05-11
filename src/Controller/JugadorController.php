@@ -17,6 +17,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class JugadorController extends AbstractController
 {
+    private function getLogUserId(): string
+    {
+        $user = $this->getUser();
+        if ($user instanceof \App\Entity\Usuario) {
+            $id = $user->getId();
+            return $id !== null ? (string) $id : 'anon';
+        }
+        return 'anon';
+    }
+
     #[Route('/', name: 'admin_jugador_index', methods: ['GET'])]
     public function index(
         string $ruta,
@@ -48,6 +58,9 @@ class JugadorController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
+        if ($equipo === null) {
+            throw $this->createNotFoundException('Equipo no encontrado.');
+        }
 
         if ($request->isMethod('POST')) {
             try {
@@ -73,7 +86,7 @@ class JugadorController extends AbstractController
                     $celular
                 );
                 $this->addFlash('success', 'Jugador editado correctamente');
-                $logger->info('Jugador creado en el equipo: ' . $equipo->getId() . ', con el nombre: ' . $nombre . ' ' . $apellido . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Jugador creado en el equipo: ' . $equipo->getId() . ', con el nombre: ' . $nombre . ' ' . $apellido . ', por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute(
                     'admin_jugador_index', [
                     'ruta' => $ruta,
@@ -120,7 +133,13 @@ class JugadorController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
+        if ($equipo === null) {
+            throw $this->createNotFoundException('Equipo no encontrado.');
+        }
         $jugador = $jugadorManager->obtenerJugador($jugadorId);
+        if ($jugador === null) {
+            throw $this->createNotFoundException('Jugador no encontrado.');
+        }
 
         if ($request->isMethod('POST')) {
             try {
@@ -147,7 +166,7 @@ class JugadorController extends AbstractController
                     $celular
                 );
                 $this->addFlash('success', 'Jugador editado correctamente');
-                $logger->info('Jugador editado en el equipo: ' . $equipo->getId() . ', con el nombre: ' . $nombre . ' ' . $apellido . ', por el usuario: ' .  $this->getUser()->getId());
+                $logger->info('Jugador editado en el equipo: ' . $equipo->getId() . ', con el nombre: ' . $nombre . ' ' . $apellido . ', por el usuario: ' .  $this->getLogUserId());
                 return $this->redirectToRoute(
                     'admin_jugador_index', [
                     'ruta' => $ruta,
@@ -196,14 +215,20 @@ class JugadorController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $equipo = $equipoManager->obtenerEquipo($equipoId);
+        if ($equipo === null) {
+            throw $this->createNotFoundException('Equipo no encontrado.');
+        }
         $jugador = $jugadorManager->obtenerJugador($jugadorId);
+        if ($jugador === null) {
+            throw $this->createNotFoundException('Jugador no encontrado.');
+        }
         if (!$this->isCsrfTokenValid('delete_jugador_' . $jugadorId, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF inválido.');
         }
 
         $jugadorManager->eliminarJugador($jugador);
         $this->addFlash('success', 'Jugador eliminado correctamente');
-        $logger->info('Jugador eliminado del equipo: ' . $equipo->getId() . ', con el nombre: ' . $jugador->getNombre() . ' ' . $jugador->getApellido() . ', por el usuario: ' .  $this->getUser()->getId());
+        $logger->info('Jugador eliminado del equipo: ' . $equipo->getId() . ', con el nombre: ' . $jugador->getNombre() . ' ' . $jugador->getApellido() . ', por el usuario: ' .  $this->getLogUserId());
         return $this->redirectToRoute(
             'admin_jugador_index', [
             'ruta' => $ruta,
