@@ -691,6 +691,51 @@ class EquipoControllerTest extends TestCase
         self::assertSame('xvi-master_voley', $this->invokePrivateMethod($controller, 'normalizarSegmentoRuta', [' XVI Master_Voley ']));
         self::assertSame('torneo', $this->invokePrivateMethod($controller, 'normalizarSegmentoRuta', ['---___---']));
     }
+
+    public function testEditarEquipoConEquipoNullLanzaNotFound(): void
+    {
+        $controller = new TestableEquipoController();
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn(null);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->editarEquipo('ruta-test', 1, 99, $request, $equipoManager, $logger);
+    }
+
+    public function testEliminarEquipoConEquipoNullLogErrorYRedirige(): void
+    {
+        $controller = new TestableEquipoController();
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn(null);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'POST', ['_token' => 'tok']);
+
+        $response = $controller->eliminarEquipo('ruta-test', 1, 99, $request, $equipoManager, $logger);
+
+        self::assertInstanceOf(\Symfony\Component\HttpFoundation\RedirectResponse::class, $response);
+        self::assertSame('/admin_equipo_index', $response->getTargetUrl());
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
+    }
+
+    public function testCambiarEstadoConEquipoNullLogErrorYRedirige(): void
+    {
+        $controller = new TestableEquipoController();
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn(null);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'POST', ['_token' => 'tok']);
+
+        $response = $controller->cambiarEstado('ruta-test', 1, 99, $request, $equipoManager, $logger);
+
+        self::assertInstanceOf(\Symfony\Component\HttpFoundation\RedirectResponse::class, $response);
+        self::assertSame('/admin_equipo_index', $response->getTargetUrl());
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
+    }
 }
 
 class TestableEquipoController extends EquipoController

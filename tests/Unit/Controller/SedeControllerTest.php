@@ -327,6 +327,45 @@ class SedeControllerTest extends TestCase
         self::assertSame('sede/editar.html.twig', $controller->lastTemplate);
         self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
     }
+
+    public function testEditarSedeConSedeNullLanzaNotFound(): void
+    {
+        $controller = new TestableSedeController();
+        $controller->testUser = (new \App\Entity\Usuario())
+            ->setUsername('admin')->setPassword('hash')->setRoles(['ROLE_ADMIN']);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn(new \App\Entity\Torneo());
+        $sedeManager = $this->createMock(\App\Manager\SedeManager::class);
+        $sedeManager->method('obtenerSede')->willReturn(null);
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->editarSede('ruta-test', 7, $torneoManager, $sedeManager, $request, $logger);
+    }
+
+    public function testEliminarSedeConSedeNullLogErrorYRedirigeALogin(): void
+    {
+        $controller = new TestableSedeController();
+        $controller->testUser = (new \App\Entity\Usuario())
+            ->setUsername('admin')->setPassword('hash')->setRoles(['ROLE_ADMIN']);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn(new \App\Entity\Torneo());
+        $sedeManager = $this->createMock(\App\Manager\SedeManager::class);
+        $sedeManager->method('obtenerSede')->willReturn(null);
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'POST', ['_token' => 'tok']);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->eliminarSede('ruta-test', 7, $request, $torneoManager, $sedeManager, $logger);
+
+        self::assertInstanceOf(\Symfony\Component\HttpFoundation\RedirectResponse::class, $response);
+        self::assertSame('/security_login', $response->getTargetUrl());
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
+    }
 }
 
 class TestableSedeController extends SedeController

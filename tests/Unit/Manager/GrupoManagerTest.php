@@ -212,6 +212,37 @@ class GrupoManagerTest extends KernelTestCase
         $grupoManager->intercambiarEquiposEntreGrupos($categoria, 101, 102);
     }
 
+    public function testCrearGruposConCategoriaNullLanzaAppException(): void
+    {
+        $grupoRepository = $this->createMock(GrupoRepository::class);
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+
+        $grupoManager = new GrupoManager($grupoRepository, $equipoRepository, $categoriaManager, $validadorManager);
+
+        $grupos = [];
+        $grupos[] = new CreateGrupoDTO(
+            nombre: 'Grupo 1',
+            categoria: 1,
+            cantidad: 4,
+            clasificaOro: 2,
+            clasificaPlata: null,
+            clasificaBronce: null,
+        );
+
+        $categoriaManager
+            ->expects($this->once())
+            ->method('obtenerCategoria')
+            ->with(1)
+            ->willReturn(null);
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('Categoría no encontrada');
+
+        $grupoManager->crearGrupos($grupos);
+    }
+
     private function setEntityId(object $entity, int $id): void
     {
         $reflection = new \ReflectionProperty($entity, 'id');

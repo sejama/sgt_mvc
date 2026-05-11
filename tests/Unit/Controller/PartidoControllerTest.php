@@ -401,6 +401,44 @@ class PartidoControllerTest extends TestCase
         self::assertSame(['success', 'Partido editado correctamente.'], $controller->lastFlash);
         self::assertSame('/admin_partido_index', $response->headers->get('Location'));
     }
+
+    public function testCrearPartidoClasificatorioConCategoriaNullLogErrorYRedirige(): void
+    {
+        $controller = new TestablePartidoController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')
+            ->setPassword('hash')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+
+        $request = Request::create('/test', 'GET');
+
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn($this->createMock(\App\Entity\Torneo::class));
+
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $partidoManager = $this->createMock(PartidoManager::class);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->crearPartidoClasificatorio(
+            'ruta-test',
+            7,
+            $categoriaManager,
+            $torneoManager,
+            $equipoManager,
+            $partidoManager,
+            $request,
+            $logger
+        );
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame('/admin_partido_index', $response->getTargetUrl());
+        self::assertSame('error', $controller->lastFlash[0]);
+        self::assertStringStartsWith('Ocurrió un error al crear el partido', $controller->lastFlash[1]);
+    }
 }
 
 class TestablePartidoController extends PartidoController

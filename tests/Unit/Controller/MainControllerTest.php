@@ -395,6 +395,20 @@ class MainControllerTest extends TestCase
         self::assertSame('Grupo 1', $controller->lastParameters['partidosProgramados']['Sede 1']['Cancha 1']['2026-05-01'][0]['grupo']);
     }
 
+    public function testCategoriaConCategoriaNullLanzaNotFound(): void
+    {
+        $controller = new TestableMainController();
+
+        $torneoManager = $this->createMock(TorneoManager::class);
+        $categoriaManager = $this->createMock(CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+        $tablaManager = $this->createMock(TablaManager::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->categoria($torneoManager, $categoriaManager, $tablaManager, 'ruta', 5);
+    }
+
     private function setPrivateProperty(object $object, string $property, mixed $value): void
     {
         $reflection = new \ReflectionProperty($object, $property);

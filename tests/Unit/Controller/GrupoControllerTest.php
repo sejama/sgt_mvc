@@ -334,6 +334,53 @@ class GrupoControllerTest extends TestCase
         self::assertSame(['error', 'No permitido'], $controller->lastFlash);
         self::assertSame('/admin_grupo_intercambiar_equipos', $response->headers->get('Location'));
     }
+
+    public function testGruposIndexConCategoriaNullLanzaNotFound(): void
+    {
+        $controller = new TestableGrupoController();
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn(new \App\Entity\Torneo());
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+        $tablaManager = $this->createMock(\App\Manager\TablaManager::class);
+        $partidoManager = $this->createMock(\App\Manager\PartidoManager::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->gruposIndex('ruta-test', 7, $torneoManager, $categoriaManager, $tablaManager, $partidoManager);
+    }
+
+    public function testCrearGrupoConCategoriaNullLanzaNotFound(): void
+    {
+        $controller = new TestableGrupoController();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+        $grupoManager = $this->createMock(\App\Manager\GrupoManager::class);
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn(new \App\Entity\Torneo());
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->crearGrupo($request, $grupoManager, $torneoManager, $categoriaManager, 'ruta-test', 7, $logger);
+    }
+
+    public function testIntercambiarEquiposConCategoriaNullLanzaNotFound(): void
+    {
+        $controller = new TestableGrupoController();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn(new \App\Entity\Torneo());
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+        $grupoManager = $this->createMock(\App\Manager\GrupoManager::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->intercambiarEquipos('ruta-test', 7, $request, $torneoManager, $categoriaManager, $grupoManager, $logger);
+    }
 }
 
 class TestableGrupoController extends GrupoController

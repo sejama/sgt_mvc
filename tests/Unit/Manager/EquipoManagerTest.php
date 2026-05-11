@@ -310,4 +310,37 @@ class EquipoManagerTest extends TestCase
 
         $equipoManager->eliminarEquipo($equipo);
     }
+
+    public function testCrearEquipoConTorneoNullLanzaAppException(): void
+    {
+        $equipoRepository = $this->createMock(EquipoRepository::class);
+        $partidoRepository = $this->createMock(PartidoRepository::class);
+        $validadorManager = $this->createMock(ValidadorManager::class);
+
+        $equipoManager = new EquipoManager(
+            $equipoRepository,
+            $partidoRepository,
+            $validadorManager,
+            new NullLogger(),
+        );
+
+        $equipoRepository->expects($this->exactly(2))
+            ->method('findOneBy')
+            ->willReturn(null);
+
+        $categoria = $this->createMock(Categoria::class);
+        $categoria->method('getTorneo')->willReturn(null);
+
+        $this->expectException(AppException::class);
+        $this->expectExceptionMessage('La categoría no tiene torneo asignado');
+
+        $equipoManager->crearEquipo(
+            $categoria,
+            'nombre',
+            'nombreCorto',
+            'pais',
+            'provincia',
+            'localidad'
+        );
+    }
 }

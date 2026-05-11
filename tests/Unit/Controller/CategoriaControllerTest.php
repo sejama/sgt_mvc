@@ -376,6 +376,45 @@ class CategoriaControllerTest extends TestCase
         self::assertSame('/admin_equipo_index', $response->getTargetUrl());
         self::assertSame(['success', 'Categoría cerrada con éxito.'], $controller->lastFlash);
     }
+
+    public function testEditarDisputaConCategoriaNullLanzaNotFound(): void
+    {
+        $controller = new TestableCategoriaController();
+        $controller->testUser = (new \App\Entity\Usuario())
+            ->setUsername('admin')->setPassword('hash')->setRoles(['ROLE_ADMIN']);
+
+        $torneoManager = $this->createMock(\App\Manager\TorneoManager::class);
+        $torneoManager->method('obtenerTorneo')->willReturn(new \App\Entity\Torneo());
+
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->editarDisputa('ruta-test', 7, $torneoManager, $categoriaManager, $request, $logger);
+    }
+
+    public function testCerrarCategoriaConCategoriaNullLogErrorYRedirigeALogin(): void
+    {
+        $controller = new TestableCategoriaController();
+        $controller->testUser = (new \App\Entity\Usuario())
+            ->setUsername('admin')->setPassword('hash')->setRoles(['ROLE_ADMIN']);
+
+        $categoriaManager = $this->createMock(\App\Manager\CategoriaManager::class);
+        $categoriaManager->method('obtenerCategoria')->willReturn(null);
+
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->cerrarCategoria('ruta-test', 9, $categoriaManager, $logger);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame('/security_login', $response->getTargetUrl());
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
+    }
 }
 
 class TestableCategoriaController extends CategoriaController

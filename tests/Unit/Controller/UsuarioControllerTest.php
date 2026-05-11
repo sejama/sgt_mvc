@@ -296,6 +296,38 @@ class UsuarioControllerTest extends TestCase
         self::assertSame('usuario/cambiar_password.html.twig', $controller->lastTemplate);
         self::assertSame(['error', 'Error de negocio'], $controller->lastFlash);
     }
+
+    public function testEditarUsuarioConUsuarioNullLanzaNotFound(): void
+    {
+        $controller = new TestableUsuarioController();
+        $request = Request::create('/test', 'GET');
+        $usuarioManager = $this->createMock(UsuarioManager::class);
+        $usuarioManager->method('buscarUsuario')->willReturn(null);
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->editarUsuario($request, $usuarioManager, $logger, 99);
+    }
+
+    public function testEliminarUsuarioConUsuarioNullLogErrorYRedirige(): void
+    {
+        $controller = new TestableUsuarioController();
+        $controller->testUser = (new Usuario())
+            ->setUsername('admin')->setPassword('hash')->setRoles(['ROLE_ADMIN']);
+
+        $request = Request::create('/test', 'POST', ['_token' => 'tok']);
+        $usuarioManager = $this->createMock(UsuarioManager::class);
+        $usuarioManager->method('buscarUsuario')->willReturn(null);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $response = $controller->eliminarUsuario($request, $usuarioManager, $logger, 99);
+
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame('/admin_usuario_index', $response->getTargetUrl());
+        self::assertSame(['error', 'Ha ocurrido un error inesperado. Por favor, intente nuevamente.'], $controller->lastFlash);
+    }
 }
 
 class TestableUsuarioController extends UsuarioController

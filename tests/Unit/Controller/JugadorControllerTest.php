@@ -194,6 +194,80 @@ class JugadorControllerTest extends TestCase
         self::assertInstanceOf(RedirectResponse::class, $response);
         self::assertSame(['success', 'Jugador eliminado correctamente'], $controller->lastFlash);
     }
+
+    public function testCrearJugadorConEquipoNullLanzaNotFound(): void
+    {
+        $controller = new TestableJugadorController();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn(null);
+        $jugadorManager = $this->createMock(\App\Manager\JugadorManager::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->crearJugador('ruta-test', 1, 99, $request, $equipoManager, $jugadorManager, $logger);
+    }
+
+    public function testEditarJugadorConEquipoNullLanzaNotFound(): void
+    {
+        $controller = new TestableJugadorController();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn(null);
+        $jugadorManager = $this->createMock(\App\Manager\JugadorManager::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->editarJugador('ruta-test', 1, 99, 5, $request, $equipoManager, $jugadorManager, $logger);
+    }
+
+    public function testEditarJugadorConJugadorNullLanzaNotFound(): void
+    {
+        $controller = new TestableJugadorController();
+        $equipo = new \App\Entity\Equipo();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'GET');
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn($equipo);
+        $jugadorManager = $this->createMock(\App\Manager\JugadorManager::class);
+        $jugadorManager->method('obtenerJugador')->willReturn(null);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->editarJugador('ruta-test', 1, 99, 5, $request, $equipoManager, $jugadorManager, $logger);
+    }
+
+    public function testEliminarJugadorConEquipoNullLanzaNotFound(): void
+    {
+        $controller = new TestableJugadorController();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'POST', ['_token' => 'tok']);
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn(null);
+        $jugadorManager = $this->createMock(\App\Manager\JugadorManager::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->eliminarJugador('ruta-test', 1, 99, 5, $request, $equipoManager, $jugadorManager, $logger);
+    }
+
+    public function testEliminarJugadorConJugadorNullLanzaNotFound(): void
+    {
+        $controller = new TestableJugadorController();
+        $equipo = new \App\Entity\Equipo();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/test', 'POST', ['_token' => 'tok']);
+        $equipoManager = $this->createMock(\App\Manager\EquipoManager::class);
+        $equipoManager->method('obtenerEquipo')->willReturn($equipo);
+        $jugadorManager = $this->createMock(\App\Manager\JugadorManager::class);
+        $jugadorManager->method('obtenerJugador')->willReturn(null);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+
+        $controller->eliminarJugador('ruta-test', 1, 99, 5, $request, $equipoManager, $jugadorManager, $logger);
+    }
 }
 
 class TestableJugadorController extends JugadorController
