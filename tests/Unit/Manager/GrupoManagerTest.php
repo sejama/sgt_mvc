@@ -11,6 +11,7 @@ use App\Exception\AppException;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
 use App\Manager\ValidadorManager;
+use App\Dto\CreateGrupoDTO;
 use App\Repository\EquipoRepository;
 use App\Repository\GrupoRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -27,23 +28,23 @@ class GrupoManagerTest extends KernelTestCase
         $grupoManager = new GrupoManager($grupoRepository, $equipoRepository, $categoriaManager, $validadorManager);
 
         $grupos = [];
-        $grupos[] = [
-            'nombre' => 'Grupo 1',
-            'categoria' => 1,
-            'cantidad' => 4,
-            'clasificaOro' => 2,
-            'clasificaPlata' => 2,
-            'clasificaBronce' => null,
-        ];
+        $grupos[] = new CreateGrupoDTO(
+            nombre: 'Grupo 1',
+            categoria: 1,
+            cantidad: 4,
+            clasificaOro: 2,
+            clasificaPlata: 2,
+            clasificaBronce: null,
+        );
 
-        $grupos[] = [
-            'nombre' => 'Grupo 2',
-            'categoria' => 1,
-            'cantidad' => 4,
-            'clasificaOro' => 2,
-            'clasificaPlata' => 2,
-            'clasificaBronce' => null,
-        ];
+        $grupos[] = new CreateGrupoDTO(
+            nombre: 'Grupo 2',
+            categoria: 1,
+            cantidad: 4,
+            clasificaOro: 2,
+            clasificaPlata: 2,
+            clasificaBronce: null,
+        );
 
         $categoria = new Categoria();
         $categoria->setNombre('Categoria 1');
@@ -101,7 +102,7 @@ class GrupoManagerTest extends KernelTestCase
         $categoriaManager
             ->expects($this->once())
             ->method('obtenerCategoria')
-            ->with($grupos[0]['categoria'])
+            ->with($grupos[0]->categoria)
             ->willReturn($categoria);
 
         $grupoRepository

@@ -8,6 +8,7 @@ use App\Entity\Grupo;
 use App\Enum\EstadoCategoria;
 use App\Enum\EstadoGrupo;
 use App\Exception\AppException;
+use App\Dto\CreateGrupoDTO;
 use App\Repository\EquipoRepository;
 use App\Repository\GrupoRepository;
 
@@ -34,20 +35,21 @@ class GrupoManager
         return $this->grupoRepository->findBy(['categoria' => $categoria], ['nombre' => 'ASC']);
     }
 
+    /** @param CreateGrupoDTO[] $gruposDTO */
     public function crearGrupos(
-        array $grupos,
+        array $gruposDTO,
     ) {
         $totalClasificados = 0;
         $totalEquiposZonas = 0;
         $inicio = 0;
 
-        $categoria = $this->categoriaManager->obtenerCategoria($grupos[0]['categoria']);
+        $categoria = $this->categoriaManager->obtenerCategoria($gruposDTO[0]->categoria);
         $equipos = $categoria->getEquipos();
 
         $totalEquipos = count($equipos);
 
-        foreach ($grupos as $grupo) {
-            $totalEquiposZonas += $grupo['cantidad'];
+        foreach ($gruposDTO as $grupoDTO) {
+            $totalEquiposZonas += $grupoDTO->cantidad;
         }
         if ($totalEquiposZonas !== $totalEquipos) {
             throw new AppException(
@@ -60,39 +62,39 @@ class GrupoManager
             $equipos[] = $equipo;
         }
 
-        foreach ($grupos as $grupo) {
+        foreach ($gruposDTO as $grupoDTO) {
             try {
-                $this->validadorManager->validarGrupo($grupo['nombre']);
+                $this->validadorManager->validarGrupo($grupoDTO->nombre);
 
-                if (!$grupo['clasificaOro']) {
+                if (!$grupoDTO->clasificaOro) {
                     throw new AppException('No se puede crear un grupo sin equipos que clasifiquen a oro');
                 }
 
-                if ($totalEquipos < $totalClasificados += $grupo['clasificaOro']) {
+                if ($totalEquipos < $totalClasificados += $grupoDTO->clasificaOro) {
                     throw new AppException('No se puede clasificar más equipos de los que hay en la categoría');
                 }
 
-                if ($grupo['clasificaPlata'] && $totalEquipos < $totalClasificados += $grupo['clasificaPlata']) {
+                if ($grupoDTO->clasificaPlata && $totalEquipos < $totalClasificados += $grupoDTO->clasificaPlata) {
                     throw new AppException('No se puede clasificar más equipos de los que hay en la categoría');
                 }
 
-                if ($grupo['clasificaBronce'] && !$grupo['clasificaPlata']) {
+                if ($grupoDTO->clasificaBronce && !$grupoDTO->clasificaPlata) {
                     throw new AppException('No se puede clasificar equipos de bronce sin clasificar equipos de plata');
                 }
 
-                if ($grupo['clasificaBronce'] &&  $totalEquipos < $totalClasificados += $grupo['clasificaBronce']) {
+                if ($grupoDTO->clasificaBronce &&  $totalEquipos < $totalClasificados += $grupoDTO->clasificaBronce) {
                     throw new AppException('No se puede clasificar más equipos de los que hay en la categoría');
                 }
 
                 $entidad = new Grupo();
-                $entidad->setNombre($grupo['nombre']);
+                $entidad->setNombre($grupoDTO->nombre);
                 $entidad->setCategoria($categoria);
-                $entidad->setClasificaOro($grupo['clasificaOro']);
-                $entidad->setClasificaPlata($grupo['clasificaPlata']);
-                $entidad->setClasificaBronce($grupo['clasificaBronce']);
+                $entidad->setClasificaOro($grupoDTO->clasificaOro);
+                $entidad->setClasificaPlata($grupoDTO->clasificaPlata);
+                $entidad->setClasificaBronce($grupoDTO->clasificaBronce);
                 $entidad->setEstado(EstadoGrupo::BORRADOR->value);
 
-                $equiposGrupo = array_slice($equipos, $inicio, $inicio += $grupo['cantidad']);
+                $equiposGrupo = array_slice($equipos, $inicio, $inicio += $grupoDTO->cantidad);
                 foreach ($equiposGrupo as $equipo) {
                     $entidad->addEquipo($equipo);
                 }

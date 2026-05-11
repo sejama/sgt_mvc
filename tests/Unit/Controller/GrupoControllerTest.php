@@ -10,6 +10,7 @@ use App\Entity\Grupo;
 use App\Entity\Torneo;
 use App\Entity\Usuario;
 use App\Exception\AppException;
+use App\Dto\CreateGrupoDTO;
 use App\Manager\CategoriaManager;
 use App\Manager\GrupoManager;
 use App\Manager\PartidoManager;
@@ -86,7 +87,8 @@ class GrupoControllerTest extends TestCase
             ->setPassword('hash')
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
-        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/crear', 'POST', [
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/crear', 'POST');
+        $request->request->replace([
             'cantidadGrupos' => '1',
             'grupos' => [[
                 'nombre' => 'Grupo A',
@@ -111,16 +113,16 @@ class GrupoControllerTest extends TestCase
         $grupoManager = $this->createMock(GrupoManager::class);
         $grupoManager->expects($this->once())
             ->method('crearGrupos')
-            ->with([
-                [
-                    'nombre' => 'Grupo A',
-                    'categoria' => 8,
-                    'cantidad' => 2,
-                    'clasificaOro' => 1,
-                    'clasificaPlata' => null,
-                    'clasificaBronce' => null,
-                ],
-            ]);
+            ->with($this->callback(function ($grupos) {
+                return count($grupos) === 1
+                    && $grupos[0] instanceof CreateGrupoDTO
+                    && $grupos[0]->nombre === 'Grupo A'
+                    && $grupos[0]->categoria === 8
+                    && $grupos[0]->cantidad === 2
+                    && $grupos[0]->clasificaOro === 1
+                    && $grupos[0]->clasificaPlata === null
+                    && $grupos[0]->clasificaBronce === null;
+            }));
 
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('info');
@@ -140,7 +142,8 @@ class GrupoControllerTest extends TestCase
             ->setPassword('hash')
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
-        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/crear', 'POST', [
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/crear', 'POST');
+        $request->request->replace([
             'cantidadGrupos' => '2',
             'grupos' => [[
                 'nombre' => 'Grupo A',
@@ -265,7 +268,8 @@ class GrupoControllerTest extends TestCase
             ->setPassword('hash')
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
-        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'POST', [
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'POST');
+        $request->request->replace([
             'equipoOrigenId' => '101',
             'equipoDestinoId' => '102',
         ]);
@@ -302,7 +306,8 @@ class GrupoControllerTest extends TestCase
             ->setPassword('hash')
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
-        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'POST', [
+        $request = Request::create('/admin/torneo/ruta-test/categoria/8/grupo/intercambiar-equipos', 'POST');
+        $request->request->replace([
             'equipoOrigenId' => '101',
             'equipoDestinoId' => '102',
         ]);

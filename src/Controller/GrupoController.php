@@ -8,6 +8,7 @@ use App\Manager\GrupoManager;
 use App\Manager\PartidoManager;
 use App\Manager\TablaManager;
 use App\Manager\TorneoManager;
+use App\Dto\CreateGrupoDTO;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,7 +112,7 @@ class GrupoController extends AbstractController
         $categoria = $categoriaManager->obtenerCategoria($categoriaId);
         if ($request->isMethod('POST')) {
             try {
-                $grupos = [];
+                $gruposDTO = [];
                 $cantidadGrupos = (int)$request->request->get('cantidadGrupos');
                 $gruposReq =  $request->request->all('grupos');
 
@@ -121,16 +122,9 @@ class GrupoController extends AbstractController
                 }
 
                 foreach ($gruposReq as $grupoReq) {
-                    $grupos[] = [
-                        'nombre' => $grupoReq['nombre'],
-                        'categoria' => $categoriaId,
-                        'cantidad' => (int)$grupoReq['cantidadEquipo'],
-                        'clasificaOro' => (int)$grupoReq['clasificaOro'],
-                        'clasificaPlata' => (int)$grupoReq['clasificaPlata'] !== 0 ? (int)$grupoReq['clasificaPlata'] : null,
-                        'clasificaBronce' => (int)$grupoReq['clasificaBronce'] !== 0 ? (int)$grupoReq['clasificaBronce'] : null,
-                    ];
+                    $gruposDTO[] = CreateGrupoDTO::fromArray($grupoReq, $categoriaId);
                 }
-                $grupoManager->crearGrupos($grupos);
+                $grupoManager->crearGrupos($gruposDTO);
 
                 $this->addFlash('success', "Grupo creado con éxito.");
                 $logger->info('Grupo armado para la categoría: ' . $categoria->getId() . ', por el usuario: ' . $this->getLogUserId());
