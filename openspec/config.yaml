@@ -1,0 +1,27 @@
+
+schema: spec-driven
+
+context: |
+  Proyecto: SGT (Sistema de Gestión de Torneos de Volleyball)
+  Tipo: Aplicación monolítica PHP
+  Stack: PHP 8.1+, Symfony 6.4, Doctrine ORM, Twig, PostgreSQL
+  Frontend: Twig templates, Stimulus (UX), Turbo, AssetMapper
+  Testing: PHPUnit 9.5, cobertura mínima 90%
+  Calidad: PHPStan nivel estricto, PHPCodeSniffer PSR-12, PHPMD
+  Arquitectura: DDD ligero — Entities, DTOs, Repositories, Managers, EventSubscribers
+  Dominio: torneos de volleyball — Torneo, Equipo, Jugador, Partido, Categoria, Grupo
+  Convenciones: commits en español, PSR-12, tests unitarios + de integración
+  Entorno: Docker (entorno-php)
+
+rules:
+  proposal:
+    - Identificar impacto en entidades Doctrine existentes
+    - Incluir consideraciones de migración de base de datos si aplica
+    - Especificar si requiere nuevos tests o actualizar los existentes
+  tasks:
+    - Cada tarea debe ser implementable en una sola sesión
+    - Incluir tarea de tests para cada cambio de lógica de negocio
+    - Verificar compatibilidad con PHPStan nivel estricto
+  specs:
+    - Usar formato Given/When/Then para escenarios
+    - Referenciar entidades del dominio por su nombre exacto en PHP
