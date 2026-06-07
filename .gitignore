@@ -29,3 +29,8 @@
 # Logos subidos por equipo, excepto el logo predeterminado.
 /public/uploads/logos/*
 !/public/uploads/logos/sin_logo.png
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
